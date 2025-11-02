@@ -1,28 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
-
 const Hero = () => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Image */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `url(${heroBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
+      <div className="absolute inset-0 z-0" style={{
+      backgroundImage: `url(${heroBg})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }}>
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/90 to-background" />
       </div>
 
       {/* Animated particles overlay */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full animate-pulse-glow" />
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-accent rounded-full animate-pulse-glow" style={{ animationDelay: '1s' }} />
-        <div className="absolute bottom-1/3 left-1/2 w-2 h-2 bg-primary rounded-full animate-pulse-glow" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-1 h-1 bg-accent rounded-full animate-pulse-glow" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-accent rounded-full animate-pulse-glow" style={{
+        animationDelay: '1s'
+      }} />
+        <div className="absolute bottom-1/3 left-1/2 w-2 h-2 bg-primary rounded-full animate-pulse-glow" style={{
+        animationDelay: '2s'
+      }} />
+        <div className="absolute bottom-1/4 right-1/4 w-1 h-1 bg-accent rounded-full animate-pulse-glow" style={{
+        animationDelay: '0.5s'
+      }} />
       </div>
 
       {/* Content */}
@@ -33,25 +34,15 @@ const Hero = () => {
             <span className="text-gradient-primary">Lucro em Escala</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
-            Agentes de IA que vendem, atendem e otimizam sua operação digital — 
-            integrados à sua loja Shopify e à sua estratégia de marketing.
-          </p>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">Agentes de IA que vendem, atendem e otimizam sua operação digital integrados à sua loja Shopify e à sua estratégia de marketing.</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-            <Button 
-              size="lg" 
-              className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 glow-primary group"
-            >
+            <Button size="lg" className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 glow-primary group">
               Falar com um especialista
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="text-lg px-8 py-6 border-2 border-primary/50 hover:border-primary hover:bg-primary/10 group"
-            >
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-2 border-primary/50 hover:border-primary hover:bg-primary/10 group">
               <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Ver como funciona
             </Button>
@@ -81,8 +72,6 @@ const Hero = () => {
           <div className="w-1 h-2 bg-primary rounded-full animate-pulse" />
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
