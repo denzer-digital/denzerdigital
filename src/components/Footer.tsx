@@ -1,4 +1,5 @@
 import { Linkedin, Instagram, Youtube } from "lucide-react";
+import logo from "@/assets/denzer-logo.png";
 
 const Footer = () => {
   return (
@@ -8,9 +9,11 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Logo and Description */}
             <div className="md:col-span-2 space-y-4">
-              <div className="text-2xl font-bold">
-                <span className="text-gradient-primary">Denzer Digital</span> AI Systems
-              </div>
+              <img 
+                src={logo} 
+                alt="Denzer Digital AI Systems" 
+                className="h-10 w-auto"
+              />
               <p className="text-sm text-muted-foreground max-w-md">
                 Transformando operações digitais através de inteligência artificial, 
                 estratégia e tecnologia de ponta.

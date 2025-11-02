@@ -38,7 +38,7 @@ const testimonials = [
 
 const Results = () => {
   return (
-    <section className="py-24 bg-gradient-to-b from-background via-secondary/20 to-background">
+    <section id="resultados" className="py-24 bg-gradient-to-b from-background via-secondary/20 to-background">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto space-y-16">
           {/* Header */}

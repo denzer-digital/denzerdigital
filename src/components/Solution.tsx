@@ -24,7 +24,7 @@ const solutions = [
 
 const Solution = () => {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section id="solucoes" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
       
       <div className="container relative mx-auto px-4">
