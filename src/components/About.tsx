@@ -1,23 +1,25 @@
 import shopifyPartner from "@/assets/shopify-partner.png";
 import metaPartner from "@/assets/meta-partner.png";
 import rdstationPartner from "@/assets/rdstation-partner.png";
-
-const badges = [
-  { image: shopifyPartner, alt: "Shopify Partner" },
-  { image: metaPartner, alt: "Meta Business Partner" },
-  { image: rdstationPartner, alt: "RD Station Partner" }
-];
-
+const badges = [{
+  image: shopifyPartner,
+  alt: "Shopify Partner"
+}, {
+  image: metaPartner,
+  alt: "Meta Business Partner"
+}, {
+  image: rdstationPartner,
+  alt: "RD Station Partner"
+}];
 const About = () => {
-  return (
-    <section className="py-24 bg-secondary/30">
+  return <section className="py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Content */}
             <div className="space-y-6 animate-fade-in-up">
               <h2 className="text-4xl md:text-5xl font-bold">
-                Sobre a <span className="text-gradient-primary">Denzer Digital AI Systems</span>
+                Sobre a <span className="text-gradient-primary">Denzer Digital</span>
               </h2>
               
               <p className="text-lg text-muted-foreground leading-relaxed">
@@ -32,14 +34,7 @@ const About = () => {
 
               {/* Badges */}
               <div className="pt-6 flex flex-wrap gap-6">
-                {badges.map((badge, index) => (
-                  <img
-                    key={index}
-                    src={badge.image}
-                    alt={badge.alt}
-                    className="h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
-                  />
-                ))}
+                {badges.map((badge, index) => <img key={index} src={badge.image} alt={badge.alt} className="h-16 object-contain opacity-90 hover:opacity-100 transition-opacity" />)}
               </div>
             </div>
 
@@ -68,12 +63,7 @@ const About = () => {
               {/* Team mockup */}
               <div className="relative p-6 rounded-2xl bg-card border border-border">
                 <div className="flex -space-x-4">
-                  {[...Array(4)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent border-2 border-card"
-                    />
-                  ))}
+                  {[...Array(4)].map((_, i) => <div key={i} className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent border-2 border-card" />)}
                   <div className="w-12 h-12 rounded-full bg-secondary border-2 border-card flex items-center justify-center text-sm font-semibold">
                     +12
                   </div>
@@ -86,8 +76,6 @@ const About = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default About;
