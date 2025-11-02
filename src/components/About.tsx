@@ -1,9 +1,11 @@
-import { Award, Shield, Zap } from "lucide-react";
+import shopifyPartner from "@/assets/shopify-partner.png";
+import metaPartner from "@/assets/meta-partner.png";
+import rdstationPartner from "@/assets/rdstation-partner.png";
 
 const badges = [
-  { icon: Award, text: "Parceiro Shopify" },
-  { icon: Shield, text: "Meta Certified" },
-  { icon: Zap, text: "Especialistas em IA" }
+  { image: shopifyPartner, alt: "Shopify Partner" },
+  { image: metaPartner, alt: "Meta Business Partner" },
+  { image: rdstationPartner, alt: "RD Station Partner" }
 ];
 
 const About = () => {
@@ -29,17 +31,14 @@ const About = () => {
               </p>
 
               {/* Badges */}
-              <div className="pt-6 space-y-4">
+              <div className="pt-6 flex flex-wrap gap-6">
                 {badges.map((badge, index) => (
-                  <div
+                  <img
                     key={index}
-                    className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/50 transition-all"
-                  >
-                    <div className="p-3 rounded-full bg-primary/10">
-                      <badge.icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <span className="font-semibold">{badge.text}</span>
-                  </div>
+                    src={badge.image}
+                    alt={badge.alt}
+                    className="h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
+                  />
                 ))}
               </div>
             </div>

@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import shopifyPartner from "@/assets/shopify-partner.png";
+import metaPartner from "@/assets/meta-partner.png";
+import rdstationPartner from "@/assets/rdstation-partner.png";
 const Hero = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Image */}
@@ -48,20 +51,23 @@ const Hero = () => {
             </Button>
           </div>
 
-          {/* Trust indicators */}
-          <div className="pt-12 flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
-              <span>Parceiro Shopify</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse-glow" />
-              <span>Meta Certified</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
-              <span>Especialistas em IA</span>
-            </div>
+          {/* Trust indicators - Partner Badges */}
+          <div className="pt-12 flex flex-wrap justify-center items-center gap-8 md:gap-12">
+            <img 
+              src={shopifyPartner} 
+              alt="Shopify Partner" 
+              className="h-12 md:h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
+            />
+            <img 
+              src={metaPartner} 
+              alt="Meta Business Partner" 
+              className="h-12 md:h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
+            />
+            <img 
+              src={rdstationPartner} 
+              alt="RD Station Partner" 
+              className="h-12 md:h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
+            />
           </div>
         </div>
       </div>
