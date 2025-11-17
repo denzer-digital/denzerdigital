@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { MessageSquare, Send, Settings } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 const Demo = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,11 +10,22 @@ const Demo = () => {
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([
     { role: "assistant", content: "Olá! 👋 Sou o assistente IA da Denzer Digital. Como posso ajudar sua empresa a crescer hoje?" }
   ]);
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
+
+    if (!webhookUrl) {
+      toast({
+        title: "Configure o webhook",
+        description: "Clique no ícone de configurações para adicionar a URL do seu webhook N8N",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const userMessage = message;
     setMessage("");
@@ -22,25 +33,38 @@ const Demo = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('chat-n8n', {
-        body: { message: userMessage }
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          timestamp: new Date().toISOString(),
+        }),
       });
 
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        throw new Error("Erro ao enviar mensagem");
       }
 
+      const data = await response.json();
+      
       // Adiciona a resposta do N8N ao chat
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: data?.response || "Resposta recebida com sucesso!" 
+        content: data.response || data.message || "Resposta recebida com sucesso!" 
       }]);
 
+      toast({
+        title: "Mensagem enviada",
+        description: "Resposta recebida do N8N",
+      });
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
       toast({
         title: "Erro",
-        description: "Não foi possível enviar a mensagem. Tente novamente.",
+        description: "Não foi possível enviar a mensagem. Verifique a URL do webhook.",
         variant: "destructive",
       });
     } finally {
@@ -90,14 +114,40 @@ const Demo = () => {
                 </div>
               </div>
 
-              <Button 
-                size="lg"
-                className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 glow-accent group"
-                onClick={() => setIsOpen(!isOpen)}
-              >
-                <MessageSquare className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                Testar o agente
-              </Button>
+              <div className="flex gap-4">
+                <Button 
+                  size="lg"
+                  className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 glow-accent group"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  <MessageSquare className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                  Testar o agente
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-6 py-6"
+                  onClick={() => setShowSettings(!showSettings)}
+                >
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </div>
+
+              {showSettings && (
+                <div className="bg-card border border-border rounded-lg p-4 space-y-2 animate-fade-in">
+                  <label className="text-sm font-medium">URL do Webhook N8N:</label>
+                  <Input
+                    type="url"
+                    placeholder="https://seu-n8n.app.n8n.cloud/webhook/..."
+                    value={webhookUrl}
+                    onChange={(e) => setWebhookUrl(e.target.value)}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Cole aqui a URL do webhook do seu fluxo N8N
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Right side - Chat Demo */}
@@ -145,14 +195,14 @@ const Demo = () => {
 
                 {/* Chat Input */}
                 <div className="flex gap-2 pt-4 border-t border-border">
-                  <input
+                  <Input
                     type="text"
                     placeholder="Digite sua mensagem..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     disabled={isLoading}
-                    className="flex-1 bg-secondary rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex-1 bg-secondary rounded-full px-4 py-3 text-sm"
                   />
                   <Button 
                     size="icon" 
