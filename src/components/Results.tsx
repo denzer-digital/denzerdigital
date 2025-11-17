@@ -1,4 +1,4 @@
-import { TrendingUp, Clock, DollarSign, Star } from "lucide-react";
+import { TrendingUp, Clock, DollarSign } from "lucide-react";
 
 const results = [
   {
@@ -18,21 +18,6 @@ const results = [
     value: "R$240 mil",
     label: "adicionais",
     description: "no trimestre com IA integrada"
-  }
-];
-
-const testimonials = [
-  {
-    name: "Carlos Silva",
-    role: "CEO, Loja Virtual Premium",
-    content: "A automação com IA aumentou nossas vendas em 40% no primeiro mês.",
-    rating: 5
-  },
-  {
-    name: "Marina Costa",
-    role: "Diretora de Marketing, TechStore",
-    content: "Reduzimos custos e melhoramos a experiência do cliente simultaneamente.",
-    rating: 5
   }
 ];
 
@@ -73,31 +58,6 @@ const Results = () => {
             ))}
           </div>
 
-          {/* Testimonials */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="p-8 rounded-2xl bg-card border border-border hover:border-accent/50 transition-all duration-300 space-y-4"
-              >
-                <div className="flex gap-1">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-accent text-accent" />
-                  ))}
-                </div>
-                <p className="text-lg italic text-muted-foreground">
-                  "{testimonial.content}"
-                </p>
-                <div className="flex items-center gap-4 pt-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent" />
-                  <div>
-                    <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
