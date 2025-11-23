@@ -1,28 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { Bot, Compass, ShoppingBag, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const solutions = [
   {
     icon: Bot,
     title: "Agentes de IA",
     description: "Atendimento e vendas automatizados via WhatsApp, site e redes sociais.",
-    gradient: "from-primary to-primary-glow"
+    gradient: "from-primary to-primary-glow",
+    link: "/servicos/agentes-ia"
   },
   {
     icon: Compass,
     title: "Gestão Digital 360°",
     description: "Planejamento, mídia e automações inteligentes baseadas em dados.",
-    gradient: "from-accent to-accent-glow"
+    gradient: "from-accent to-accent-glow",
+    link: "/servicos/gestao-digital"
   },
   {
     icon: ShoppingBag,
     title: "E-commerce Shopify",
     description: "Lojas de alta performance integradas com IA e automações nativas.",
-    gradient: "from-primary to-accent"
+    gradient: "from-primary to-accent",
+    link: "/servicos/ecommerce-shopify"
   }
 ];
 
 const Solution = () => {
+  const navigate = useNavigate();
+  
   return (
     <section id="solucoes" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
@@ -63,7 +69,10 @@ const Solution = () => {
                   </div>
 
                   <div className="pt-4">
-                    <div className="inline-flex items-center text-primary group-hover:gap-2 transition-all cursor-pointer">
+                    <div 
+                      onClick={() => navigate(solution.link)}
+                      className="inline-flex items-center text-primary group-hover:gap-2 transition-all cursor-pointer"
+                    >
                       <span className="text-sm font-semibold">Saiba mais</span>
                       <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </div>
