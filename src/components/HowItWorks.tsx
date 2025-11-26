@@ -1,35 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ArrowRight } from "lucide-react";
+import { useContactDialog } from "@/contexts/ContactDialogContext";
 
 const steps = [
   {
     number: "01",
     title: "Diagnóstico gratuito",
-    description: "Analisamos sua operação atual e identificamos oportunidades"
+    description: "Analisamos sua operação atual, identificamos gargalos e mapeamos onde a IA pode gerar impacto imediato."
   },
   {
     number: "02",
-    title: "Arquitetura IA + Shopify + Estratégia",
-    description: "Desenhamos a solução perfeita para seu negócio"
+    title: "Arquitetura IA + Estratégia",
+    description: "Desenhamos a solução ideal para o seu negócio: fluxos, integrações, funções da IA e objetivos claros."
   },
   {
     number: "03",
     title: "Desenvolvimento e integração",
-    description: "Implementamos tudo com agilidade e qualidade"
+    description: "Implementamos a solução definida na estratégia, seja um agente de IA, uma automação ou um e-commerce."
   },
   {
     number: "04",
     title: "Treinamento e ajustes",
-    description: "Capacitamos sua equipe e otimizamos processos"
+    description: "Validamos cenários reais, refinamos interações e capacitamos seu time para operar com a IA no dia a dia."
   },
   {
     number: "05",
     title: "Gestão contínua e otimização",
-    description: "Evoluímos constantemente para maximizar resultados"
+    description: "Acompanhamos e aprimoramos sua solução, seja IA, automação ou e-commerce garantindo evolução constante e maximização de resultados."
   }
 ];
 
 const HowItWorks = () => {
+  const { openDialog } = useContactDialog();
+  
   return (
     <section id="como-funciona" className="py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
@@ -49,22 +52,25 @@ const HowItWorks = () => {
             {/* Connection line */}
             <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-primary via-accent to-primary -translate-y-1/2" />
             
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 relative">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 relative items-stretch">
               {steps.map((step, index) => (
                 <div
                   key={index}
-                  className="relative"
+                  className="relative flex"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {/* Step card */}
-                  <div className="bg-card rounded-2xl border border-border hover:border-primary/50 p-6 space-y-4 transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-card rounded-2xl border border-border hover:border-primary/50 p-6 pb-4 space-y-3 transition-all duration-300 hover:scale-105 group flex flex-col w-full relative">
+                    {/* Check icon - top right */}
+                    <CheckCircle2 className="absolute top-4 right-4 h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                    
                     {/* Number badge */}
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent text-white text-2xl font-bold group-hover:scale-110 transition-transform">
                       {step.number}
                     </div>
                     
                     {/* Content */}
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex-1">
                       <h3 className="text-lg font-semibold leading-tight">
                         {step.title}
                       </h3>
@@ -72,9 +78,6 @@ const HowItWorks = () => {
                         {step.description}
                       </p>
                     </div>
-
-                    {/* Check icon */}
-                    <CheckCircle2 className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
 
                   {/* Arrow for mobile */}
@@ -93,6 +96,7 @@ const HowItWorks = () => {
             <Button 
               size="lg"
               className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 glow-accent group"
+              onClick={openDialog}
             >
               Quero implementar agora
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

@@ -9,6 +9,7 @@ import Pricing from "@/components/Pricing";
 import About from "@/components/About";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
+import ContactFormDialog from "@/components/ContactFormDialog";
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
       <About />
       <FinalCTA />
       <Footer />
+      <ContactFormDialog />
     </div>
   );
 };

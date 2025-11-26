@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import logo from "@/assets/denzer-logo.png";
+import logo from "@/assets/logo_header.webp";
+import { useContactDialog } from "@/contexts/ContactDialogContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { openDialog } = useContactDialog();
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -56,6 +58,7 @@ const Navbar = () => {
             <Button 
               size="sm"
               className="bg-primary hover:bg-primary/90"
+              onClick={openDialog}
             >
               Falar com especialista
             </Button>
@@ -106,6 +109,7 @@ const Navbar = () => {
               <Button 
                 size="sm"
                 className="bg-primary hover:bg-primary/90 w-full"
+                onClick={openDialog}
               >
                 Falar com especialista
               </Button>

@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Calendar, ArrowRight } from "lucide-react";
+import { useContactDialog } from "@/contexts/ContactDialogContext";
 
 const FinalCTA = () => {
+  const { openDialog } = useContactDialog();
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-accent/20" />
@@ -30,6 +32,7 @@ const FinalCTA = () => {
             <Button 
               size="lg" 
               className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 glow-accent group"
+              onClick={openDialog}
             >
               <MessageCircle className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Falar via WhatsApp
@@ -40,6 +43,7 @@ const FinalCTA = () => {
               size="lg" 
               variant="outline"
               className="text-lg px-8 py-6 border-2 border-primary/50 hover:border-primary hover:bg-primary/10 group"
+              onClick={openDialog}
             >
               <Calendar className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Agendar diagnóstico gratuito

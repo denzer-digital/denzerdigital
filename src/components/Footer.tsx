@@ -1,7 +1,14 @@
-import { Linkedin, Instagram, Youtube } from "lucide-react";
-import logo from "@/assets/denzer-logo.png";
+import { Linkedin, Instagram } from "lucide-react";
+import logo from "@/assets/logo_header.webp";
 
 const Footer = () => {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="border-t border-border bg-secondary/30">
       <div className="container mx-auto px-4 py-12">
@@ -22,25 +29,22 @@ const Footer = () => {
               {/* Social Links */}
               <div className="flex gap-4 pt-4">
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/denzer-digital/?utm_source=site"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="h-5 w-5 text-primary" />
                 </a>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/denzer.digital?utm_source=site"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
                   aria-label="Instagram"
                 >
                   <Instagram className="h-5 w-5 text-primary" />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
-                  aria-label="YouTube"
-                >
-                  <Youtube className="h-5 w-5 text-primary" />
                 </a>
               </div>
             </div>
@@ -74,27 +78,39 @@ const Footer = () => {
 
             {/* Links Column 2 */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Empresa</h3>
+              <h3 className="font-semibold text-lg">Navegação</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Sobre nós
-                  </a>
+                  <button
+                    onClick={() => scrollToSection('solucoes')}
+                    className="hover:text-primary transition-colors text-left"
+                  >
+                    Soluções
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Casos de sucesso
-                  </a>
+                  <button
+                    onClick={() => scrollToSection('resultados')}
+                    className="hover:text-primary transition-colors text-left"
+                  >
+                    Resultados
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Contato
-                  </a>
+                  <button
+                    onClick={() => scrollToSection('como-funciona')}
+                    className="hover:text-primary transition-colors text-left"
+                  >
+                    Como Funciona
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Suporte
-                  </a>
+                  <button
+                    onClick={() => scrollToSection('planos')}
+                    className="hover:text-primary transition-colors text-left"
+                  >
+                    Planos
+                  </button>
                 </li>
               </ul>
             </div>

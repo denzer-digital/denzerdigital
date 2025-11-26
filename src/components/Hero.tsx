@@ -1,10 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
-import shopifyPartner from "@/assets/shopify-partner.png";
-import metaPartner from "@/assets/meta-partner.png";
-import rdstationPartner from "@/assets/rdstation-partner.png";
+import shopifyPartner from "@/assets/shopify.webp";
+import rdPartner from "@/assets/rd.webp";
+import kommoPartner from "@/assets/kommo.webp";
+import metaPartner from "@/assets/meta.webp";
+import googlePartner from "@/assets/google.webp";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useContactDialog } from "@/contexts/ContactDialogContext";
+
 const Hero = () => {
+  const { openDialog } = useContactDialog();
+  
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Image */}
       <div className="absolute inset-0 z-0" style={{
@@ -40,34 +59,120 @@ const Hero = () => {
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">Agentes de IA que vendem, atendem e otimizam sua operação digital integrados à sua loja Shopify e à sua estratégia de marketing.</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-            <Button size="lg" className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 glow-primary group">
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 glow-primary group"
+              onClick={openDialog}
+            >
               Falar com um especialista
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-2 border-primary/50 hover:border-primary hover:bg-primary/10 group">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="text-lg px-8 py-6 border-2 border-primary/50 hover:border-primary hover:bg-primary/10 group"
+              onClick={() => scrollToSection('experimente-ia')}
+            >
               <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Ver como funciona
             </Button>
           </div>
 
           {/* Trust indicators - Partner Badges */}
-          <div className="pt-12 flex flex-wrap justify-center items-center gap-8 md:gap-12">
-            <img 
-              src={shopifyPartner} 
-              alt="Shopify Partner" 
-              className="h-12 md:h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
-            />
-            <img 
-              src={metaPartner} 
-              alt="Meta Business Partner" 
-              className="h-12 md:h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
-            />
-            <img 
-              src={rdstationPartner} 
-              alt="RD Station Partner" 
-              className="h-12 md:h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
-            />
+          <div className="pt-12">
+            {/* Desktop: Grid layout */}
+            <div className="hidden md:flex flex-wrap justify-center items-center gap-[10px]">
+              <img 
+                src={shopifyPartner} 
+                alt="Shopify Partner" 
+                className="h-12 md:h-16 object-contain"
+              />
+              <img 
+                src={rdPartner} 
+                alt="RD Station Partner" 
+                className="h-12 md:h-16 object-contain"
+              />
+              <img 
+                src={kommoPartner} 
+                alt="Kommo Partner" 
+                className="h-12 md:h-16 object-contain"
+              />
+              <img 
+                src={metaPartner} 
+                alt="Meta Business Partner" 
+                className="h-12 md:h-16 object-contain"
+              />
+              <img 
+                src={googlePartner} 
+                alt="Google Partner" 
+                className="h-12 md:h-16 object-contain"
+              />
+            </div>
+
+            {/* Mobile: Carousel */}
+            <div className="md:hidden w-full max-w-sm mx-auto">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                plugins={[
+                  Autoplay({
+                    delay: 3000,
+                  }),
+                ]}
+                className="w-full"
+              >
+                <CarouselContent>
+                  <CarouselItem className="basis-1/3">
+                    <div className="flex justify-center">
+                      <img 
+                        src={shopifyPartner} 
+                        alt="Shopify Partner" 
+                        className="h-12 object-contain"
+                      />
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem className="basis-1/3">
+                    <div className="flex justify-center">
+                      <img 
+                        src={rdPartner} 
+                        alt="RD Station Partner" 
+                        className="h-12 object-contain"
+                      />
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem className="basis-1/3">
+                    <div className="flex justify-center">
+                      <img 
+                        src={kommoPartner} 
+                        alt="Kommo Partner" 
+                        className="h-12 object-contain"
+                      />
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem className="basis-1/3">
+                    <div className="flex justify-center">
+                      <img 
+                        src={metaPartner} 
+                        alt="Meta Business Partner" 
+                        className="h-12 object-contain"
+                      />
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem className="basis-1/3">
+                    <div className="flex justify-center">
+                      <img 
+                        src={googlePartner} 
+                        alt="Google Partner" 
+                        className="h-12 object-contain"
+                      />
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
+              </Carousel>
+            </div>
           </div>
         </div>
       </div>

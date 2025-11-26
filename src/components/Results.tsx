@@ -2,22 +2,40 @@ import { TrendingUp, Clock, DollarSign } from "lucide-react";
 
 const results = [
   {
-    icon: TrendingUp,
-    value: "+38%",
-    label: "em conversões",
-    description: "na loja Shopify"
+    icon: Clock,
+    value: "-91,4%",
+    label: "no tempo de resposta",
+    description: "pela IA no WhatsApp"
   },
   {
-    icon: Clock,
-    value: "-70%",
-    label: "no tempo de resposta",
-    description: "no WhatsApp"
+    icon: TrendingUp,
+    value: "+515%",
+    label: "de atendimentos processados",
+    description: "pela IA no WhatsApp"
   },
   {
     icon: DollarSign,
-    value: "R$240 mil",
-    label: "adicionais",
-    description: "no trimestre com IA integrada"
+    value: "R$150 mil",
+    label: "adicionais com 764 vendas",
+    description: "no mês com IA integrada"
+  },
+  {
+    icon: TrendingUp,
+    value: "+52%",
+    label: "de aumento na velocidade do site",
+    description: "em e-commerces desenvolvidos pela Denzer Digital"
+  },
+  {
+    icon: TrendingUp,
+    value: "+214%",
+    label: "de aumento na taxa de Conversão",
+    description: "em e-commerces desenvolvidos pela Denzer Digital"
+  },
+  {
+    icon: DollarSign,
+    value: "+5,4x",
+    label: "mais eficiência operacional total",
+    description: "combinando IA + Performance + E-commerce Shopify"
   }
 ];
 
@@ -37,22 +55,36 @@ const Results = () => {
           </div>
 
           {/* Results Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {results.map((result, index) => (
               <div
                 key={index}
-                className="group p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 text-center space-y-4"
+                className="p-8 rounded-2xl bg-card border border-border text-center space-y-6"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="inline-flex p-4 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <result.icon className="h-8 w-8 text-primary" />
+                {/* Icon */}
+                <div className="flex justify-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/30 flex items-center justify-center">
+                    <result.icon className="h-8 w-8 text-primary" />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="text-5xl font-bold text-gradient-primary">
+                
+                {/* Content */}
+                <div className="space-y-3">
+                  {/* Main Metric */}
+                  <div className="text-5xl md:text-6xl font-bold text-primary">
                     {result.value}
                   </div>
-                  <div className="text-xl font-semibold">{result.label}</div>
-                  <div className="text-sm text-muted-foreground">{result.description}</div>
+                  
+                  {/* Label */}
+                  <div className="text-lg font-medium text-white">
+                    {result.label}
+                  </div>
+                  
+                  {/* Description */}
+                  <div className="text-sm text-white/80">
+                    {result.description}
+                  </div>
                 </div>
               </div>
             ))}

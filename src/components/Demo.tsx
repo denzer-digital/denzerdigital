@@ -1,79 +1,115 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageSquare, Send, Settings } from "lucide-react";
-import { useState } from "react";
+import { MessageSquare, Send } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { sendMessageToWebhook } from "@/services/webhookService";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type AgentType = "sdr" | "ecommerce" | "agendamento";
+
+const AGENT_TYPES: { value: AgentType; label: string }[] = [
+  { value: "sdr", label: "SDR" },
+  { value: "ecommerce", label: "E-commerce suporte" },
+  { value: "agendamento", label: "Agendamento de consultas/serviços" },
+];
 
 const Demo = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [agentType, setAgentType] = useState<AgentType>("sdr");
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([
-    { role: "assistant", content: "Olá! 👋 Sou o assistente IA da Denzer Digital. Como posso ajudar sua empresa a crescer hoje?" }
+    { role: "assistant", content: "Envie uma mensagem para começar a conversar com nossa IA e descobrir como ela pode ajudar sua empresa!" }
   ]);
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-scroll para a última mensagem apenas no container do chat
+  const scrollToBottom = () => {
+    if (messagesContainerRef.current) {
+      // Usa setTimeout para garantir que o DOM foi atualizado
+      setTimeout(() => {
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTo({
+            top: messagesContainerRef.current.scrollHeight,
+            behavior: "smooth"
+          });
+        }
+      }, 100);
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading]);
+
+  // Mantém o foco no input após o loading terminar
+  useEffect(() => {
+    if (!isLoading && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isLoading]);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
-    if (!webhookUrl) {
-      toast({
-        title: "Configure o webhook",
-        description: "Clique no ícone de configurações para adicionar a URL do seu webhook N8N",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const userMessage = message;
     setMessage("");
+    // Mantém o foco no input após enviar
+    inputRef.current?.focus();
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
     setIsLoading(true);
 
+    console.log("Iniciando envio de mensagem:", userMessage);
+
     try {
-      const response = await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      await sendMessageToWebhook(
+        userMessage,
+        agentType,
+        (newMessage) => {
+          // Callback chamado para cada nova mensagem recebida
+          console.log("Nova mensagem recebida:", newMessage);
+          setMessages(prev => [...prev, { 
+            role: "assistant", 
+            content: newMessage
+          }]);
         },
-        body: JSON.stringify({
-          message: userMessage,
-          timestamp: new Date().toISOString(),
-        }),
-      });
+        (isPolling) => {
+          // Callback para atualizar o estado de loading durante o polling
+          console.log("Status de polling:", isPolling);
+          setIsLoading(isPolling);
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Erro ao enviar mensagem");
-      }
-
-      const data = await response.json();
-      
-      // Adiciona a resposta do N8N ao chat
-      setMessages(prev => [...prev, { 
-        role: "assistant", 
-        content: data.response || data.message || "Resposta recebida com sucesso!" 
-      }]);
-
-      toast({
-        title: "Mensagem enviada",
-        description: "Resposta recebida do N8N",
-      });
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      
+      setMessages(prev => [...prev, { 
+        role: "assistant", 
+        content: "Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente." 
+      }]);
+      
       toast({
         title: "Erro",
-        description: "Não foi possível enviar a mensagem. Verifique a URL do webhook.",
+        description: `Não foi possível enviar a mensagem: ${errorMessage}`,
         variant: "destructive",
       });
     } finally {
+      // Garante que o loading seja desativado ao final
       setIsLoading(false);
     }
   };
 
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section id="experimente-ia" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
       
       <div className="container relative mx-auto px-4">
@@ -114,61 +150,53 @@ const Demo = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <Button 
-                  size="lg"
-                  className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 glow-accent group"
-                  onClick={() => setIsOpen(!isOpen)}
-                >
-                  <MessageSquare className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                  Testar o agente
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-lg px-6 py-6"
-                  onClick={() => setShowSettings(!showSettings)}
-                >
-                  <Settings className="h-5 w-5" />
-                </Button>
-              </div>
-
-              {showSettings && (
-                <div className="bg-card border border-border rounded-lg p-4 space-y-2 animate-fade-in">
-                  <label className="text-sm font-medium">URL do Webhook N8N:</label>
-                  <Input
-                    type="url"
-                    placeholder="https://seu-n8n.app.n8n.cloud/webhook/..."
-                    value={webhookUrl}
-                    onChange={(e) => setWebhookUrl(e.target.value)}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Cole aqui a URL do webhook do seu fluxo N8N
-                  </p>
-                </div>
-              )}
             </div>
 
             {/* Right side - Chat Demo */}
             <div className="relative">
-              <div className="rounded-2xl bg-card border border-border p-6 shadow-2xl">
+              {/* Bola azul (como estava antes) */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/20 rounded-full blur-2xl animate-pulse-glow z-0" />
+              
+              {/* Bola laranja atrás do chat */}
+              <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-accent/20 rounded-full blur-2xl animate-pulse-glow z-[1]" />
+              
+              <div className="rounded-2xl bg-card border border-border p-6 shadow-2xl relative z-[2]">
                 {/* Chat Header */}
-                <div className="flex items-center gap-3 pb-4 border-b border-border">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                    <MessageSquare className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-semibold">Agente IA Denzer</div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-1">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                      Online
+                <div className="flex items-center justify-between pb-4 border-b border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                      <MessageSquare className="h-5 w-5 text-white" />
                     </div>
+                    <div>
+                      <div className="font-semibold">Agente IA Denzer</div>
+                      <div className="text-xs text-muted-foreground flex items-center gap-1">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        Online
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">Tipo:</span>
+                    <Select value={agentType} onValueChange={(value) => setAgentType(value as AgentType)}>
+                      <SelectTrigger className="w-[200px] h-8 text-xs">
+                        <SelectValue placeholder="Selecione o tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {AGENT_TYPES.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
                 {/* Chat Messages */}
-                <div className="py-6 space-y-4 min-h-[300px] max-h-[400px] overflow-y-auto">
+                <div 
+                  ref={messagesContainerRef}
+                  className="py-6 space-y-4 min-h-[300px] max-h-[400px] overflow-y-auto scrollbar-hide"
+                >
                   {messages.map((msg, idx) => (
                     <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                       {msg.role === 'assistant' && (
@@ -187,7 +215,13 @@ const Demo = () => {
                     <div className="flex gap-3">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex-shrink-0" />
                       <div className="bg-secondary rounded-2xl rounded-tl-none p-4">
-                        <p className="text-sm">Digitando...</p>
+                        <div className="flex items-center gap-1.5">
+                          <span className="flex gap-1 items-center">
+                            <span className="w-1.5 h-1.5 bg-foreground/70 rounded-full animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1.4s' }} />
+                            <span className="w-1.5 h-1.5 bg-foreground/70 rounded-full animate-bounce" style={{ animationDelay: '200ms', animationDuration: '1.4s' }} />
+                            <span className="w-1.5 h-1.5 bg-foreground/70 rounded-full animate-bounce" style={{ animationDelay: '400ms', animationDuration: '1.4s' }} />
+                          </span>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -196,13 +230,15 @@ const Demo = () => {
                 {/* Chat Input */}
                 <div className="flex gap-2 pt-4 border-t border-border">
                   <Input
+                    ref={inputRef}
                     type="text"
                     placeholder="Digite sua mensagem..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
                     disabled={isLoading}
                     className="flex-1 bg-secondary rounded-full px-4 py-3 text-sm"
+                    autoFocus
                   />
                   <Button 
                     size="icon" 
@@ -214,10 +250,6 @@ const Demo = () => {
                   </Button>
                 </div>
               </div>
-
-              {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/20 rounded-full blur-2xl animate-pulse-glow" />
-              <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-accent/20 rounded-full blur-2xl animate-pulse-glow" />
             </div>
           </div>
         </div>
