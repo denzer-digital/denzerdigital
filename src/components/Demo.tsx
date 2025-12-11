@@ -79,6 +79,7 @@ const Demo = () => {
     // Mantém o foco no input após enviar
     inputRef.current?.focus();
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    // mostra animação de digitando imediatamente ao enviar
     setIsLoading(true);
 
     console.log("Iniciando envio de mensagem:", userMessage);
@@ -94,7 +95,6 @@ const Demo = () => {
           if (isWorkflowStartedResponse(newMessage)) {
             return;
           }
-          setIsLoading(false); // encerra animação ao receber a primeira resposta
           setMessages(prev => [...prev, { 
             role: "assistant", 
             content: newMessage
