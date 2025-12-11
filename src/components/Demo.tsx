@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { MessageSquare, Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { sendMessageToWebhook } from "@/services/webhookService";
+import { sendMessageToWebhook, createSessionId } from "@/services/webhookService";
 import {
   Select,
   SelectContent,
@@ -23,6 +23,7 @@ const AGENT_TYPES: { value: AgentType; label: string }[] = [
 const Demo = () => {
   const [message, setMessage] = useState("");
   const [agentType, setAgentType] = useState<AgentType>("sdr");
+  const [sessionId, setSessionId] = useState<string>(createSessionId());
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([
     { role: "assistant", content: "Envie uma mensagem para começar a conversar com nossa IA e descobrir como ela pode ajudar sua empresa!" }
   ]);
@@ -57,6 +58,19 @@ const Demo = () => {
     }
   }, [isLoading]);
 
+  // Reseta sessão e histórico
+  const resetChat = (newAgent?: AgentType) => {
+    setSessionId(createSessionId());
+    setMessages([
+      { role: "assistant", content: "Envie uma mensagem para começar a conversar com nossa IA e descobrir como ela pode ajudar sua empresa!" },
+    ]);
+    setIsLoading(false);
+    setMessage("");
+    if (newAgent) {
+      setAgentType(newAgent);
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
@@ -73,6 +87,7 @@ const Demo = () => {
       await sendMessageToWebhook(
         userMessage,
         agentType,
+        sessionId,
         (newMessage) => {
           // Callback chamado para cada nova mensagem recebida
           console.log("Nova mensagem recebida:", newMessage);
@@ -183,7 +198,13 @@ const Demo = () => {
                       </SelectTrigger>
                       <SelectContent>
                         {AGENT_TYPES.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
+                          <SelectItem
+                            key={type.value}
+                            value={type.value}
+                            onClick={() => {
+                              resetChat(type.value as AgentType);
+                            }}
+                          >
                             {type.label}
                           </SelectItem>
                         ))}

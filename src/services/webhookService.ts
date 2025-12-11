@@ -3,7 +3,6 @@
  */
 
 const WEBHOOK_URL = "https://webhook.agentemwd.com/webhook/9de471bd-4296-4cc8-bc40-f2ea1d19f6dd";
-const SESSION_ID_STORAGE_KEY = "denzer_chat_session_id";
 const CHAT_API_URL = "/api/chat/messages";
 
 export type AgentType = "sdr" | "ecommerce" | "agendamento";
@@ -20,21 +19,8 @@ export interface WebhookMessage {
  * O ID é único por sessão do navegador (recarrega quando a página é recarregada)
  * @returns ID único da sessão
  */
-export function getOrCreateSessionId(): string {
-  // Tenta recuperar o ID do sessionStorage
-  const storedSessionId = sessionStorage.getItem(SESSION_ID_STORAGE_KEY);
-  
-  if (storedSessionId) {
-    return storedSessionId;
-  }
-
-  // Gera um novo ID único usando timestamp + random
-  const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-  
-  // Armazena no sessionStorage (apenas durante a sessão)
-  sessionStorage.setItem(SESSION_ID_STORAGE_KEY, newSessionId);
-  
-  return newSessionId;
+export function createSessionId(): string {
+  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 }
 
 export interface WebhookResponse {
@@ -241,13 +227,15 @@ function extractMessages(data: any): string[] {
 export async function sendMessageToWebhook(
   message: string,
   agentType: AgentType,
+  sessionId: string,
   onNewMessage: (message: string) => void,
   onPolling?: (isPolling: boolean) => void
 ): Promise<void> {
   try {
-    // Obtém ou cria o ID único da sessão
-    const sessionId = getOrCreateSessionId();
-    
+    if (!sessionId) {
+      throw new Error("sessionId é obrigatório para enviar mensagens");
+    }
+
     const payload: WebhookMessage = {
       message: message.trim(),
       timestamp: new Date().toISOString(),
