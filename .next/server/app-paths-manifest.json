@@ -1,5 +1,6 @@
 {
-  "/agentes-de-ia/page": "app/agentes-de-ia/page.js",
   "/page": "app/page.js",
-  "/gestao-digital-360/page": "app/gestao-digital-360/page.js"
+  "/gestao-digital-360/page": "app/gestao-digital-360/page.js",
+  "/agentes-de-ia/page": "app/agentes-de-ia/page.js",
+  "/_not-found/page": "app/_not-found/page.js"
 }

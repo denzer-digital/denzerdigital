@@ -4,6 +4,7 @@
 
 const WEBHOOK_URL = "https://webhook.agentemwd.com/webhook/9de471bd-4296-4cc8-bc40-f2ea1d19f6dd";
 const SESSION_ID_STORAGE_KEY = "denzer_chat_session_id";
+const CHAT_API_URL = "/api/chat/messages";
 
 export type AgentType = "sdr" | "ecommerce" | "agendamento";
 
@@ -326,35 +327,11 @@ export async function sendMessageToWebhook(
       console.log(`⚠️ Nenhuma mensagem válida encontrada na resposta inicial`);
     }
     
-    // Só faz polling se:
-    // 1. O workflow foi iniciado (indica que mais mensagens virão), OU
-    // 2. Não recebeu nenhuma mensagem válida na resposta inicial
-    if (isWorkflowStarted || validMessages.length === 0) {
-      console.log("🔄 Workflow iniciado ou sem mensagens, iniciando polling para capturar mensagens adicionais...");
-      
-      if (onPolling) {
-        onPolling(true);
-      }
-
-      // Faz polling APENAS para verificar se há novas mensagens disponíveis
-      // NÃO envia mensagem nem agentType para evitar novas execuções
-      // Passa as mensagens já recebidas para evitar duplicatas
-      await pollForMessages(
-        sessionId,
-        onNewMessage,
-        validMessages // Passa mensagens já recebidas para evitar processar novamente
-      );
-      
-      if (onPolling) {
-        onPolling(false);
-      }
-    } else {
-      console.log("✅ Todas as mensagens foram recebidas na resposta inicial. Não é necessário fazer polling.");
-      // Garante que o loading seja desativado se não fizer polling
-      if (onPolling) {
-        onPolling(false);
-      }
-    }
+    // Sempre fazemos polling na API interna de mensagens para trazer as respostas que o fluxo enviou via HTTP Request1
+    console.log("🔄 Iniciando polling na API interna /api/chat/messages para buscar respostas do fluxo");
+    if (onPolling) onPolling(true);
+    await pollChatMessages(sessionId, onNewMessage, validMessages);
+    if (onPolling) onPolling(false);
   } catch (error) {
     console.error("Erro completo ao enviar mensagem para webhook:", {
       error,
@@ -362,6 +339,66 @@ export async function sendMessageToWebhook(
       stack: error instanceof Error ? error.stack : undefined,
     });
     throw error;
+  }
+}
+
+/**
+ * Faz polling na API interna (/api/chat/messages) para buscar mensagens persistidas pelo fluxo
+ */
+async function pollChatMessages(
+  sessionId: string,
+  onNewMessage: (message: string) => void,
+  initialMessages: string[] = [],
+  maxAttempts: number = 30,
+  intervalMs: number = 2000,
+  emptyAttemptsToStop: number = 2
+): Promise<void> {
+  let cursor = -1;
+  let consecutiveEmpty = 0;
+  const received = new Set<string>(initialMessages);
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    // espera entre tentativas, exceto na primeira
+    if (attempt > 0) {
+      await new Promise((r) => setTimeout(r, intervalMs));
+    }
+
+    try {
+      const url = `${CHAT_API_URL}?sessionId=${encodeURIComponent(sessionId)}&cursor=${cursor}`;
+      const resp = await fetch(url, { method: "GET" });
+      if (!resp.ok) {
+        console.warn(`⚠️ Polling chat API status ${resp.status} na tentativa ${attempt + 1}`);
+        continue;
+      }
+
+      const data = await resp.json();
+      const messages: { text?: string }[] = data?.messages ?? [];
+      const lastIdx: number = typeof data?.lastIdx === "number" ? data.lastIdx : cursor;
+
+      let newCount = 0;
+      messages.forEach((m) => {
+        const txt = (m?.text ?? "").trim();
+        if (txt && !received.has(txt) && !isWorkflowStartedResponse(txt) && txt.toLowerCase() !== "null") {
+          received.add(txt);
+          newCount++;
+          onNewMessage(txt);
+        }
+      });
+
+      if (newCount > 0) {
+        cursor = lastIdx;
+        consecutiveEmpty = 0;
+      } else {
+        consecutiveEmpty++;
+      }
+
+      if (consecutiveEmpty >= emptyAttemptsToStop) {
+        break;
+      }
+    } catch (err) {
+      console.warn(`⚠️ Erro ao fazer polling da chat API na tentativa ${attempt + 1}:`, err);
+      // continua tentando
+    }
   }
 }
 
