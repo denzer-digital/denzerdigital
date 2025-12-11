@@ -349,9 +349,10 @@ async function pollChatMessages(
   sessionId: string,
   onNewMessage: (message: string) => void,
   initialMessages: string[] = [],
-  maxAttempts: number = 30,
-  intervalMs: number = 2000,
-  emptyAttemptsToStop: number = 2
+  maxAttempts: number = 50,          // ~75s no pior caso (50 * 1.5s)
+  intervalMs: number = 1500,         // 1.5s entre tentativas
+  emptyAttemptsToStop: number = 6,   // para após 6 tentativas vazias seguidas
+  minAttemptsBeforeStop: number = 5  // garante ao menos 5 tentativas antes de parar
 ): Promise<void> {
   let cursor = -1;
   let consecutiveEmpty = 0;
@@ -392,7 +393,7 @@ async function pollChatMessages(
         consecutiveEmpty++;
       }
 
-      if (consecutiveEmpty >= emptyAttemptsToStop) {
+      if (consecutiveEmpty >= emptyAttemptsToStop && attempt + 1 >= minAttemptsBeforeStop) {
         break;
       }
     } catch (err) {
