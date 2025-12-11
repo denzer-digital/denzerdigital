@@ -32,6 +32,7 @@ const Demo = () => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const queueRef = useRef<Promise<void>>(Promise.resolve()); // garante animação/entrega em sequência
+  const firstResponsePendingRef = useRef<boolean>(false);
 
   // Auto-scroll para a última mensagem apenas no container do chat
   const scrollToBottom = () => {
@@ -80,6 +81,11 @@ const Demo = () => {
     // Mantém o foco no input após enviar
     inputRef.current?.focus();
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    const isFirstUserMessage = !firstResponsePendingRef.current && !messages.some(m => m.role === "assistant" && m.content !== "Envie uma mensagem para começar a conversar com nossa IA e descobrir como ela pode ajudar sua empresa!");
+    if (isFirstUserMessage) {
+      firstResponsePendingRef.current = true;
+      setIsLoading(true); // exibe digitando enquanto espera a primeira resposta
+    }
 
     console.log("Iniciando envio de mensagem:", userMessage);
 
@@ -95,13 +101,26 @@ const Demo = () => {
             return;
           }
           queueRef.current = queueRef.current.then(async () => {
-            setIsLoading(true); // mostra digitando pouco antes de enviar
-            await new Promise((res) => setTimeout(res, 600));
-            setMessages(prev => [...prev, { 
-              role: "assistant", 
-              content: newMessage
-            }]);
-            setIsLoading(false);
+            const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+            if (firstResponsePendingRef.current) {
+              // primeira resposta: já está com digitando ligado; apenas espera um pouco e entrega
+              await delay(1200);
+              firstResponsePendingRef.current = false;
+              setMessages(prev => [...prev, { 
+                role: "assistant", 
+                content: newMessage
+              }]);
+              setIsLoading(false);
+            } else {
+              // demais respostas: liga digitando só antes de entregar
+              setIsLoading(true);
+              await delay(1200);
+              setMessages(prev => [...prev, { 
+                role: "assistant", 
+                content: newMessage
+              }]);
+              setIsLoading(false);
+            }
           });
         }
       );
