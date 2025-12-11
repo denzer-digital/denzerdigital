@@ -31,6 +31,7 @@ const Demo = () => {
   const { toast } = useToast();
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const queueRef = useRef<Promise<void>>(Promise.resolve()); // garante animação/entrega em sequência
 
   // Auto-scroll para a última mensagem apenas no container do chat
   const scrollToBottom = () => {
@@ -79,8 +80,6 @@ const Demo = () => {
     // Mantém o foco no input após enviar
     inputRef.current?.focus();
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-    // mostra animação de digitando imediatamente ao enviar
-    setIsLoading(true);
 
     console.log("Iniciando envio de mensagem:", userMessage);
 
@@ -95,10 +94,15 @@ const Demo = () => {
           if (isWorkflowStartedResponse(newMessage)) {
             return;
           }
-          setMessages(prev => [...prev, { 
-            role: "assistant", 
-            content: newMessage
-          }]);
+          queueRef.current = queueRef.current.then(async () => {
+            setIsLoading(true); // mostra digitando pouco antes de enviar
+            await new Promise((res) => setTimeout(res, 600));
+            setMessages(prev => [...prev, { 
+              role: "assistant", 
+              content: newMessage
+            }]);
+            setIsLoading(false);
+          });
         }
       );
 
