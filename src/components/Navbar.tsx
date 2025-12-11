@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import logo from "@/assets/logo_header.webp";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
 
 const Navbar = () => {
@@ -22,9 +21,9 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <img 
-              src={logo} 
-              alt="Denzer Digital AI Systems" 
+            <img
+              src="/assets/logo_header.webp"
+              alt="Denzer Digital AI Systems"
               className="h-12 w-auto"
             />
           </div>

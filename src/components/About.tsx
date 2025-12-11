@@ -1,7 +1,3 @@
-import rdPartner from "@/assets/rd.webp";
-import kommoPartner from "@/assets/kommo.webp";
-import metaRetangulo from "@/assets/meta_retangulo.webp";
-import googleRetangulo from "@/assets/google_retangulo.webp";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import {
@@ -12,22 +8,28 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
 
-const badges = [{
-  image: shopifyPartner,
-  alt: "Shopify Partner"
-}, {
-  image: rdPartner,
-  alt: "RD Station Partner"
-}, {
-  image: kommoPartner,
-  alt: "Kommo Partner"
-}, {
-  image: metaRetangulo,
-  alt: "Meta Business Partner"
-}, {
-  image: googleRetangulo,
-  alt: "Google Partner"
-}];
+const badges = [
+  {
+    image: "/assets/shopify.webp",
+    alt: "Shopify Partner",
+  },
+  {
+    image: "/assets/rd.webp",
+    alt: "RD Station Partner",
+  },
+  {
+    image: "/assets/kommo.webp",
+    alt: "Kommo Partner",
+  },
+  {
+    image: "/assets/meta_retangulo.webp",
+    alt: "Meta Business Partner",
+  },
+  {
+    image: "/assets/google_retangulo.webp",
+    alt: "Google Partner",
+  },
+];
 const About = () => {
   const { openDialog } = useContactDialog();
   
@@ -93,23 +95,23 @@ const About = () => {
                 {/* Primeira linha: 3 logos */}
                 <div className="hidden md:flex gap-[10px] justify-start">
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src={shopifyPartner} alt="Shopify Partner" className="h-14 object-contain" />
+                    <img src="/assets/shopify.webp" alt="Shopify Partner" className="h-14 object-contain" />
                   </div>
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src={rdPartner} alt="RD Station Partner" className="h-14 object-contain" />
+                    <img src="/assets/rd.webp" alt="RD Station Partner" className="h-14 object-contain" />
                   </div>
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src={kommoPartner} alt="Kommo Partner" className="h-14 object-contain" />
+                    <img src="/assets/kommo.webp" alt="Kommo Partner" className="h-14 object-contain" />
                   </div>
                 </div>
                 
                 {/* Segunda linha: meta_retangulo e google_retangulo */}
                 <div className="hidden md:flex gap-[10px] justify-start">
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src={metaRetangulo} alt="Meta Business Partner" className="h-14 object-contain" />
+                    <img src="/assets/meta_retangulo.webp" alt="Meta Business Partner" className="h-14 object-contain" />
                   </div>
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src={googleRetangulo} alt="Google Partner" className="h-14 object-contain" />
+                    <img src="/assets/google_retangulo.webp" alt="Google Partner" className="h-14 object-contain" />
                   </div>
                 </div>
 

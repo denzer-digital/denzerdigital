@@ -1,11 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
-import shopifyPartner from "@/assets/shopify.webp";
-import rdPartner from "@/assets/rd.webp";
-import kommoPartner from "@/assets/kommo.webp";
-import metaPartner from "@/assets/meta.webp";
-import googlePartner from "@/assets/google.webp";
 import {
   Carousel,
   CarouselContent,
@@ -83,31 +78,11 @@ const Hero = () => {
           <div className="pt-12">
             {/* Desktop: Grid layout */}
             <div className="hidden md:flex flex-wrap justify-center items-center gap-[10px]">
-              <img 
-                src={shopifyPartner} 
-                alt="Shopify Partner" 
-                className="h-12 md:h-16 object-contain"
-              />
-              <img 
-                src={rdPartner} 
-                alt="RD Station Partner" 
-                className="h-12 md:h-16 object-contain"
-              />
-              <img 
-                src={kommoPartner} 
-                alt="Kommo Partner" 
-                className="h-12 md:h-16 object-contain"
-              />
-              <img 
-                src={metaPartner} 
-                alt="Meta Business Partner" 
-                className="h-12 md:h-16 object-contain"
-              />
-              <img 
-                src={googlePartner} 
-                alt="Google Partner" 
-                className="h-12 md:h-16 object-contain"
-              />
+              <img src="/assets/shopify.webp" alt="Shopify Partner" className="h-12 md:h-16 object-contain" />
+              <img src="/assets/rd.webp" alt="RD Station Partner" className="h-12 md:h-16 object-contain" />
+              <img src="/assets/kommo.webp" alt="Kommo Partner" className="h-12 md:h-16 object-contain" />
+              <img src="/assets/meta.webp" alt="Meta Business Partner" className="h-12 md:h-16 object-contain" />
+              <img src="/assets/google.webp" alt="Google Partner" className="h-12 md:h-16 object-contain" />
             </div>
 
             {/* Mobile: Carousel */}
@@ -127,47 +102,27 @@ const Hero = () => {
                 <CarouselContent>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <img 
-                        src={shopifyPartner} 
-                        alt="Shopify Partner" 
-                        className="h-12 object-contain"
-                      />
+                      <img src="/assets/shopify.webp" alt="Shopify Partner" className="h-12 object-contain" />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <img 
-                        src={rdPartner} 
-                        alt="RD Station Partner" 
-                        className="h-12 object-contain"
-                      />
+                      <img src="/assets/rd.webp" alt="RD Station Partner" className="h-12 object-contain" />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <img 
-                        src={kommoPartner} 
-                        alt="Kommo Partner" 
-                        className="h-12 object-contain"
-                      />
+                      <img src="/assets/kommo.webp" alt="Kommo Partner" className="h-12 object-contain" />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <img 
-                        src={metaPartner} 
-                        alt="Meta Business Partner" 
-                        className="h-12 object-contain"
-                      />
+                      <img src="/assets/meta.webp" alt="Meta Business Partner" className="h-12 object-contain" />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <img 
-                        src={googlePartner} 
-                        alt="Google Partner" 
-                        className="h-12 object-contain"
-                      />
+                      <img src="/assets/google.webp" alt="Google Partner" className="h-12 object-contain" />
                     </div>
                   </CarouselItem>
                 </CarouselContent>
