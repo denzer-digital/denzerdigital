@@ -1,71 +1,25 @@
 {
   "pages": {
-    "/not-found": [
-      "static/chunks/webpack-8b785e33a384d227.js",
-      "static/chunks/fd9d1056-7fd54a7437c2363a.js",
-      "static/chunks/117-e2dbcd2571ac5a1a.js",
-      "static/chunks/main-app-fa00d2b2feacc4aa.js",
-      "static/chunks/app/not-found-953a7129bfb7ab47.js"
-    ],
-    "/_not-found/page": [
-      "static/chunks/webpack-8b785e33a384d227.js",
-      "static/chunks/fd9d1056-7fd54a7437c2363a.js",
-      "static/chunks/117-e2dbcd2571ac5a1a.js",
-      "static/chunks/main-app-fa00d2b2feacc4aa.js",
-      "static/chunks/app/_not-found/page-701e2d86e5488441.js"
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
     ],
     "/layout": [
-      "static/chunks/webpack-8b785e33a384d227.js",
-      "static/chunks/fd9d1056-7fd54a7437c2363a.js",
-      "static/chunks/117-e2dbcd2571ac5a1a.js",
-      "static/chunks/main-app-fa00d2b2feacc4aa.js",
-      "static/css/551d1f3fd4bd0479.css",
-      "static/chunks/63-39d7453fd4ef5302.js",
-      "static/chunks/525-6beb9d052205480d.js",
-      "static/chunks/451-732b5f2a0417e1da.js",
-      "static/chunks/app/layout-0967b348e380327d.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
-    "/agentes-de-ia/page": [
-      "static/chunks/webpack-8b785e33a384d227.js",
-      "static/chunks/fd9d1056-7fd54a7437c2363a.js",
-      "static/chunks/117-e2dbcd2571ac5a1a.js",
-      "static/chunks/main-app-fa00d2b2feacc4aa.js",
-      "static/chunks/63-39d7453fd4ef5302.js",
-      "static/chunks/544-6c22986e96774150.js",
-      "static/chunks/838-12a3fd41980a9ffa.js",
-      "static/chunks/app/agentes-de-ia/page-204306f3660b4b60.js"
+    "/not-found": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/not-found.js"
     ],
-    "/ecommerce-shopify/page": [
-      "static/chunks/webpack-8b785e33a384d227.js",
-      "static/chunks/fd9d1056-7fd54a7437c2363a.js",
-      "static/chunks/117-e2dbcd2571ac5a1a.js",
-      "static/chunks/main-app-fa00d2b2feacc4aa.js",
-      "static/chunks/63-39d7453fd4ef5302.js",
-      "static/chunks/544-6c22986e96774150.js",
-      "static/chunks/838-12a3fd41980a9ffa.js",
-      "static/chunks/app/ecommerce-shopify/page-58aa730df6fe8f2f.js"
-    ],
-    "/gestao-digital-360/page": [
-      "static/chunks/webpack-8b785e33a384d227.js",
-      "static/chunks/fd9d1056-7fd54a7437c2363a.js",
-      "static/chunks/117-e2dbcd2571ac5a1a.js",
-      "static/chunks/main-app-fa00d2b2feacc4aa.js",
-      "static/chunks/63-39d7453fd4ef5302.js",
-      "static/chunks/544-6c22986e96774150.js",
-      "static/chunks/838-12a3fd41980a9ffa.js",
-      "static/chunks/app/gestao-digital-360/page-932b7bb571a9f6cb.js"
-    ],
-    "/page": [
-      "static/chunks/webpack-8b785e33a384d227.js",
-      "static/chunks/fd9d1056-7fd54a7437c2363a.js",
-      "static/chunks/117-e2dbcd2571ac5a1a.js",
-      "static/chunks/main-app-fa00d2b2feacc4aa.js",
-      "static/chunks/63-39d7453fd4ef5302.js",
-      "static/chunks/544-6c22986e96774150.js",
-      "static/chunks/525-6beb9d052205480d.js",
-      "static/chunks/589-605b3959f2672aa3.js",
-      "static/chunks/838-12a3fd41980a9ffa.js",
-      "static/chunks/app/page-cd77bf481e3340f1.js"
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

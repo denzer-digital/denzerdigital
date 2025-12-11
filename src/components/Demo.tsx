@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { MessageSquare, Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { sendMessageToWebhook, createSessionId } from "@/services/webhookService";
+import { sendMessageToWebhook, createSessionId, isWorkflowStartedResponse } from "@/services/webhookService";
 import {
   Select,
   SelectContent,
@@ -91,15 +91,14 @@ const Demo = () => {
         (newMessage) => {
           // Callback chamado para cada nova mensagem recebida
           console.log("Nova mensagem recebida:", newMessage);
+          if (isWorkflowStartedResponse(newMessage)) {
+            return;
+          }
+          setIsLoading(false); // encerra animação ao receber a primeira resposta
           setMessages(prev => [...prev, { 
             role: "assistant", 
             content: newMessage
           }]);
-        },
-        (isPolling) => {
-          // Callback para atualizar o estado de loading durante o polling
-          console.log("Status de polling:", isPolling);
-          setIsLoading(isPolling);
         }
       );
 

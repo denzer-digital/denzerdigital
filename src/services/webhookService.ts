@@ -42,12 +42,13 @@ const WORKFLOW_STARTED_MESSAGES = [
   "processando",
   "processando sua mensagem",
   "aguarde",
+  "workflow was started",
 ];
 
 /**
  * Verifica se a resposta indica que o workflow foi iniciado mas ainda não há resposta final
  */
-function isWorkflowStartedResponse(response: string): boolean {
+export function isWorkflowStartedResponse(response: string): boolean {
   const lowerResponse = response.toLowerCase();
   return WORKFLOW_STARTED_MESSAGES.some(msg => lowerResponse.includes(msg));
 }
