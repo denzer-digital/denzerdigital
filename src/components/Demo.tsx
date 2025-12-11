@@ -32,7 +32,7 @@ const Demo = () => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const queueRef = useRef<Promise<void>>(Promise.resolve()); // garante animação/entrega em sequência
-  const firstResponsePendingRef = useRef<boolean>(false);
+  const firstResponsePendingRef = useRef<boolean>(false); // indica se a primeira resposta ainda não foi exibida
 
   // Auto-scroll para a última mensagem apenas no container do chat
   const scrollToBottom = () => {
@@ -81,10 +81,10 @@ const Demo = () => {
     // Mantém o foco no input após enviar
     inputRef.current?.focus();
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-    const isFirstUserMessage = !firstResponsePendingRef.current && !messages.some(m => m.role === "assistant" && m.content !== "Envie uma mensagem para começar a conversar com nossa IA e descobrir como ela pode ajudar sua empresa!");
-    if (isFirstUserMessage) {
+    // Sempre marca que estamos aguardando a primeira resposta se ainda não recebemos nenhuma
+    if (!firstResponsePendingRef.current) {
       firstResponsePendingRef.current = true;
-      setIsLoading(true); // exibe digitando enquanto espera a primeira resposta
+      // A animação já está aparecendo ao enviar; não precisamos ligar aqui para a primeira resposta
     }
 
     console.log("Iniciando envio de mensagem:", userMessage);
@@ -103,14 +103,15 @@ const Demo = () => {
           queueRef.current = queueRef.current.then(async () => {
             const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
             if (firstResponsePendingRef.current) {
-              // primeira resposta: já está com digitando ligado; apenas espera um pouco e entrega
-              await delay(1200);
+              // primeira resposta: já estamos animando desde o envio; só entrega e encerra
               firstResponsePendingRef.current = false;
+              // Pequena folga opcional para suavizar (curta)
+              await delay(200);
               setMessages(prev => [...prev, { 
                 role: "assistant", 
                 content: newMessage
               }]);
-              setIsLoading(false);
+              setIsLoading(false); // encerra animação da primeira resposta
             } else {
               // demais respostas: liga digitando só antes de entregar
               setIsLoading(true);
