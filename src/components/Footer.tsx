@@ -53,17 +53,17 @@ const Footer = () => {
               <h3 className="font-semibold text-lg">Soluções</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
+                  <a href="/agentes-de-ia" className="hover:text-primary transition-colors">
                     Agentes de IA
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
+                  <a href="/ecommerce-shopify" className="hover:text-primary transition-colors">
                     E-commerce Shopify
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
+                  <a href="/gestao-digital-360" className="hover:text-primary transition-colors">
                     Gestão Digital 360°
                   </a>
                 </li>

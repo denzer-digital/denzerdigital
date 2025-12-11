@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Bot, Compass, ShoppingBag, ArrowRight } from "lucide-react";
 
@@ -6,19 +7,22 @@ const solutions = [
     icon: Bot,
     title: "Agentes de IA",
     description: "Atendimento e vendas automatizados via WhatsApp, site e redes sociais.",
-    gradient: "from-primary to-primary-glow"
+    gradient: "from-primary to-primary-glow",
+    href: "/agentes-de-ia",
   },
   {
     icon: Compass,
     title: "Gestão Digital 360°",
     description: "Planejamento, mídia e automações inteligentes baseadas em dados.",
-    gradient: "from-accent to-accent-glow"
+    gradient: "from-accent to-accent-glow",
+    href: "/gestao-digital-360",
   },
   {
     icon: ShoppingBag,
     title: "E-commerce Shopify",
     description: "Lojas de alta performance integradas com IA e automações nativas.",
-    gradient: "from-primary to-accent"
+    gradient: "from-primary to-accent",
+    href: "/ecommerce-shopify",
   }
 ];
 
@@ -47,7 +51,8 @@ const Solution = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {solutions.map((solution, index) => (
-              <div
+              <Link
+                href={solution.href}
                 key={index}
                 className="group relative p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden"
                 style={{ animationDelay: `${index * 0.15}s` }}
@@ -76,7 +81,7 @@ const Solution = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
