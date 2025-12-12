@@ -4,13 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormDescription,
@@ -28,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
-import { Loader2, Send, CheckCircle2 } from "lucide-react";
+import { Loader2, Send, CheckCircle2, X } from "lucide-react";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -45,42 +38,28 @@ const ContactFormDialog = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Força o RD Station a re-escanear quando o dialog abrir
+  // Previne scroll do body quando o modal está aberto
   useEffect(() => {
     if (isOpen) {
-      // Aguarda o DOM estar completamente renderizado (Portal do Dialog)
-      const timer = setTimeout(() => {
-        const form = document.getElementById('contact-form');
-        if (form) {
-          // Dispara eventos que o RD Station pode escutar
-          form.dispatchEvent(new Event('rd-form-ready', { bubbles: true }));
-          
-          // Tenta forçar o RD Station a re-escanear
-          if (typeof window !== 'undefined') {
-            // Verifica se o RD Station está carregado
-            const rdStation = (window as any).rdt || (window as any).RDStation;
-            if (rdStation) {
-              try {
-                // Tenta disparar um evento de formulário
-                if (typeof rdStation === 'function') {
-                  rdStation('track', 'form-ready');
-                }
-              } catch (e) {
-                console.log('RD Station tracking:', e);
-              }
-            }
-            
-            // Dispara evento customizado no window para o RD Station escutar
-            window.dispatchEvent(new CustomEvent('rd-form-opened', {
-              detail: { formId: 'contact-form' }
-            }));
-          }
-        }
-      }, 500); // Aguarda 500ms para garantir que o Portal foi renderizado
-      
-      return () => clearTimeout(timer);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
+
+  // Fecha o modal ao pressionar ESC
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeDialog();
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, closeDialog]);
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -118,17 +97,47 @@ const ContactFormDialog = () => {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={closeDialog}>
-      <DialogContent className="sm:max-w-[600px] bg-gradient-to-br from-card via-card to-card/95 border-primary/20 shadow-elegant">
-        <DialogHeader className="space-y-3">
-          <DialogTitle className="text-3xl font-bold text-gradient-primary">
-            Entre em contato
-          </DialogTitle>
-          <DialogDescription className="text-base text-muted-foreground">
-            Preencha o formulário abaixo e nossa equipe entrará em contato em breve.
-          </DialogDescription>
-        </DialogHeader>
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={(e) => {
+        // Fecha ao clicar no overlay
+        if (e.target === e.currentTarget) {
+          closeDialog();
+        }
+      }}
+    >
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in-0"
+        onClick={closeDialog}
+      />
+      
+      {/* Modal Content */}
+      <div className="relative z-50 w-full max-w-[600px] bg-gradient-to-br from-card via-card to-card/95 border border-primary/20 rounded-lg shadow-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <div className="space-y-1">
+            <h2 className="text-3xl font-bold text-gradient-primary">
+              Entre em contato
+            </h2>
+            <p className="text-base text-muted-foreground">
+              Preencha o formulário abaixo e nossa equipe entrará em contato em breve.
+            </p>
+          </div>
+          <button
+            onClick={closeDialog}
+            className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+            aria-label="Fechar"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
 
         {isSuccess ? (
           <div className="flex flex-col items-center justify-center py-12 space-y-4">
@@ -297,8 +306,9 @@ const ContactFormDialog = () => {
             </form>
           </Form>
         )}
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+    </div>
   );
 };
 
