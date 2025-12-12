@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Problem from "@/components/Problem";
@@ -15,6 +16,11 @@ import Footer from "@/components/Footer";
 import ContactFormDialog from "@/components/ContactFormDialog";
 
 export default function Home() {
+  useLayoutEffect(() => {
+    // Garante que a página comece no topo
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <main className="min-h-screen bg-background">
       <Navbar />

@@ -282,7 +282,6 @@ const Demo = () => {
                     onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
                     disabled={isLoading}
                     className="flex-1 bg-secondary rounded-full px-4 py-3 text-sm"
-                    autoFocus
                   />
                   <Button 
                     size="icon" 

@@ -12,13 +12,6 @@ import { useContactDialog } from "@/contexts/ContactDialogContext";
 const Hero = () => {
   const { openDialog } = useContactDialog();
   
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-  
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Image */}
       <div className="absolute inset-0 z-0" style={{
@@ -65,9 +58,11 @@ const Hero = () => {
             
             <Button 
               size="lg" 
-              variant="outline" 
+              variant="outline"
               className="text-lg px-8 py-6 border-2 border-primary/50 hover:border-primary hover:bg-primary/10 group"
-              onClick={() => scrollToSection('experimente-ia')}
+              onClick={() => {
+                // Scroll removido - não faz mais scroll automático
+              }}
             >
               <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Ver como funciona

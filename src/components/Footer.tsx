@@ -116,16 +116,16 @@ const Footer = () => {
           </div>
 
           {/* Bottom Bar */}
-          <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex flex-wrap justify-center gap-4">
-              <a href="#" className="hover:text-primary transition-colors">
-                Política de Privacidade
-              </a>
-              <span>•</span>
-              <a href="#" className="hover:text-primary transition-colors">
-                Termos de Uso
-              </a>
-            </div>
+              <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex flex-wrap justify-center gap-4">
+                  <a href="/politica-de-privacidade" className="hover:text-primary transition-colors">
+                    Política de Privacidade
+                  </a>
+                  <span>•</span>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Termos de Uso
+                  </a>
+                </div>
             
             <div className="text-center md:text-right">
               <p>© 2025 Denzer Digital AI Systems. Todos os direitos reservados.</p>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect } from "react";
 import Link from "next/link";
 import { Bot, ArrowLeft, CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -31,6 +32,20 @@ const featureCards = [
 ];
 
 export default function EcommerceShopifyPage() {
+  // Garante que a página sempre comece no topo (antes do paint)
+  useLayoutEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.location.hash && window.history.replaceState) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + window.location.search
+        );
+      }
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />

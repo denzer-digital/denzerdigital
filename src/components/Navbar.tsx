@@ -8,6 +8,15 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { openDialog } = useContactDialog();
 
+  const scrollToSection = (id: string, e?: React.MouseEvent<HTMLAnchorElement>) => {
+    e?.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setIsOpen(false);
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
       <div className="container mx-auto px-4">
@@ -25,18 +34,34 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/#solucoes" className="text-sm font-medium hover:text-primary transition-colors">
+            <a 
+              href="#solucoes" 
+              onClick={(e) => scrollToSection('solucoes', e)}
+              className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+            >
               Soluções
-            </Link>
-            <Link href="/#resultados" className="text-sm font-medium hover:text-primary transition-colors">
+            </a>
+            <a 
+              href="#resultados" 
+              onClick={(e) => scrollToSection('resultados', e)}
+              className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+            >
               Resultados
-            </Link>
-            <Link href="/#como-funciona" className="text-sm font-medium hover:text-primary transition-colors">
+            </a>
+            <a 
+              href="#como-funciona" 
+              onClick={(e) => scrollToSection('como-funciona', e)}
+              className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+            >
               Como Funciona
-            </Link>
-            <Link href="/#planos" className="text-sm font-medium hover:text-primary transition-colors">
+            </a>
+            <a 
+              href="#planos" 
+              onClick={(e) => scrollToSection('planos', e)}
+              className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+            >
               Planos
-            </Link>
+            </a>
             <Button 
               size="sm"
               className="bg-primary hover:bg-primary/90"
@@ -64,34 +89,34 @@ const Navbar = () => {
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col space-y-4">
-              <Link
-                href="/#solucoes"
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-medium hover:text-primary transition-colors text-left"
+              <a
+                href="#solucoes"
+                onClick={(e) => scrollToSection('solucoes', e)}
+                className="text-sm font-medium hover:text-primary transition-colors text-left cursor-pointer"
               >
                 Soluções
-              </Link>
-              <Link
-                href="/#resultados"
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-medium hover:text-primary transition-colors text-left"
+              </a>
+              <a
+                href="#resultados"
+                onClick={(e) => scrollToSection('resultados', e)}
+                className="text-sm font-medium hover:text-primary transition-colors text-left cursor-pointer"
               >
                 Resultados
-              </Link>
-              <Link
-                href="/#como-funciona"
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-medium hover:text-primary transition-colors text-left"
+              </a>
+              <a
+                href="#como-funciona"
+                onClick={(e) => scrollToSection('como-funciona', e)}
+                className="text-sm font-medium hover:text-primary transition-colors text-left cursor-pointer"
               >
                 Como Funciona
-              </Link>
-              <Link
-                href="/#planos"
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-medium hover:text-primary transition-colors text-left"
+              </a>
+              <a
+                href="#planos"
+                onClick={(e) => scrollToSection('planos', e)}
+                className="text-sm font-medium hover:text-primary transition-colors text-left cursor-pointer"
               >
                 Planos
-              </Link>
+              </a>
               <Button 
                 size="sm"
                 className="bg-primary hover:bg-primary/90 w-full"

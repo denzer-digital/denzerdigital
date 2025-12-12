@@ -93,6 +93,16 @@
   html {
     scroll-behavior: smooth;
   }
+  
+  /* Previne scroll automático para hash na URL */
+  html:not([data-scroll-locked]) {
+    scroll-padding-top: 0;
+  }
+  
+  /* Previne scroll automático ao carregar a página */
+  html:has([data-prevent-auto-scroll]) {
+    scroll-behavior: auto !important;
+  }
 }
 
 @layer utilities {

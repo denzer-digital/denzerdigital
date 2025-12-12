@@ -27,13 +27,6 @@ const solutions = [
 ];
 
 const Solution = () => {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-  
   return (
     <section id="solucoes" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
@@ -89,7 +82,9 @@ const Solution = () => {
             <Button 
               size="lg"
               className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary-glow hover:shadow-lg hover:scale-105 transition-all duration-300 group"
-              onClick={() => scrollToSection('experimente-ia')}
+              onClick={() => {
+                // Scroll removido - não faz mais scroll automático
+              }}
             >
               Ver como funciona na prática
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
