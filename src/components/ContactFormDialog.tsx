@@ -20,7 +20,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
 import { Loader2, Send, CheckCircle2 } from "lucide-react";
 
@@ -29,7 +35,7 @@ const contactFormSchema = z.object({
   email: z.string().email("E-mail inválido"),
   phone: z.string().min(10, "Telefone inválido"),
   company: z.string().optional(),
-  message: z.string().min(10, "Mensagem deve ter pelo menos 10 caracteres"),
+  service: z.string().min(1, "Selecione um serviço"),
 });
 
 type ContactFormData = z.infer<typeof contactFormSchema>;
@@ -46,7 +52,7 @@ const ContactFormDialog = () => {
       email: "",
       phone: "",
       company: "",
-      message: "",
+      service: "",
     },
   });
 
@@ -184,19 +190,25 @@ const ContactFormDialog = () => {
 
               <FormField
                 control={form.control}
-                name="message"
+                name="service"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Mensagem *</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Conte-nos como podemos ajudar..."
-                        className="min-h-[120px] bg-background/50 border-input/50 focus:border-primary/50 resize-none"
-                        {...field}
-                      />
-                    </FormControl>
+                    <FormLabel>Serviço de interesse *</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-background/50 border-input/50 focus:border-primary/50">
+                          <SelectValue placeholder="Selecione um serviço" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
+                        <SelectItem value="ecommerce-shopify">E-commerce Shopify</SelectItem>
+                        <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>
+                        <SelectItem value="tracking">Tracking</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormDescription>
-                      Descreva brevemente sua necessidade ou dúvida.
+                      Selecione o serviço que mais se adequa à sua necessidade.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
