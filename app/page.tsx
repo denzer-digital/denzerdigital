@@ -10,6 +10,7 @@ import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
 import About from "@/components/About";
 import FinalCTA from "@/components/FinalCTA";
+import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ContactFormDialog from "@/components/ContactFormDialog";
 
@@ -26,6 +27,7 @@ export default function Home() {
       <Pricing />
       <About />
       <FinalCTA />
+      <ContactSection />
       <Footer />
       <ContactFormDialog />
     </main>
