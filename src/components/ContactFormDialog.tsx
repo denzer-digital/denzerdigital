@@ -109,7 +109,11 @@ const ContactFormDialog = () => {
           </div>
         ) : (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-4">
+            <form 
+              id="contact-form"
+              onSubmit={form.handleSubmit(onSubmit)} 
+              className="space-y-6 mt-4"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -121,6 +125,7 @@ const ContactFormDialog = () => {
                         <Input
                           placeholder="Seu nome"
                           {...field}
+                          data-rd="name"
                           className="bg-background/50 border-input/50 focus:border-primary/50"
                         />
                       </FormControl>
@@ -140,6 +145,7 @@ const ContactFormDialog = () => {
                           type="email"
                           placeholder="seu@email.com"
                           {...field}
+                          data-rd="email"
                           className="bg-background/50 border-input/50 focus:border-primary/50"
                         />
                       </FormControl>
@@ -161,6 +167,7 @@ const ContactFormDialog = () => {
                           type="tel"
                           placeholder="(00) 00000-0000"
                           {...field}
+                          data-rd="phone"
                           className="bg-background/50 border-input/50 focus:border-primary/50"
                         />
                       </FormControl>
@@ -179,6 +186,7 @@ const ContactFormDialog = () => {
                         <Input
                           placeholder="Nome da empresa (opcional)"
                           {...field}
+                          data-rd="company"
                           className="bg-background/50 border-input/50 focus:border-primary/50"
                         />
                       </FormControl>
@@ -196,7 +204,10 @@ const ContactFormDialog = () => {
                     <FormLabel>Serviço de interesse *</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-background/50 border-input/50 focus:border-primary/50">
+                        <SelectTrigger 
+                          className="bg-background/50 border-input/50 focus:border-primary/50"
+                          data-rd="service"
+                        >
                           <SelectValue placeholder="Selecione um serviço" />
                         </SelectTrigger>
                       </FormControl>
@@ -221,6 +232,7 @@ const ContactFormDialog = () => {
                   disabled={isSubmitting}
                   className="flex-1 bg-primary hover:bg-primary/90 glow-primary group"
                   size="lg"
+                  data-rd="submit"
                 >
                   {isSubmitting ? (
                     <>
