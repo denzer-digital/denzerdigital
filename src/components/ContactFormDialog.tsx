@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -44,6 +44,43 @@ const ContactFormDialog = () => {
   const { isOpen, closeDialog } = useContactDialog();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Força o RD Station a re-escanear quando o dialog abrir
+  useEffect(() => {
+    if (isOpen) {
+      // Aguarda o DOM estar completamente renderizado (Portal do Dialog)
+      const timer = setTimeout(() => {
+        const form = document.getElementById('contact-form');
+        if (form) {
+          // Dispara eventos que o RD Station pode escutar
+          form.dispatchEvent(new Event('rd-form-ready', { bubbles: true }));
+          
+          // Tenta forçar o RD Station a re-escanear
+          if (typeof window !== 'undefined') {
+            // Verifica se o RD Station está carregado
+            const rdStation = (window as any).rdt || (window as any).RDStation;
+            if (rdStation) {
+              try {
+                // Tenta disparar um evento de formulário
+                if (typeof rdStation === 'function') {
+                  rdStation('track', 'form-ready');
+                }
+              } catch (e) {
+                console.log('RD Station tracking:', e);
+              }
+            }
+            
+            // Dispara evento customizado no window para o RD Station escutar
+            window.dispatchEvent(new CustomEvent('rd-form-opened', {
+              detail: { formId: 'contact-form' }
+            }));
+          }
+        }
+      }, 500); // Aguarda 500ms para garantir que o Portal foi renderizado
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
