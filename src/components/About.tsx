@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import {
   Carousel,
   CarouselContent,
@@ -18,8 +19,9 @@ const badges = [
     alt: "RD Station Partner",
   },
   {
-    image: "/assets/kommo.webp",
+    image: "/assets/kommo_nova.svg",
     alt: "Kommo Partner",
+    link: "https://www.kommo.com/",
   },
   {
     image: "/assets/meta_retangulo.webp",
@@ -95,23 +97,25 @@ const About = () => {
                 {/* Primeira linha: 3 logos */}
                 <div className="hidden md:flex gap-[10px] justify-start">
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src="/assets/shopify.webp" alt="Shopify Partner" className="h-14 object-contain" />
+                    <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-14 w-auto object-contain" quality={100} unoptimized />
                   </div>
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src="/assets/rd.webp" alt="RD Station Partner" className="h-14 object-contain" />
+                    <Image src="/assets/rd.webp" alt="RD Station Partner" width={256} height={256} className="h-14 w-auto object-contain" quality={100} unoptimized />
                   </div>
-                  <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src="/assets/kommo.webp" alt="Kommo Partner" className="h-14 object-contain" />
+                  <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0 max-w-[140px]">
+                    <a href="https://www.kommo.com/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo" className="w-full flex items-center justify-center">
+                      <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-12 w-full max-w-full object-contain" quality={100} unoptimized />
+                    </a>
                   </div>
                 </div>
                 
                 {/* Segunda linha: meta_retangulo e google_retangulo */}
                 <div className="hidden md:flex gap-[10px] justify-start">
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src="/assets/meta_retangulo.webp" alt="Meta Business Partner" className="h-14 object-contain" />
+                    <Image src="/assets/meta_retangulo.webp" alt="Meta Business Partner" width={256} height={256} className="h-14 w-auto object-contain" quality={100} unoptimized />
                   </div>
                   <div className="bg-white rounded-lg p-3 border border-border/50 flex items-center justify-center flex-shrink-0">
-                    <img src="/assets/google_retangulo.webp" alt="Google Partner" className="h-14 object-contain" />
+                    <Image src="/assets/google_retangulo.webp" alt="Google Partner" width={256} height={256} className="h-14 w-auto object-contain" quality={100} unoptimized />
                   </div>
                 </div>
 
@@ -133,7 +137,13 @@ const About = () => {
                       {badges.map((badge, index) => (
                         <CarouselItem key={index} className="basis-1/3">
                           <div className="flex justify-center">
-                            <img src={badge.image} alt={badge.alt} className="h-16 object-contain bg-white rounded-lg p-2" />
+                            {badge.link ? (
+                              <a href={badge.link} target="_blank" rel="noopener noreferrer" aria-label={`Visitar site do ${badge.alt}`} className="w-full flex items-center justify-center">
+                                <Image src={badge.image} alt={badge.alt} width={318} height={120} className="h-12 w-full max-w-full object-contain bg-white rounded-lg p-2" loading="lazy" quality={100} unoptimized />
+                              </a>
+                            ) : (
+                              <Image src={badge.image} alt={badge.alt} width={256} height={256} className="h-16 w-auto object-contain bg-white rounded-lg p-2" loading="lazy" quality={100} unoptimized />
+                            )}
                           </div>
                         </CarouselItem>
                       ))}

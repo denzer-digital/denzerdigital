@@ -106,6 +106,10 @@ const ContactFormDialog = () => {
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
       onClick={(e) => {
         // Fecha ao clicar no overlay
         if (e.target === e.currentTarget) {
@@ -117,6 +121,7 @@ const ContactFormDialog = () => {
       <div 
         className="fixed inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in-0"
         onClick={closeDialog}
+        aria-hidden="true"
       />
       
       {/* Modal Content */}
@@ -124,19 +129,20 @@ const ContactFormDialog = () => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="space-y-1">
-            <h2 className="text-3xl font-bold text-gradient-primary">
+            <h2 id="dialog-title" className="text-3xl font-bold text-gradient-primary">
               Entre em contato
             </h2>
-            <p className="text-base text-muted-foreground">
+            <p id="dialog-description" className="text-base text-muted-foreground">
               Preencha o formulário abaixo e nossa equipe entrará em contato em breve.
             </p>
           </div>
           <button
             onClick={closeDialog}
             className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
-            aria-label="Fechar"
+            aria-label="Fechar diálogo"
+            aria-describedby="dialog-title"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -144,8 +150,8 @@ const ContactFormDialog = () => {
         <div className="p-6">
 
         {isSuccess ? (
-          <div className="flex flex-col items-center justify-center py-12 space-y-4">
-            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center py-12 space-y-4" role="status" aria-live="polite" aria-atomic="true">
+            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center" aria-hidden="true">
               <CheckCircle2 className="h-10 w-10 text-primary" />
             </div>
             <div className="text-center space-y-2">
@@ -284,18 +290,19 @@ const ContactFormDialog = () => {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-primary hover:bg-primary/90 glow-primary group"
+                  className="flex-1 bg-primary hover:bg-primary/90 glow-primary group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   size="lg"
                   data-rd="submit"
+                  aria-label={isSubmitting ? "Enviando formulário" : "Enviar mensagem"}
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Enviando...
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
+                      <span aria-live="polite">Enviando...</span>
                     </>
                   ) : (
                     <>
-                      <Send className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      <Send className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                       Enviar mensagem
                     </>
                   )}
@@ -305,8 +312,9 @@ const ContactFormDialog = () => {
                   variant="outline"
                   onClick={closeDialog}
                   disabled={isSubmitting}
-                  className="border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
+                  className="border-2 border-primary/50 hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   size="lg"
+                  aria-label="Cancelar e fechar formulário"
                 >
                   Cancelar
                 </Button>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Linkedin, Instagram } from "lucide-react";
 
 const Footer = () => {
@@ -15,10 +16,13 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Logo and Description */}
             <div className="md:col-span-2 space-y-4">
-              <img
+              <Image
                 src="/assets/logo_header.webp"
                 alt="Denzer Digital AI Systems"
+                width={200}
+                height={40}
                 className="h-10 w-auto"
+                quality={100}
               />
               <p className="text-sm text-muted-foreground max-w-md">
                 Transformando operações digitais através de inteligência artificial, 
