@@ -83,8 +83,12 @@ const Solution = () => {
               size="lg"
               className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary-glow hover:shadow-lg hover:scale-105 transition-all duration-300 group"
               onClick={() => {
-                // Scroll removido - não faz mais scroll automático
+                const element = document.getElementById('experimente-ia');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
               }}
+              aria-label="Ver como funciona na prática - Ir para seção de chat do agente de IA"
             >
               Ver como funciona na prática
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

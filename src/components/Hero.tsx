@@ -84,9 +84,12 @@ const Hero = () => {
               variant="outline"
               className="text-lg px-8 py-6 border-2 border-primary/50 hover:border-primary hover:bg-primary/10 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               onClick={() => {
-                // Scroll removido - não faz mais scroll automático
+                const element = document.getElementById('experimente-ia');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
               }}
-              aria-label="Ver como funciona"
+              aria-label="Ver como funciona - Ir para seção de chat do agente de IA"
             >
               <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" aria-hidden="true" />
               Ver como funciona
@@ -97,13 +100,13 @@ const Hero = () => {
           <div className="pt-12" aria-label="Parceiros e certificações">
             {/* Desktop: Grid layout */}
             <div className="hidden md:flex flex-wrap justify-center items-center gap-[10px]" role="list" aria-label="Logos de parceiros">
-              <Image src="/assets/shopify.webp" alt="Shopify Partner" width={128} height={128} className="h-12 md:h-16 w-auto object-contain" quality={100} />
-              <Image src="/assets/rd.webp" alt="RD Station Partner" width={128} height={128} className="h-12 md:h-16 w-auto object-contain" quality={100} />
+              <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
+              <Image src="/assets/rd.webp" alt="RD Station Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               <a href="https://www.kommo.com/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
                 <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               </a>
-              <Image src="/assets/meta.webp" alt="Meta Business Partner" width={128} height={128} className="h-12 md:h-16 w-auto object-contain" quality={100} />
-              <Image src="/assets/google.webp" alt="Google Partner" width={128} height={128} className="h-12 md:h-16 w-auto object-contain" quality={100} />
+              <Image src="/assets/meta.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
+              <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
             </div>
 
             {/* Mobile: Carousel */}
@@ -124,12 +127,12 @@ const Hero = () => {
                 <CarouselContent>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <Image src="/assets/shopify.webp" alt="Shopify Partner" width={96} height={96} className="h-12 w-auto object-contain" loading="lazy" quality={100} />
+                      <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <Image src="/assets/rd.webp" alt="RD Station Partner" width={96} height={96} className="h-12 w-auto object-contain" loading="lazy" quality={100} />
+                      <Image src="/assets/rd.webp" alt="RD Station Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
@@ -141,12 +144,12 @@ const Hero = () => {
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <Image src="/assets/meta.webp" alt="Meta Business Partner" width={96} height={96} className="h-12 w-auto object-contain" loading="lazy" quality={100} />
+                      <Image src="/assets/meta.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <Image src="/assets/google.webp" alt="Google Partner" width={96} height={96} className="h-12 w-auto object-contain" loading="lazy" quality={100} />
+                      <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                     </div>
                   </CarouselItem>
                 </CarouselContent>
