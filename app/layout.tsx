@@ -25,12 +25,54 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // Remove hash da URL para prevenir scroll automático
+                // Remove hash da URL ANTES de qualquer scroll automático
                 if (window.location.hash) {
                   window.history.replaceState(null, '', window.location.pathname + window.location.search);
                 }
-                // Força página a começar no topo
+                
+                // Previne scroll automático do navegador
+                if (document.documentElement) {
+                  document.documentElement.style.scrollBehavior = 'auto';
+                }
+                if (document.body) {
+                  document.body.style.scrollBehavior = 'auto';
+                }
+                
+                // Força página a começar no topo imediatamente
                 window.scrollTo(0, 0);
+                if (document.documentElement) {
+                  document.documentElement.scrollTop = 0;
+                }
+                if (document.body) {
+                  document.body.scrollTop = 0;
+                }
+                
+                // Previne scroll durante o carregamento
+                var preventScroll = function() {
+                  window.scrollTo(0, 0);
+                  if (document.documentElement) {
+                    document.documentElement.scrollTop = 0;
+                  }
+                  if (document.body) {
+                    document.body.scrollTop = 0;
+                  }
+                };
+                
+                // Previne scroll por um período após o carregamento
+                var scrollPreventer = setInterval(function() {
+                  preventScroll();
+                }, 10);
+                
+                setTimeout(function() {
+                  clearInterval(scrollPreventer);
+                  // Restaura scroll suave após garantir que está no topo
+                  if (document.documentElement) {
+                    document.documentElement.style.scrollBehavior = '';
+                  }
+                  if (document.body) {
+                    document.body.style.scrollBehavior = '';
+                  }
+                }, 300);
               })();
             `,
           }}

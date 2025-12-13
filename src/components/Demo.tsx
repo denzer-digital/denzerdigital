@@ -28,6 +28,7 @@ const Demo = () => {
     { role: "assistant", content: "Envie uma mensagem para começar a conversar com nossa IA e descobrir como ela pode ajudar sua empresa!" }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const { toast } = useToast();
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -53,12 +54,12 @@ const Demo = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // Mantém o foco no input após o loading terminar
+  // Mantém o foco no input após o loading terminar (apenas se o usuário já interagiu)
   useEffect(() => {
-    if (!isLoading && inputRef.current) {
+    if (!isLoading && inputRef.current && hasUserInteracted) {
       inputRef.current.focus();
     }
-  }, [isLoading]);
+  }, [isLoading, hasUserInteracted]);
 
   // Reseta sessão e histórico
   const resetChat = (newAgent?: AgentType) => {
@@ -76,6 +77,7 @@ const Demo = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
+    setHasUserInteracted(true);
     const userMessage = message;
     setMessage("");
     // Mantém o foco no input após enviar
