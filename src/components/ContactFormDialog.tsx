@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { formatPhone, unformatPhone } from "@/lib/phoneFormatter";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -26,7 +27,10 @@ import { Loader2, Send, CheckCircle2, X } from "lucide-react";
 const contactFormSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   email: z.string().email("E-mail inválido"),
-  phone: z.string().min(10, "Telefone inválido"),
+  phone: z.string().refine((val) => {
+    const numbers = unformatPhone(val);
+    return numbers.length >= 10 && numbers.length <= 11;
+  }, "Telefone inválido (deve ter 10 ou 11 dígitos)"),
   company: z.string().optional(),
   service: z.string().min(1, "Selecione um serviço"),
 });
@@ -212,9 +216,13 @@ const ContactFormDialog = () => {
                         <Input
                           type="tel"
                           placeholder="(00) 00000-0000"
-                          {...field}
                           data-rd="phone"
                           className="bg-background/50 border-input/50 focus:border-primary/50"
+                          value={field.value ? formatPhone(field.value) : ''}
+                          onChange={(e) => {
+                            const formatted = formatPhone(e.target.value);
+                            field.onChange(formatted);
+                          }}
                         />
                       </FormControl>
                       <FormMessage />

@@ -68,8 +68,8 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Consultoria
+                  <a href="/tracking" className="hover:text-primary transition-colors">
+                    Tracking
                   </a>
                 </li>
               </ul>
@@ -122,14 +122,13 @@ const Footer = () => {
                     Política de Privacidade
                   </a>
                   <span>•</span>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Termos de Uso
+                  <a href="/excluir-dados" className="hover:text-primary transition-colors">
+                    Excluir Dados
                   </a>
                 </div>
             
             <div className="text-center md:text-right">
-              <p>© 2025 Denzer Digital AI Systems. Todos os direitos reservados.</p>
-              <p className="text-xs mt-1">Powered by Denzer Digital</p>
+              <p>© 2025 Denzer Digital LTDA — CNPJ 54.231.176/0001-83. Todos os direitos reservados.</p>
             </div>
           </div>
         </div>
