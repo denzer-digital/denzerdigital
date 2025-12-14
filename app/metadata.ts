@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://denzerdigital.com.br";
+const fbAppId = "658289000700758";
 
 export function generatePageMetadata({
   title,
@@ -35,7 +36,7 @@ export function generatePageMetadata({
       siteName: "Denzer Digital",
       images: [
         {
-          url: "/assets/denzer-logo.png",
+          url: `${siteUrl}/assets/denzer-logo.png`,
           width: 1200,
           height: 630,
           alt: title,
@@ -49,6 +50,9 @@ export function generatePageMetadata({
       title,
       description,
       images: ["/assets/denzer-logo.png"],
+    },
+    other: {
+      "fb:app_id": "658289000700758",
     },
   };
 }

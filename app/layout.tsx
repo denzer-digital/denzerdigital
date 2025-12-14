@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://denzerdigital.com.br";
+const fbAppId = "658289000700758";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -50,12 +51,15 @@ export const metadata: Metadata = {
     description: "Transforme sua operação digital com Inteligência Artificial, automação e tecnologia de ponta.",
     images: [
       {
-        url: "/assets/denzer-logo.png",
+        url: `${siteUrl}/assets/denzer-logo.png`,
         width: 1200,
         height: 630,
         alt: "Denzer Digital",
       },
     ],
+  },
+  other: {
+    "fb:app_id": "658289000700758",
   },
   twitter: {
     card: "summary_large_image",
@@ -94,6 +98,10 @@ export default function RootLayout({
         <Script id="gtm-stape" strategy="beforeInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src="https://stape.denzerdigital.com.br/3ugm6ismcveky.js?"+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','dvduuqd=EA9YMTcgXj0hU1InWiolTw9WV1hSSxcHRA8AGBkIAQ0QDAwCAgFdChYGSxQR');`}
         </Script>
+        {/* Facebook App ID - Meta tag customizada */}
+        <meta property="fb:app_id" content="658289000700758" />
+        {/* Open Graph Image - Meta tag customizada */}
+        <meta property="og:image" content={`${siteUrl}/assets/denzer-logo.png`} />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
         {/* Skip to main content link for keyboard navigation */}
