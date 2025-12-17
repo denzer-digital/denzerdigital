@@ -40,7 +40,7 @@ const About = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-start">
             {/* Left side - Content */}
-            <div className="space-y-6 animate-fade-in-up">
+            <div className="space-y-6 animate-fade-in-up text-center md:text-left">
               <h2 className="text-4xl md:text-5xl font-bold">
                 Sobre a <span className="text-primary">Denzer Digital</span>
               </h2>
@@ -58,7 +58,7 @@ const About = () => {
               </p>
 
               {/* CTA Button */}
-              <div className="pt-4">
+              <div className="pt-4 flex justify-center md:justify-start">
                 <Button 
                   size="lg"
                   className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 glow-accent group"

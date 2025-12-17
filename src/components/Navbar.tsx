@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
@@ -8,12 +11,29 @@ import { useContactDialog } from "@/contexts/ContactDialogContext";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { openDialog } = useContactDialog();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const scrollToSection = (id: string, e?: React.MouseEvent<HTMLAnchorElement>) => {
     e?.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    
+    // Se estiver na home, apenas faz scroll
+    if (pathname === '/') {
+      const element = document.getElementById(id);
+      if (element) {
+        // Calcula a posição considerando o navbar fixo (80px)
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - 80;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        setIsOpen(false);
+      }
+    } else {
+      // Se estiver em outra página, redireciona para a home com a âncora
+      router.push(`/#${id}`);
       setIsOpen(false);
     }
   };

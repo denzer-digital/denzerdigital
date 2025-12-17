@@ -127,18 +127,18 @@ const ContactFormDialog = () => {
       {/* Modal Content */}
       <div className="relative z-50 w-full max-w-[600px] bg-gradient-to-br from-card via-card to-card/95 border border-primary/20 rounded-lg shadow-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <div className="space-y-1">
-            <h2 id="dialog-title" className="text-3xl font-bold text-gradient-primary">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-border">
+          <div className="space-y-0.5 md:space-y-1">
+            <h2 id="dialog-title" className="text-2xl md:text-3xl font-bold text-gradient-primary">
               Entre em contato
             </h2>
-            <p id="dialog-description" className="text-base text-muted-foreground">
+            <p id="dialog-description" className="text-sm md:text-base text-muted-foreground">
               Preencha o formulário abaixo e nossa equipe entrará em contato em breve.
             </p>
           </div>
           <button
             onClick={closeDialog}
-            className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+            className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none flex-shrink-0 ml-2"
             aria-label="Fechar diálogo"
             aria-describedby="dialog-title"
           >
@@ -147,7 +147,7 @@ const ContactFormDialog = () => {
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 md:p-6">
 
         {isSuccess ? (
           <div className="flex flex-col items-center justify-center py-12 space-y-4" role="status" aria-live="polite" aria-atomic="true">
@@ -168,9 +168,9 @@ const ContactFormDialog = () => {
             <form 
               id="contact-form"
               onSubmit={form.handleSubmit(onSubmit)} 
-              className="space-y-6 mt-4"
+              className="space-y-3 md:space-y-6 mt-2 md:mt-4"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -211,7 +211,7 @@ const ContactFormDialog = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <FormField
                   control={form.control}
                   name="phone"
@@ -286,23 +286,22 @@ const ContactFormDialog = () => {
                 )}
               />
 
-              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2 md:pt-4">
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-primary hover:bg-primary/90 glow-primary group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  size="lg"
+                  className="flex-1 bg-primary hover:bg-primary/90 glow-primary group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm md:text-lg px-4 md:px-8 py-3 md:py-6 h-auto"
                   data-rd="submit"
                   aria-label={isSubmitting ? "Enviando formulário" : "Enviar mensagem"}
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
+                      <Loader2 className="mr-2 h-4 w-4 md:h-6 md:w-6 animate-spin" aria-hidden="true" />
                       <span aria-live="polite">Enviando...</span>
                     </>
                   ) : (
                     <>
-                      <Send className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                      <Send className="mr-2 h-4 w-4 md:h-6 md:w-6 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                       Enviar mensagem
                     </>
                   )}
@@ -312,8 +311,7 @@ const ContactFormDialog = () => {
                   variant="outline"
                   onClick={closeDialog}
                   disabled={isSubmitting}
-                  className="border-2 border-primary/50 hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  size="lg"
+                  className="border-2 border-primary/50 hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm md:text-lg px-4 md:px-8 py-3 md:py-6 h-auto"
                   aria-label="Cancelar e fechar formulário"
                 >
                   Cancelar

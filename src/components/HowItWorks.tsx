@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
 
 const steps = [
@@ -49,21 +49,15 @@ const HowItWorks = () => {
 
           {/* Timeline */}
           <div className="relative">
-            {/* Connection line */}
-            <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-primary via-accent to-primary -translate-y-1/2" />
-            
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 relative items-stretch">
               {steps.map((step, index) => (
                 <div
                   key={index}
-                  className="relative flex"
+                  className="relative"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {/* Step card */}
-                  <div className="bg-card rounded-2xl border border-border hover:border-primary/50 p-6 pb-4 space-y-3 transition-all duration-300 hover:scale-105 group flex flex-col w-full relative">
-                    {/* Check icon - top right */}
-                    <CheckCircle2 className="absolute top-4 right-4 h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                    
+                  <div className="bg-card rounded-2xl border border-border hover:border-primary/50 p-6 space-y-3 transition-all duration-300 hover:scale-105 group flex flex-col w-full">
                     {/* Number badge */}
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent text-white text-2xl font-bold group-hover:scale-110 transition-transform">
                       {step.number}
@@ -79,13 +73,6 @@ const HowItWorks = () => {
                       </p>
                     </div>
                   </div>
-
-                  {/* Arrow for mobile */}
-                  {index < steps.length - 1 && (
-                    <div className="lg:hidden flex justify-center py-4">
-                      <ArrowRight className="h-6 w-6 text-primary rotate-90" />
-                    </div>
-                  )}
                 </div>
               ))}
             </div>

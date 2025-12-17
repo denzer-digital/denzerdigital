@@ -15,22 +15,24 @@ const Footer = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Logo and Description */}
-            <div className="md:col-span-2 space-y-4">
-              <Image
-                src="/assets/logo_header.webp"
-                alt="Denzer Digital AI Systems"
-                width={200}
-                height={40}
-                className="h-10 w-auto"
-                quality={100}
-              />
-              <p className="text-sm text-muted-foreground max-w-md">
+            <div className="md:col-span-2 space-y-4 text-center md:text-left">
+              <div className="flex justify-center md:justify-start">
+                <Image
+                  src="/assets/logo_header.webp"
+                  alt="Denzer Digital AI Systems"
+                  width={200}
+                  height={40}
+                  className="h-10 w-auto"
+                  quality={100}
+                />
+              </div>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto md:mx-0">
                 Transformando operações digitais através de inteligência artificial, 
                 estratégia e tecnologia de ponta.
               </p>
               
               {/* Social Links */}
-              <div className="flex gap-4 pt-4">
+              <div className="flex gap-4 pt-4 justify-center md:justify-start">
                 <a
                   href="https://www.linkedin.com/company/denzer-digital/?utm_source=site"
                   target="_blank"
@@ -52,70 +54,73 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Links Column 1 */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Soluções</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <a href="/agentes-de-ia" className="hover:text-primary transition-colors">
-                    Agentes de IA
-                  </a>
-                </li>
-                <li>
-                  <a href="/ecommerce-shopify" className="hover:text-primary transition-colors">
-                    E-commerce Shopify
-                  </a>
-                </li>
-                <li>
-                  <a href="/gestao-digital-360" className="hover:text-primary transition-colors">
-                    Gestão Digital 360°
-                  </a>
-                </li>
-                <li>
-                  <a href="/tracking" className="hover:text-primary transition-colors">
-                    Tracking
-                  </a>
-                </li>
-              </ul>
-            </div>
+            {/* Links Columns - Side by side on mobile and desktop */}
+            <div className="grid grid-cols-2 gap-8 md:col-span-2">
+              {/* Links Column 1 */}
+              <div className="space-y-4 text-center md:text-left">
+                <h3 className="font-semibold text-lg">Soluções</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>
+                    <a href="/agentes-de-ia" className="hover:text-primary transition-colors">
+                      Agentes de IA
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/ecommerce-shopify" className="hover:text-primary transition-colors">
+                      E-commerce Shopify
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/gestao-digital-360" className="hover:text-primary transition-colors">
+                      Gestão Digital 360°
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/tracking" className="hover:text-primary transition-colors">
+                      Tracking
+                    </a>
+                  </li>
+                </ul>
+              </div>
 
-            {/* Links Column 2 */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Navegação</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <button
-                    onClick={() => scrollToSection('solucoes')}
-                    className="hover:text-primary transition-colors text-left"
-                  >
-                    Soluções
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => scrollToSection('resultados')}
-                    className="hover:text-primary transition-colors text-left"
-                  >
-                    Resultados
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => scrollToSection('como-funciona')}
-                    className="hover:text-primary transition-colors text-left"
-                  >
-                    Como Funciona
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => scrollToSection('planos')}
-                    className="hover:text-primary transition-colors text-left"
-                  >
-                    Planos
-                  </button>
-                </li>
-              </ul>
+              {/* Links Column 2 */}
+              <div className="space-y-4 text-center md:text-left">
+                <h3 className="font-semibold text-lg">Navegação</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>
+                    <button
+                      onClick={() => scrollToSection('solucoes')}
+                      className="hover:text-primary transition-colors"
+                    >
+                      Soluções
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection('resultados')}
+                      className="hover:text-primary transition-colors"
+                    >
+                      Resultados
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection('como-funciona')}
+                      className="hover:text-primary transition-colors"
+                    >
+                      Como Funciona
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection('planos')}
+                      className="hover:text-primary transition-colors"
+                    >
+                      Planos
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 

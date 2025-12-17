@@ -1,6 +1,7 @@
 "use client";
 
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -41,9 +42,77 @@ const ContactFormDialog = dynamic(() => import("@/components/ContactFormDialog")
 });
 
 export default function Home() {
+  const searchParams = useSearchParams();
+  
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      // Calcula a posição considerando o navbar fixo (80px)
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - 80;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      return true;
+    }
+    return false;
+  };
+
   useLayoutEffect(() => {
-    // Garante que a página comece no topo
-    window.scrollTo(0, 0);
+    // Verifica se há uma âncora na URL ao carregar a página
+    const hash = window.location.hash;
+    if (hash) {
+      const id = hash.substring(1);
+      // Aguarda para garantir que os componentes carregaram
+      const attemptScroll = (retries = 5) => {
+        if (scrollToSection(id) || retries === 0) {
+          return;
+        }
+        setTimeout(() => attemptScroll(retries - 1), 200);
+      };
+      setTimeout(() => attemptScroll(), 300);
+    } else {
+      // Se não houver âncora, garante que a página comece no topo
+      window.scrollTo(0, 0);
+    }
+  }, []);
+  
+  // Escuta mudanças no hash (quando navega de outra página ou clica em link)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const id = hash.substring(1);
+        setTimeout(() => {
+          scrollToSection(id);
+        }, 300);
+      }
+    };
+    
+    // Verifica hash periodicamente (para casos onde hashchange não dispara)
+    const checkHash = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const id = hash.substring(1);
+        if (!document.getElementById(id)) {
+          // Elemento ainda não carregou, tenta novamente
+          setTimeout(checkHash, 200);
+        } else {
+          scrollToSection(id);
+        }
+      }
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Verifica hash após um delay inicial (para componentes lazy-loaded)
+    setTimeout(checkHash, 500);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   return (

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Compass, ShoppingBag, ArrowRight } from "lucide-react";
+import { Bot, Compass, ShoppingBag, BarChart3, ArrowRight } from "lucide-react";
 
 const solutions = [
   {
@@ -23,6 +23,13 @@ const solutions = [
     description: "Lojas de alta performance integradas com IA e automações nativas.",
     gradient: "from-primary to-accent",
     href: "/ecommerce-shopify",
+  },
+  {
+    icon: BarChart3,
+    title: "Tracking e Analytics",
+    description: "Rastreamento completo e análises inteligentes para otimizar resultados.",
+    gradient: "from-primary to-primary-glow",
+    href: "/tracking",
   }
 ];
 
@@ -35,14 +42,14 @@ const Solution = () => {
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="text-center space-y-4 animate-fade-in-up">
             <h2 className="text-4xl md:text-5xl font-bold">
-              O ecossistema <span className="text-gradient-primary">Denzer Digital AI</span>
+              O ecossistema <span className="text-gradient-primary">Denzer Digital</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Três pilares integrados para transformar seu negócio digital
+              Quatro pilares integrados para transformar seu negócio digital
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {solutions.map((solution, index) => (
               <Link
                 href={solution.href}

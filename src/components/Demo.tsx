@@ -202,9 +202,9 @@ const Demo = () => {
               
               <div className="rounded-2xl bg-card border border-border p-6 shadow-2xl relative z-[2]">
                 {/* Chat Header */}
-                <div className="flex items-center justify-between pb-4 border-b border-border">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-0 pb-4 border-b border-border">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center flex-shrink-0">
                       <MessageSquare className="h-5 w-5 text-white" />
                     </div>
                     <div>
@@ -218,7 +218,7 @@ const Demo = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground whitespace-nowrap">Tipo:</span>
                     <Select value={agentType} onValueChange={(value) => setAgentType(value as AgentType)}>
-                      <SelectTrigger className="w-[200px] h-8 text-xs">
+                      <SelectTrigger className="w-full md:w-[200px] h-8 text-xs">
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
                       <SelectContent>

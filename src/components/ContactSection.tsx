@@ -102,7 +102,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">E-mail</h3>
-                    <p className="text-sm text-muted-foreground">contato@denzerdigital.com.br</p>
+                    <p className="text-sm text-muted-foreground">comercial@denzerdigital.com.br</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -111,7 +111,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Telefone</h3>
-                    <p className="text-sm text-muted-foreground">(00) 00000-0000</p>
+                    <p className="text-sm text-muted-foreground">(41) 99194-4761</p>
                   </div>
                 </div>
               </div>
