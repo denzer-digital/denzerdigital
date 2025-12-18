@@ -1,7 +1,6 @@
 "use client";
 
 import { useLayoutEffect, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -42,8 +41,6 @@ const ContactFormDialog = dynamic(() => import("@/components/ContactFormDialog")
 });
 
 export default function Home() {
-  const searchParams = useSearchParams();
-  
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
