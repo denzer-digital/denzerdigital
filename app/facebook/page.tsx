@@ -210,7 +210,7 @@ export default function FacebookPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-background via-background/95 to-background/80">
-        <div className="container mx-auto px-4 pt-10 pb-16">
+        <div className="container mx-auto px-4 pt-20 pb-16">
           <div className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
             <ArrowLeft className="h-4 w-4" />
             <Link href="/" className="hover:text-primary transition-colors">
@@ -218,7 +218,7 @@ export default function FacebookPage() {
             </Link>
           </div>
 
-          <div className="flex flex-col items-center text-center space-y-4">
+          <div className="flex flex-col items-center text-center space-y-4 pt-20">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <Facebook className="h-10 w-10" />
             </div>
