@@ -74,7 +74,8 @@ async function pollForMessages(
   console.log(`🔄 Iniciando polling APENAS para verificar status. SessionId: ${sessionId}, máximo ${maxAttempts} tentativas`);
   console.log(`📋 Mensagens já recebidas na primeira resposta: ${initialMessages.length}`);
   
-  const receivedMessages = new Set<string>(initialMessages); // Inclui mensagens já recebidas para evitar duplicatas
+  // Usa normalização para comparação de mensagens
+  const receivedMessages = new Set<string>(initialMessages.map(normalizeMessage)); // Inclui mensagens já recebidas para evitar duplicatas
   let consecutiveEmptyAttempts = 0; // Contador de tentativas consecutivas sem novas mensagens
   
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -119,16 +120,22 @@ async function pollForMessages(
         messages.forEach((msg: string) => {
           const trimmedMsg = msg.trim();
           if (
-            trimmedMsg.length > 0 &&
-            !isWorkflowStartedResponse(trimmedMsg) &&
-            trimmedMsg.toLowerCase() !== "null" &&
-            trimmedMsg.toLowerCase() !== "undefined" &&
-            !receivedMessages.has(trimmedMsg)
+            trimmedMsg.length === 0 ||
+            isWorkflowStartedResponse(trimmedMsg) ||
+            trimmedMsg.toLowerCase() === "null" ||
+            trimmedMsg.toLowerCase() === "undefined"
           ) {
-            receivedMessages.add(trimmedMsg);
+            return;
+          }
+          
+          const normalized = normalizeMessage(trimmedMsg);
+          if (!receivedMessages.has(normalized)) {
+            receivedMessages.add(normalized);
             newMessagesCount++;
             console.log(`✅ Nova mensagem ${newMessagesCount} recebida na tentativa ${attempt + 1}:`, trimmedMsg.substring(0, 100));
             onNewMessage(trimmedMsg);
+          } else {
+            console.log(`⚠️ Mensagem duplicada ignorada na tentativa ${attempt + 1}:`, trimmedMsg.substring(0, 50));
           }
         });
         
@@ -319,6 +326,7 @@ export async function sendMessageToWebhook(
     // Sempre fazemos polling na API interna de mensagens para trazer as respostas que o fluxo enviou via HTTP Request1
     console.log("🔄 Iniciando polling na API interna /api/chat/messages para buscar respostas do fluxo");
     if (onPolling) onPolling(true);
+    // Passa mensagens originais, a normalização será feita dentro da função para comparação
     await pollChatMessages(sessionId, onNewMessage, validMessages);
     if (onPolling) onPolling(false);
   } catch (error) {
@@ -334,6 +342,11 @@ export async function sendMessageToWebhook(
 /**
  * Faz polling na API interna (/api/chat/messages) para buscar mensagens persistidas pelo fluxo
  */
+// Normaliza mensagem para comparação (remove espaços extras, quebras de linha, etc)
+function normalizeMessage(msg: string): string {
+  return msg.trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
 async function pollChatMessages(
   sessionId: string,
   onNewMessage: (message: string) => void,
@@ -345,7 +358,8 @@ async function pollChatMessages(
 ): Promise<void> {
   let cursor = -1;
   let consecutiveEmpty = 0;
-  const received = new Set<string>(initialMessages);
+  // Usa normalização para comparação de mensagens
+  const received = new Set<string>(initialMessages.map(normalizeMessage));
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     // espera entre tentativas, exceto na primeira
@@ -368,10 +382,18 @@ async function pollChatMessages(
       let newCount = 0;
       messages.forEach((m) => {
         const txt = (m?.text ?? "").trim();
-        if (txt && !received.has(txt) && !isWorkflowStartedResponse(txt) && txt.toLowerCase() !== "null") {
-          received.add(txt);
+        if (!txt || txt.toLowerCase() === "null" || isWorkflowStartedResponse(txt)) {
+          return;
+        }
+        
+        const normalized = normalizeMessage(txt);
+        if (!received.has(normalized)) {
+          received.add(normalized);
           newCount++;
+          console.log(`✅ Nova mensagem do polling (${newCount}):`, txt.substring(0, 100));
           onNewMessage(txt);
+        } else {
+          console.log(`⚠️ Mensagem duplicada ignorada no polling:`, txt.substring(0, 50));
         }
       });
 

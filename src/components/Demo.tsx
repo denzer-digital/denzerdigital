@@ -34,6 +34,8 @@ const Demo = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const queueRef = useRef<Promise<void>>(Promise.resolve()); // garante animação/entrega em sequência
   const firstResponsePendingRef = useRef<boolean>(false); // indica se a primeira resposta ainda não foi exibida
+  const processedMessagesRef = useRef<Set<string>>(new Set()); // rastreia mensagens já processadas para evitar duplicatas
+  const isProcessingRef = useRef<boolean>(false); // evita processamento simultâneo
 
   // Auto-scroll para a última mensagem apenas no container do chat
   const scrollToBottom = () => {
@@ -61,6 +63,11 @@ const Demo = () => {
     }
   }, [isLoading, hasUserInteracted]);
 
+  // Normaliza mensagem para comparação (remove espaços extras, quebras de linha, etc)
+  const normalizeMessage = (msg: string): string => {
+    return msg.trim().replace(/\s+/g, ' ').toLowerCase();
+  };
+
   // Reseta sessão e histórico
   const resetChat = (newAgent?: AgentType) => {
     setSessionId(createSessionId());
@@ -69,13 +76,19 @@ const Demo = () => {
     ]);
     setIsLoading(false);
     setMessage("");
+    processedMessagesRef.current.clear(); // limpa mensagens processadas
+    firstResponsePendingRef.current = false;
+    isProcessingRef.current = false;
     if (newAgent) {
       setAgentType(newAgent);
     }
   };
 
   const handleSendMessage = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() || isProcessingRef.current) return;
+
+    // Marca como processando para evitar múltiplas chamadas simultâneas
+    isProcessingRef.current = true;
 
     setHasUserInteracted(true);
     const userMessage = message;
@@ -92,6 +105,7 @@ const Demo = () => {
     console.log("Iniciando envio de mensagem:", userMessage);
 
     try {
+      setIsLoading(true);
       await sendMessageToWebhook(
         userMessage,
         agentType,
@@ -99,38 +113,90 @@ const Demo = () => {
         (newMessage) => {
           // Callback chamado para cada nova mensagem recebida
           console.log("Nova mensagem recebida:", newMessage);
-          if (isWorkflowStartedResponse(newMessage)) {
+          
+          // Validação básica da mensagem
+          if (!newMessage || typeof newMessage !== 'string') {
+            console.warn("Mensagem inválida recebida:", newMessage);
             return;
           }
+          
+          const trimmedMessage = newMessage.trim();
+          
+          // Ignora mensagens vazias ou de workflow iniciado
+          if (!trimmedMessage || isWorkflowStartedResponse(trimmedMessage)) {
+            return;
+          }
+          
+          // Normaliza para verificar duplicatas
+          const normalized = normalizeMessage(trimmedMessage);
+          
+          // Verifica se já processou esta mensagem
+          if (processedMessagesRef.current.has(normalized)) {
+            console.log("Mensagem duplicada ignorada:", trimmedMessage.substring(0, 50));
+            return;
+          }
+          
+          // Marca como processada ANTES de adicionar à fila
+          processedMessagesRef.current.add(normalized);
+          
+          // Adiciona à fila de processamento sequencial
           queueRef.current = queueRef.current.then(async () => {
             const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+            
+            // Função auxiliar para adicionar mensagem com verificação de duplicata
+            const addMessageSafely = (content: string) => {
+              setMessages(prev => {
+                // Verifica se a mensagem já existe (comparação normalizada)
+                const exists = prev.some(m => 
+                  m.role === 'assistant' && normalizeMessage(m.content) === normalized
+                );
+                if (exists) {
+                  console.log("Mensagem duplicada detectada, ignorando:", content.substring(0, 50));
+                  return prev;
+                }
+                return [...prev, { 
+                  role: "assistant", 
+                  content: content
+                }];
+              });
+            };
+            
             if (firstResponsePendingRef.current) {
               // primeira resposta: já estamos animando desde o envio; só entrega e encerra
               firstResponsePendingRef.current = false;
               // Pequena folga opcional para suavizar (curta)
               await delay(200);
-              setMessages(prev => [...prev, { 
-                role: "assistant", 
-                content: newMessage
-              }]);
+              addMessageSafely(trimmedMessage);
               setIsLoading(false); // encerra animação da primeira resposta
             } else {
               // demais respostas: liga digitando só antes de entregar
               setIsLoading(true);
               await delay(1200);
-              setMessages(prev => [...prev, { 
-                role: "assistant", 
-                content: newMessage
-              }]);
+              addMessageSafely(trimmedMessage);
               setIsLoading(false);
             }
+          }).catch(error => {
+            console.error("Erro ao processar mensagem na fila:", error);
+            // Remove da lista de processadas para permitir retry se necessário
+            processedMessagesRef.current.delete(normalized);
+            setIsLoading(false);
           });
         }
       );
+      
+      // Libera processamento após o polling terminar
+      // Aguarda um pouco para garantir que todas as mensagens da fila foram processadas
+      setTimeout(() => {
+        isProcessingRef.current = false;
+      }, 1000);
 
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
       const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      
+      // Reseta flags de controle
+      firstResponsePendingRef.current = false;
+      isProcessingRef.current = false;
       
       setMessages(prev => [...prev, { 
         role: "assistant", 
@@ -142,8 +208,7 @@ const Demo = () => {
         description: `Não foi possível enviar a mensagem: ${errorMessage}`,
         variant: "destructive",
       });
-    } finally {
-      // Garante que o loading seja desativado ao final
+      
       setIsLoading(false);
     }
   };
