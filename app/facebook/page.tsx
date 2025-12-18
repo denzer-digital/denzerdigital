@@ -132,34 +132,7 @@ export default function FacebookPage() {
       {/* fb-root necessário para o SDK do Facebook */}
       <div id="fb-root"></div>
       
-      {/* Script do Facebook SDK com XFBML */}
-      <Script
-        id="facebook-sdk-xfbml"
-        strategy="lazyOnload"
-        async
-        defer
-        crossOrigin="anonymous"
-        src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v24.0&appId=658289000700758"
-      />
-      
-      {/* Inicialização do SDK do Facebook */}
-      <Script
-        id="facebook-init"
-        strategy="lazyOnload"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.fbAsyncInit = function() {
-              FB.init({
-                appId: '658289000700758',
-                cookie: true,
-                xfbml: true,
-                version: 'v24.0'
-              });
-              FB.AppEvents.logPageView();
-            };
-          `,
-        }}
-      />
+      {/* Nota: O SDK do Facebook já está carregado globalmente no layout.tsx */}
       
       {/* Script para processar eventos do botão XFBML */}
       <Script
