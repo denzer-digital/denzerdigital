@@ -360,6 +360,8 @@ async function pollChatMessages(
   let consecutiveEmpty = 0;
   // Usa normalização para comparação de mensagens
   const received = new Set<string>(initialMessages.map(normalizeMessage));
+  // Rastreia mensagens pendentes por índice para garantir ordem
+  const pendingMessages = new Map<number, { text: string; idx: number }>();
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     // espera entre tentativas, exceto na primeira
@@ -376,10 +378,12 @@ async function pollChatMessages(
       }
 
       const data = await resp.json();
-      const messages: { text?: string }[] = data?.messages ?? [];
+      const messages: { text?: string; idx?: number }[] = data?.messages ?? [];
       const lastIdx: number = typeof data?.lastIdx === "number" ? data.lastIdx : cursor;
 
       let newCount = 0;
+      
+      // Primeiro, coleta todas as novas mensagens e ordena por índice
       messages.forEach((m) => {
         const txt = (m?.text ?? "").trim();
         if (!txt || txt.toLowerCase() === "null" || isWorkflowStartedResponse(txt)) {
@@ -387,24 +391,63 @@ async function pollChatMessages(
         }
         
         const normalized = normalizeMessage(txt);
+        const msgIdx = typeof m.idx === "number" ? m.idx : cursor + 1;
+        
         if (!received.has(normalized)) {
-          received.add(normalized);
-          newCount++;
-          console.log(`✅ Nova mensagem do polling (${newCount}):`, txt.substring(0, 100));
-          onNewMessage(txt);
+          // Adiciona à lista de pendentes se ainda não foi processada
+          if (!pendingMessages.has(msgIdx)) {
+            pendingMessages.set(msgIdx, { text: txt, idx: msgIdx });
+            newCount++;
+            console.log(`📥 Mensagem ${msgIdx} adicionada à fila de processamento:`, txt.substring(0, 100));
+          }
         } else {
           console.log(`⚠️ Mensagem duplicada ignorada no polling:`, txt.substring(0, 50));
         }
       });
 
-      if (newCount > 0) {
-        cursor = lastIdx;
+      // Processa mensagens pendentes em ordem de índice
+      // Encontra o próximo índice esperado (cursor + 1)
+      let nextExpectedIdx = cursor + 1;
+      let processedAny = false;
+      
+      while (pendingMessages.has(nextExpectedIdx)) {
+        const msg = pendingMessages.get(nextExpectedIdx)!;
+        const normalized = normalizeMessage(msg.text);
+        
+        // Verifica novamente se não foi processada (proteção extra)
+        if (!received.has(normalized)) {
+          received.add(normalized);
+          console.log(`✅ Processando mensagem ${msg.idx} em ordem:`, msg.text.substring(0, 100));
+          onNewMessage(msg.text);
+          processedAny = true;
+        }
+        
+        pendingMessages.delete(nextExpectedIdx);
+        cursor = msg.idx; // Atualiza cursor apenas após processar
+        nextExpectedIdx++;
+      }
+
+      if (processedAny || newCount > 0) {
         consecutiveEmpty = 0;
       } else {
         consecutiveEmpty++;
       }
 
       if (consecutiveEmpty >= emptyAttemptsToStop && attempt + 1 >= minAttemptsBeforeStop) {
+        // Antes de parar, tenta processar qualquer mensagem pendente
+        if (pendingMessages.size > 0) {
+          console.log(`⚠️ Parando polling mas há ${pendingMessages.size} mensagens pendentes. Tentando processar...`);
+          const sortedPending = Array.from(pendingMessages.entries()).sort((a, b) => a[0] - b[0]);
+          sortedPending.forEach(([idx, msg]) => {
+            const normalized = normalizeMessage(msg.text);
+            if (!received.has(normalized)) {
+              received.add(normalized);
+              console.log(`✅ Processando mensagem pendente ${idx}:`, msg.text.substring(0, 100));
+              onNewMessage(msg.text);
+              cursor = idx;
+            }
+          });
+        }
         break;
       }
     } catch (err) {
