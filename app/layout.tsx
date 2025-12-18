@@ -96,7 +96,7 @@ export default function RootLayout({
       <head>
         {/* GTM - Mantido como beforeInteractive pois é necessário para tracking */}
         <Script id="gtm-stape" strategy="beforeInteractive">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src="https://stape.denzerdigital.com.br/3ugm6ismcveky.js?"+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','dvduuqd=EA9YMTcgXj0hU1InWiolTw9WV1hSSxcHRA8AGBkIAQ0QDAwCAgFdChYGSxQR');`}
+          {`(function(w,d,s,l,i){try{if(typeof w!=='undefined'&&typeof d!=='undefined'){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0];if(f){var j=d.createElement(s);j.async=true;j.src="https://stape.denzerdigital.com.br/3ugm6ismcveky.js?"+i;f.parentNode.insertBefore(j,f);}}}catch(e){console.warn('Erro ao carregar GTM:',e);}})(window,document,'script','dataLayer','dvduuqd=EA9YMTcgXj0hU1InWiolTw9WV1hSSxcHRA8AGBkIAQ0QDAwCAgFdChYGSxQR');`}
         </Script>
         {/* Facebook App ID - Meta tag customizada */}
         <meta property="fb:app_id" content="658289000700758" />
@@ -116,12 +116,26 @@ export default function RootLayout({
         <Script id="scroll-prevention" strategy="afterInteractive">
           {`
             (function() {
-              if (window.location.hash) {
-                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+              if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+                try {
+                  if (window.location && window.location.hash) {
+                    if (window.history && window.history.replaceState) {
+                      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+                    }
+                  }
+                  if (window.scrollTo) {
+                    window.scrollTo(0, 0);
+                  }
+                  if (document.documentElement) {
+                    document.documentElement.scrollTop = 0;
+                  }
+                  if (document.body) {
+                    document.body.scrollTop = 0;
+                  }
+                } catch (e) {
+                  console.warn('Erro ao inicializar scroll:', e);
+                }
               }
-              window.scrollTo(0, 0);
-              document.documentElement.scrollTop = 0;
-              document.body.scrollTop = 0;
             })();
           `}
         </Script>

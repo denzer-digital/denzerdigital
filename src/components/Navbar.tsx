@@ -17,19 +17,32 @@ const Navbar = () => {
   const scrollToSection = (id: string, e?: React.MouseEvent<HTMLAnchorElement>) => {
     e?.preventDefault();
     
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+    
     // Se estiver na home, apenas faz scroll
     if (pathname === '/') {
       const element = document.getElementById(id);
       if (element) {
-        // Calcula a posição considerando o navbar fixo (80px)
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - 80;
-        
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-        setIsOpen(false);
+        try {
+          // Calcula a posição considerando o navbar fixo (80px)
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + (window.pageYOffset || window.scrollY || 0) - 80;
+          
+          if (window.scrollTo) {
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          } else {
+            // Fallback para navegadores antigos
+            window.scrollTo(0, offsetPosition);
+          }
+          setIsOpen(false);
+        } catch (error) {
+          console.warn('Erro ao fazer scroll:', error);
+        }
       }
     } else {
       // Se estiver em outra página, redireciona para a home com a âncora

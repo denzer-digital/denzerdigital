@@ -44,25 +44,58 @@ const ContactFormDialog = () => {
 
   // Previne scroll do body quando o modal está aberto
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+    if (typeof document === 'undefined') {
+      return;
     }
+    
+    try {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    } catch (error) {
+      console.warn('Erro ao controlar overflow do body:', error);
+    }
+    
     return () => {
-      document.body.style.overflow = '';
+      if (typeof document !== 'undefined' && document.body) {
+        try {
+          document.body.style.overflow = '';
+        } catch (error) {
+          console.warn('Erro ao restaurar overflow do body:', error);
+        }
+      }
     };
   }, [isOpen]);
 
   // Fecha o modal ao pressionar ESC
   useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+    
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
         closeDialog();
       }
     };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    
+    try {
+      document.addEventListener('keydown', handleEscape);
+    } catch (error) {
+      console.warn('Erro ao adicionar listener de teclado:', error);
+    }
+    
+    return () => {
+      if (typeof document !== 'undefined') {
+        try {
+          document.removeEventListener('keydown', handleEscape);
+        } catch (error) {
+          console.warn('Erro ao remover listener de teclado:', error);
+        }
+      }
+    };
   }, [isOpen, closeDialog]);
 
   const form = useForm<ContactFormData>({

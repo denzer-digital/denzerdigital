@@ -3,9 +3,17 @@ import { Linkedin, Instagram } from "lucide-react";
 
 const Footer = () => {
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (typeof document === 'undefined') {
+      return;
+    }
+    
+    try {
+      const element = document.getElementById(id);
+      if (element && element.scrollIntoView) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.warn('Erro ao fazer scroll:', error);
     }
   };
 

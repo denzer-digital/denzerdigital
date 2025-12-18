@@ -42,24 +42,37 @@ const ContactFormDialog = dynamic(() => import("@/components/ContactFormDialog")
 
 export default function Home() {
   const scrollToSection = (id: string) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return false;
+    }
+    
     const element = document.getElementById(id);
     if (element) {
       // Calcula a posição considerando o navbar fixo (80px)
       const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - 80;
+      const offsetPosition = elementPosition + (window.pageYOffset || window.scrollY || 0) - 80;
       
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      if (window.scrollTo) {
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      } else {
+        // Fallback para navegadores antigos
+        window.scrollTo(0, offsetPosition);
+      }
       return true;
     }
     return false;
   };
 
   useLayoutEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    
     // Verifica se há uma âncora na URL ao carregar a página
-    const hash = window.location.hash;
+    const hash = window.location?.hash || '';
     if (hash) {
       const id = hash.substring(1);
       // Aguarda para garantir que os componentes carregaram
@@ -72,14 +85,20 @@ export default function Home() {
       setTimeout(() => attemptScroll(), 300);
     } else {
       // Se não houver âncora, garante que a página comece no topo
-      window.scrollTo(0, 0);
+      if (window.scrollTo) {
+        window.scrollTo(0, 0);
+      }
     }
   }, []);
   
   // Escuta mudanças no hash (quando navega de outra página ou clica em link)
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+    
     const handleHashChange = () => {
-      const hash = window.location.hash;
+      const hash = window.location?.hash || '';
       if (hash) {
         const id = hash.substring(1);
         setTimeout(() => {
@@ -90,7 +109,7 @@ export default function Home() {
     
     // Verifica hash periodicamente (para casos onde hashchange não dispara)
     const checkHash = () => {
-      const hash = window.location.hash;
+      const hash = window.location?.hash || '';
       if (hash) {
         const id = hash.substring(1);
         if (!document.getElementById(id)) {
@@ -102,13 +121,17 @@ export default function Home() {
       }
     };
     
-    window.addEventListener('hashchange', handleHashChange);
+    if (window.addEventListener) {
+      window.addEventListener('hashchange', handleHashChange);
+    }
     
     // Verifica hash após um delay inicial (para componentes lazy-loaded)
     setTimeout(checkHash, 500);
     
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      if (window.removeEventListener) {
+        window.removeEventListener('hashchange', handleHashChange);
+      }
     };
   }, []);
 
