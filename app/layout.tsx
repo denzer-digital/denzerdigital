@@ -4,7 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://denzerdigital.com.br";
-const fbAppId = "1410779820393549";
+const fbAppId = "658289000700758";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    "fb:app_id": "1410779820393549",
+    "fb:app_id": "658289000700758",
   },
   twitter: {
     card: "summary_large_image",
@@ -99,7 +99,7 @@ export default function RootLayout({
           {`(function(w,d,s,l,i){try{if(typeof w!=='undefined'&&typeof d!=='undefined'){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0];if(f){var j=d.createElement(s);j.async=true;j.src="https://stape.denzerdigital.com.br/3ugm6ismcveky.js?"+i;f.parentNode.insertBefore(j,f);}}}catch(e){console.warn('Erro ao carregar GTM:',e);}})(window,document,'script','dataLayer','dvduuqd=EA9YMTcgXj0hU1InWiolTw9WV1hSSxcHRA8AGBkIAQ0QDAwCAgFdChYGSxQR');`}
         </Script>
         {/* Facebook App ID - Meta tag customizada */}
-        <meta property="fb:app_id" content="1410779820393549" />
+        <meta property="fb:app_id" content="658289000700758" />
         {/* Open Graph Image - Meta tag customizada */}
         <meta property="og:image" content={`${siteUrl}/assets/denzer-logo.png`} />
         {/* Facebook SDK - Carregado globalmente em todas as páginas */}
@@ -126,7 +126,7 @@ export default function RootLayout({
             __html: `
               window.fbAsyncInit = function() {
                 FB.init({
-                  appId      : '1410779820393549',
+                  appId      : '658289000700758',
                   cookie     : true,
                   xfbml      : true,
                   version    : 'v24.0'
