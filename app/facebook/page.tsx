@@ -78,11 +78,20 @@ export default function FacebookPage() {
         });
         
         // Processa elementos XFBML (incluindo o botão de login)
-        try {
-          window.FB.XFBML.parse();
-        } catch (error) {
-          console.warn('Erro ao processar XFBML:', error);
-        }
+        // Aguarda um pouco para garantir que o DOM está pronto
+        setTimeout(() => {
+          try {
+            if (window.FB && window.FB.XFBML) {
+              // Processa apenas o container do botão para evitar duplicação
+              const container = document.getElementById('fb-login-button-container');
+              if (container) {
+                window.FB.XFBML.parse(container);
+              }
+            }
+          } catch (error) {
+            console.warn('Erro ao processar XFBML:', error);
+          }
+        }, 500);
       } else {
         // Tenta novamente após um pequeno delay se o SDK ainda não carregou
         setTimeout(checkLoginStatus, 100);
@@ -169,21 +178,28 @@ export default function FacebookPage() {
               }
             };
             
-            // Processa XFBML quando o SDK estiver pronto
+            // Processa XFBML quando o SDK estiver pronto (apenas uma vez)
             if (window.fbAsyncInit) {
               const originalFbAsyncInit = window.fbAsyncInit;
+              let xfbmlProcessed = false;
               window.fbAsyncInit = function() {
                 if (originalFbAsyncInit) originalFbAsyncInit();
-                // Aguarda um pouco e processa XFBML
-                setTimeout(function() {
-                  if (window.FB && window.FB.XFBML) {
-                    try {
-                      window.FB.XFBML.parse();
-                    } catch (e) {
-                      console.warn('Erro ao processar XFBML:', e);
+                // Aguarda um pouco e processa XFBML apenas uma vez
+                if (!xfbmlProcessed) {
+                  setTimeout(function() {
+                    if (window.FB && window.FB.XFBML) {
+                      try {
+                        const container = document.getElementById('fb-login-button-container');
+                        if (container) {
+                          window.FB.XFBML.parse(container);
+                          xfbmlProcessed = true;
+                        }
+                      } catch (e) {
+                        console.warn('Erro ao processar XFBML:', e);
+                      }
                     }
-                  }
-                }, 500);
+                  }, 500);
+                }
               };
             }
           `,
@@ -238,8 +254,9 @@ export default function FacebookPage() {
                 {/* Botão de Login do Facebook usando XFBML */}
                 <div className="flex flex-col items-center gap-4">
                   <div 
+                    id="fb-login-button-container"
                     className="fb-login-button" 
-                    data-width="200" 
+                    data-width="" 
                     data-size="large" 
                     data-button-type="continue_with" 
                     data-layout="default" 
@@ -248,25 +265,6 @@ export default function FacebookPage() {
                     data-onlogin="checkLoginState"
                     data-scope="email,public_profile"
                   ></div>
-                  
-                  {/* Fallback: Botão customizado caso XFBML não funcione */}
-                  {typeof window !== 'undefined' && !window.FB && (
-                    <Button
-                      size="lg"
-                      className="w-full bg-[#1877F2] hover:bg-[#166FE5] text-white"
-                      onClick={handleFacebookLogin}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <>Carregando...</>
-                      ) : (
-                        <>
-                          <Facebook className="mr-2 h-5 w-5" />
-                          Conectar com Facebook
-                        </>
-                      )}
-                    </Button>
-                  )}
                 </div>
 
                 <div className="pt-4 space-y-3 text-sm text-muted-foreground">
