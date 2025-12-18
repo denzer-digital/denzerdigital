@@ -1646,6 +1646,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
+.bg-\[\#1877F2\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(24 119 242 / var(--tw-bg-opacity, 1));
+}
 .bg-\[radial-gradient\(circle_at_50\%_50\%\2c hsl\(var\(--primary\)\/0\.08\)_0\%\2c transparent_50\%\)\] {
   background-image: radial-gradient(circle at 50% 50%,hsl(var(--primary)/0.08) 0%,transparent 50%);
 }
@@ -2523,6 +2527,11 @@ video {
 
 .hover\:bg-sidebar-accent:hover {
   background-color: hsl(var(--sidebar-accent));
+}
+
+.hover\:bg-\[\#166FE5\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 111 229 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:text-accent-foreground:hover {

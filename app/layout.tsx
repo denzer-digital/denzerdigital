@@ -136,6 +136,29 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* WhatsApp Embedded Signup - Listener de mensagens do Facebook */}
+        <Script
+          id="whatsapp-embedded-signup"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('message', (event) => {
+                if (event.origin !== "https://www.facebook.com") return;
+                
+                try {
+                  const data = JSON.parse(event.data);
+                  if (data.type === 'WA_EMBEDDED_SIGNUP') {
+                    console.log('WhatsApp Embedded Signup event received:', data);
+                    // Adicione aqui a lógica para processar o evento de signup
+                    // Exemplo: redirecionar, atualizar UI, enviar dados para servidor, etc.
+                  }
+                } catch (error) {
+                  // Ignora erros de parsing
+                }
+              });
+            `,
+          }}
+        />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
         {/* Skip to main content link for keyboard navigation */}

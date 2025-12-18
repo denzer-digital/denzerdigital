@@ -69,13 +69,20 @@ export default function FacebookPage() {
     };
   }, []);
 
-  // Verifica status de login quando o SDK carrega
+  // Verifica status de login quando o SDK carrega e processa XFBML
   useEffect(() => {
     const checkLoginStatus = () => {
       if (window.FB) {
         window.FB.getLoginStatus(function(response: any) {
           statusChangeCallback(response);
         });
+        
+        // Processa elementos XFBML (incluindo o botão de login)
+        try {
+          window.FB.XFBML.parse();
+        } catch (error) {
+          console.warn('Erro ao processar XFBML:', error);
+        }
       } else {
         // Tenta novamente após um pequeno delay se o SDK ainda não carregou
         setTimeout(checkLoginStatus, 100);
@@ -90,7 +97,20 @@ export default function FacebookPage() {
       }
     }, 100);
 
-    return () => clearInterval(interval);
+    // Timeout de segurança - para após 10 segundos
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+      if (window.FB) {
+        checkLoginStatus();
+      } else {
+        console.warn('Facebook SDK não carregou após 10 segundos');
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -134,7 +154,7 @@ export default function FacebookPage() {
       
       {/* Nota: O SDK do Facebook já está carregado globalmente no layout.tsx */}
       
-      {/* Script para processar eventos do botão XFBML */}
+      {/* Script para processar eventos do botão XFBML e garantir processamento */}
       <Script
         id="facebook-login-handler"
         strategy="lazyOnload"
@@ -148,6 +168,24 @@ export default function FacebookPage() {
                 });
               }
             };
+            
+            // Processa XFBML quando o SDK estiver pronto
+            if (window.fbAsyncInit) {
+              const originalFbAsyncInit = window.fbAsyncInit;
+              window.fbAsyncInit = function() {
+                if (originalFbAsyncInit) originalFbAsyncInit();
+                // Aguarda um pouco e processa XFBML
+                setTimeout(function() {
+                  if (window.FB && window.FB.XFBML) {
+                    try {
+                      window.FB.XFBML.parse();
+                    } catch (e) {
+                      console.warn('Erro ao processar XFBML:', e);
+                    }
+                  }
+                }, 500);
+              };
+            }
           `,
         }}
       />
@@ -208,7 +246,27 @@ export default function FacebookPage() {
                     data-auto-logout-link="false" 
                     data-use-continue-as="false"
                     data-onlogin="checkLoginState"
+                    data-scope="email,public_profile"
                   ></div>
+                  
+                  {/* Fallback: Botão customizado caso XFBML não funcione */}
+                  {typeof window !== 'undefined' && !window.FB && (
+                    <Button
+                      size="lg"
+                      className="w-full bg-[#1877F2] hover:bg-[#166FE5] text-white"
+                      onClick={handleFacebookLogin}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>Carregando...</>
+                      ) : (
+                        <>
+                          <Facebook className="mr-2 h-5 w-5" />
+                          Conectar com Facebook
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </div>
 
                 <div className="pt-4 space-y-3 text-sm text-muted-foreground">
