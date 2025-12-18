@@ -103,7 +103,6 @@ export default function RootLayout({
         {/* Open Graph Image - Meta tag customizada */}
         <meta property="og:image" content={`${siteUrl}/assets/denzer-logo.png`} />
         {/* Facebook SDK - Carregado globalmente em todas as páginas */}
-        <div id="fb-root"></div>
         <Script
           id="facebook-sdk-loader"
           strategy="lazyOnload"
@@ -161,6 +160,8 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
+        {/* fb-root necessário para o SDK do Facebook */}
+        <div id="fb-root"></div>
         {/* Skip to main content link for keyboard navigation */}
         <a
           href="#main-content"
