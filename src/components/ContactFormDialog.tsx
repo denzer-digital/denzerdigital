@@ -24,6 +24,15 @@ import {
 import { useContactDialog } from "@/contexts/ContactDialogContext";
 import { Loader2, Send, CheckCircle2, X } from "lucide-react";
 
+// Declaração de tipo para o RD Station
+declare global {
+  interface Window {
+    RDCaptureForms?: {
+      init: () => void;
+    };
+  }
+}
+
 const contactFormSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   email: z.string().email("E-mail inválido"),
@@ -97,6 +106,15 @@ const ContactFormDialog = () => {
       }
     };
   }, [isOpen, closeDialog]);
+
+  // Inicializa o RD Station quando o popup é aberto
+  useEffect(() => {
+    if (isOpen && typeof window !== "undefined") {
+      if (window.RDCaptureForms) {
+        window.RDCaptureForms.init();
+      }
+    }
+  }, [isOpen]);
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
