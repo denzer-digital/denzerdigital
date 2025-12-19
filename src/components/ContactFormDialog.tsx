@@ -152,13 +152,11 @@ const ContactFormDialog = () => {
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${isOpen ? 'block' : 'hidden'}`}
       role="dialog"
-      aria-modal="true"
+      aria-modal={isOpen ? "true" : "false"}
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
       onClick={(e) => {
@@ -341,18 +339,18 @@ const ContactFormDialog = () => {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-primary hover:bg-primary/90 glow-primary group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm md:text-lg px-4 md:px-8 py-3 md:py-6 h-auto"
+                  className="flex-1 bg-primary hover:bg-primary/90 glow-primary group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm md:text-base px-4 md:px-6 py-2.5 md:py-3 h-auto"
                   data-rd="submit"
                   aria-label={isSubmitting ? "Enviando formulário" : "Enviar mensagem"}
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 md:h-6 md:w-6 animate-spin" aria-hidden="true" />
+                      <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" aria-hidden="true" />
                       <span aria-live="polite">Enviando...</span>
                     </>
                   ) : (
                     <>
-                      <Send className="mr-2 h-4 w-4 md:h-6 md:w-6 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                      <Send className="mr-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                       Enviar mensagem
                     </>
                   )}
@@ -362,7 +360,7 @@ const ContactFormDialog = () => {
                   variant="outline"
                   onClick={closeDialog}
                   disabled={isSubmitting}
-                  className="border-2 border-primary/50 hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm md:text-lg px-4 md:px-8 py-3 md:py-6 h-auto"
+                  className="border-2 border-primary/50 hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm md:text-base px-4 md:px-6 py-2.5 md:py-3 h-auto"
                   aria-label="Cancelar e fechar formulário"
                 >
                   Cancelar
