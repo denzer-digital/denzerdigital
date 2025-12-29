@@ -316,6 +316,7 @@ const ContactFormDialog = () => {
                         <SelectTrigger 
                           className="bg-background/50 border-input/50 focus:border-primary/50"
                           data-rd="service"
+                          aria-label="Selecione um serviço de interesse"
                         >
                           <SelectValue placeholder="Selecione um serviço" />
                         </SelectTrigger>

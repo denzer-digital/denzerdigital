@@ -1,25 +1,36 @@
-import { AlertCircle, Clock, TrendingDown, Database } from "lucide-react";
+import { AlertCircle, TrendingDown, Database } from "lucide-react";
+import Image from "next/image";
+
+// Componente para o ícone SVG customizado do primeiro card
+const AIIcon = () => (
+  <Image 
+    src="/assets/SVG.svg" 
+    alt="AI Icon" 
+    width={32} 
+    height={32} 
+    className="text-primary"
+  />
+);
 
 const problems = [
   {
-    icon: Clock,
-    title: "Atendimento lento e caro",
-    description: "Equipe humana limitada e custos crescentes"
+    title: "Inteligência Artificial inexistente ou isolada",
+    description: "Decisões lentas e processos que não escalam."
   },
   {
     icon: TrendingDown,
-    title: "Equipes sobrecarregadas",
-    description: "Sem tempo para o que realmente importa"
+    title: "Dados sem tracking confiável",
+    description: "Você não enxerga vazamentos nem prioridades."
   },
   {
     icon: Database,
-    title: "Dados dispersos",
-    description: "Falta de automação e integração"
+    title: "Plataformas desconectadas",
+    description: "Retrabalho, erros e perda de eficiência."
   },
   {
     icon: AlertCircle,
-    title: "Loja sem inteligência",
-    description: "E-commerce não otimizado para conversão"
+    title: "Sem gestão estratégica",
+    description: "Esforço alto, direção baixa e resultado imprevisível."
   }
 ];
 
@@ -30,10 +41,10 @@ const Problem = () => {
         <div className="max-w-6xl mx-auto text-center space-y-12">
           <div className="space-y-4 animate-fade-in-up">
             <h2 className="text-4xl md:text-5xl font-bold">
-              Os desafios do digital em <span className="text-gradient-accent">2025</span>
+              Sem ecossistema, <span style={{ color: '#FF8819' }}>não</span> <span style={{ color: '#FF8819' }}>existe</span> <span style={{ color: '#FF8819' }}>previsibilidade</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Enquanto sua concorrência evolui, esses problemas custam caro
+              Quando dados, processos e estratégia não estão conectados, o crescimento vira aposta
             </p>
           </div>
 
@@ -45,8 +56,12 @@ const Problem = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="p-4 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <problem.icon className="h-8 w-8 text-primary" />
+                  <div className="p-4 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors flex items-center justify-center">
+                    {index === 0 ? (
+                      <AIIcon />
+                    ) : (
+                      <problem.icon className="h-8 w-8 text-primary" />
+                    )}
                   </div>
                   <h3 className="text-xl font-semibold">{problem.title}</h3>
                   <p className="text-sm text-muted-foreground">{problem.description}</p>

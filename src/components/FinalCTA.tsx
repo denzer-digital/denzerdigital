@@ -18,12 +18,11 @@ const FinalCTA = () => {
           <div className="space-y-6 animate-fade-in-up">
             <h2 className="text-4xl md:text-6xl font-bold leading-tight">
               Sua operação digital pode ser{" "}
-              <span className="text-gradient-primary">10x mais inteligente</span>
+              <span className="text-gradient-primary">até 10x mais inteligente</span>
             </h2>
             
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
-              Converse com um especialista e veja como integrar IA + Shopify + Estratégia 
-              para transformar seus resultados.
+              Converse com um especialista e veja como integrar IA, dados e estratégia em um ecossistema que gera previsibilidade e escala.
             </p>
           </div>
 
@@ -46,7 +45,7 @@ const FinalCTA = () => {
               onClick={openDialog}
             >
               <Calendar className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              Agendar diagnóstico gratuito
+              Agendar diagnóstico estratégico
             </Button>
           </div>
 
@@ -54,15 +53,15 @@ const FinalCTA = () => {
           <div className="pt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-2">
               <div className="text-3xl font-bold text-gradient-primary">Grátis</div>
-              <div className="text-sm text-muted-foreground">Diagnóstico inicial sem custo</div>
+              <div className="text-sm text-muted-foreground">Diagnóstico estratégico sem custo</div>
             </div>
             <div className="space-y-2">
               <div className="text-3xl font-bold text-gradient-accent">21 dias</div>
-              <div className="text-sm text-muted-foreground">Para implementação completa</div>
+              <div className="text-sm text-muted-foreground">Ecossistema implantado em até 21 dias</div>
             </div>
             <div className="space-y-2">
               <div className="text-3xl font-bold text-gradient-primary">ROI positivo</div>
-              <div className="text-sm text-muted-foreground">Desde o primeiro mês</div>
+              <div className="text-sm text-muted-foreground">Foco em previsibilidade e retorno desde o início</div>
             </div>
           </div>
         </div>

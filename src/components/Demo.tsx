@@ -283,7 +283,10 @@ const Demo = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground whitespace-nowrap">Tipo:</span>
                     <Select value={agentType} onValueChange={(value) => setAgentType(value as AgentType)}>
-                      <SelectTrigger className="w-full md:w-[200px] h-8 text-xs">
+                      <SelectTrigger 
+                        className="w-full md:w-[200px] h-8 text-xs"
+                        aria-label="Selecione o tipo de agente de IA"
+                      >
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
                       <SelectContent>

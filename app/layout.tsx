@@ -38,9 +38,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/favicon_denzer.png",
-    shortcut: "/favicon_denzer.png",
-    apple: "/favicon_denzer.png",
+    icon: "/assets/favicon-denzer.webp",
+    shortcut: "/assets/favicon-denzer.webp",
+    apple: "/assets/favicon-denzer.webp",
   },
   openGraph: {
     type: "website",
@@ -94,8 +94,27 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        {/* GTM - Mantido como beforeInteractive pois é necessário para tracking */}
-        <Script id="gtm-stape" strategy="beforeInteractive">
+        {/* 
+          Preconnect e DNS Prefetch para recursos externos - melhora performance
+          Nota: Recursos de terceiros (Facebook SDK, RD Station, CloudFront) não podem ter 
+          seus headers de cache controlados por nós, pois são servidos por terceiros.
+          No entanto, preconnect/dns-prefetch acelera a conexão inicial com esses domínios.
+        */}
+        <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://stape.denzerdigital.com.br" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://d335luupugsy2.cloudfront.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://d1sag09wwfbul8.cloudfront.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://dk9suync0k2va.cloudfront.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.facebook.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://stape.denzerdigital.com.br" />
+        <link rel="dns-prefetch" href="https://d335luupugsy2.cloudfront.net" />
+        <link rel="dns-prefetch" href="https://d1sag09wwfbul8.cloudfront.net" />
+        <link rel="dns-prefetch" href="https://dk9suync0k2va.cloudfront.net" />
+        <link rel="dns-prefetch" href="https://www.facebook.com" />
+        
+        {/* GTM - Movido para afterInteractive para não bloquear renderização inicial */}
+        <Script id="gtm-stape" strategy="afterInteractive">
           {`(function(w,d,s,l,i){try{if(typeof w!=='undefined'&&typeof d!=='undefined'){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0];if(f){var j=d.createElement(s);j.async=true;j.src="https://stape.denzerdigital.com.br/3ugm6ismcveky.js?"+i;f.parentNode.insertBefore(j,f);}}}catch(e){console.warn('Erro ao carregar GTM:',e);}})(window,document,'script','dataLayer','dvduuqd=EA9YMTcgXj0hU1InWiolTw9WV1hSSxcHRA8AGBkIAQ0QDAwCAgFdChYGSxQR');`}
         </Script>
         {/* Facebook App ID - Meta tag customizada */}

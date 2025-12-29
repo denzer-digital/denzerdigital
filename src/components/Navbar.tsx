@@ -59,7 +59,7 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             <Link href="/" aria-label="Denzer Digital - Página inicial">
               <Image
-                src="/assets/logo_header.webp"
+                src="/assets/Logo-Denzer-Digital.webp"
                 alt="Denzer Digital AI Systems"
                 width={200}
                 height={48}

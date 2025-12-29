@@ -25,6 +25,7 @@ const Pricing = dynamic(() => import("@/components/Pricing"), {
 });
 const About = dynamic(() => import("@/components/About"), {
   loading: () => <div className="min-h-[400px]" />,
+  ssr: false,
 });
 const FinalCTA = dynamic(() => import("@/components/FinalCTA"), {
   loading: () => <div className="min-h-[200px]" />,

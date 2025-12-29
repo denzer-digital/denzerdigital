@@ -60,13 +60,13 @@ const Hero = () => {
 
       {/* Content */}
       <div className="container relative z-10 mx-auto px-4 py-20">
-        <div className="max-w-5xl mx-auto text-center space-y-8 animate-fade-in-up">
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            Sua empresa + Inteligência Artificial ={" "}
-            <span className="text-gradient-primary">Lucro em Escala</span>
+        <div className="mx-auto text-center space-y-8 animate-fade-in-up" style={{ maxWidth: '1330px' }}>
+          <h1 className="font-bold leading-tight mx-auto text-3xl md:text-5xl lg:text-[60px]">
+            Transforme dados em resultados previsíveis
+            com um <span style={{ color: '#FF8819' }}>ecossistema inteligente</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">Agentes de IA que vendem, atendem e otimizam sua operação digital integrados à sua loja Shopify e à sua estratégia de marketing.</p>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto">A Denzer Digital integra IA, automações e análise de dados para entregar um plano de ação claro, identificar gargalos e garantir controle total sobre a sua operação.</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Button 
@@ -95,6 +95,8 @@ const Hero = () => {
               Ver como funciona
             </Button>
           </div>
+
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto">Diagnóstico, roadmap e implantação do ecossistema em até 21 dias.</p>
 
           {/* Trust indicators - Partner Badges */}
           <div className="pt-12" aria-label="Parceiros e certificações">

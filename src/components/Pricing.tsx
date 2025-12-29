@@ -1,54 +1,59 @@
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
+import { useContactDialog } from "@/contexts/ContactDialogContext";
 
 const plans = [
   {
     name: "Essencial",
-    subtitle: "IA + Atendimento",
-    price: "sob consulta",
+    subtitle: "Base operacional (IA + Integrações)",
+    price: "Investimento sob diagnóstico",
     description: "Perfeito para começar com automação inteligente",
     features: [
-      "Agente de IA para WhatsApp",
-      "Chatbot no site",
-      "Integração com CRM",
-      "Relatórios básicos",
-      "Suporte por email"
+      "IA no WhatsApp para atendimento e triagem",
+      "Integrações principais (CRM / formulários / WhatsApp)",
+      "Automação de rotinas e follow-ups",
+      "Painel básico de indicadores (macro)",
+      "Setup e ativação guiada"
     ],
+    buttonText: "Solicitar diagnóstico",
     featured: false
   },
   {
     name: "Performance",
-    subtitle: "IA + Shopify + Marketing",
-    price: "sob consulta",
+    subtitle: "IA + Tracking avançado + automações",
+    price: "Proposta personalizada",
     description: "Solução completa para crescimento acelerado",
     features: [
       "Tudo do Essencial",
-      "Loja Shopify otimizada",
-      "Gestão de mídia paga",
-      "Automações avançadas",
-      "Dashboard analytics",
-      "Suporte prioritário"
+      "Tracking de eventos (macro + micro)",
+      "Correspondência avançada / server-side (quando necessário)",
+      "Dashboards de performance por canal e etapa",
+      "IA com relatórios no WhatsApp (resumo + alertas)"
     ],
+    buttonText: "Quero o plano Performance",
     featured: true
   },
   {
     name: "Enterprise",
-    subtitle: "Gestão 360° + IA Avançada",
-    price: "sob consulta",
+    subtitle: "Gestão Estratégica do Ecossistema (360°)",
+    price: "Proposta personalizada",
     description: "Transformação digital completa",
     features: [
       "Tudo do Performance",
-      "IA personalizada",
-      "Integrações ilimitadas",
-      "Consultoria estratégica",
-      "Suporte 24/7",
+      "Gestão 360° (plano de ação)",
+      "Otimização contínua de processos e vendas",
+      "Integrações avançadas e governança de dados",
+      "Acompanhamento estratégico",
       "Account manager dedicado"
     ],
+    buttonText: "Falar com um especialista",
     featured: false
   }
 ];
 
 const Pricing = () => {
+  const { openDialog } = useContactDialog();
+  
   return (
     <section id="planos" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
@@ -58,10 +63,10 @@ const Pricing = () => {
           {/* Header */}
           <div className="text-center space-y-4 animate-fade-in-up">
             <h2 className="text-4xl md:text-5xl font-bold">
-              Planos que se adaptam ao seu <span className="text-gradient-primary">crescimento</span>
+              Planos por maturidade de <span className="text-gradient-primary">ecossistema</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Escolha a solução ideal para o momento do seu negócio
+              Comece pelo Essencial e evolua para Performance e 360° conforme a maturidade da operação.
             </p>
           </div>
 
@@ -123,8 +128,9 @@ const Pricing = () => {
                         : 'bg-secondary hover:bg-secondary/80'
                     }`}
                     size="lg"
+                    onClick={openDialog}
                   >
-                    Solicitar proposta
+                    {plan.buttonText || "Solicitar proposta"}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </div>
@@ -134,7 +140,7 @@ const Pricing = () => {
 
           {/* Footer note */}
           <p className="text-center text-sm text-muted-foreground">
-            Todos os planos incluem período de testes e garantia de satisfação
+            Todos os planos incluem diagnóstico, onboarding e um roadmap de evolução do ecossistema.
           </p>
         </div>
       </div>

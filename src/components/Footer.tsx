@@ -26,7 +26,7 @@ const Footer = () => {
             <div className="md:col-span-2 space-y-4 text-center md:text-left">
               <div className="flex justify-center md:justify-start">
                 <Image
-                  src="/assets/logo_header.webp"
+                  src="/assets/Logo-Denzer-Digital.webp"
                   alt="Denzer Digital AI Systems"
                   width={200}
                   height={40}
@@ -35,8 +35,7 @@ const Footer = () => {
                 />
               </div>
               <p className="text-sm text-muted-foreground max-w-md mx-auto md:mx-0">
-                Transformando operações digitais através de inteligência artificial, 
-                estratégia e tecnologia de ponta.
+                Transformamos operações digitais em ecossistemas inteligentes, unindo dados, IA, automação e estratégia para gerar previsibilidade e crescimento sustentável.
               </p>
               
               {/* Social Links */}
