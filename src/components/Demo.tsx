@@ -50,6 +50,7 @@ const Demo = () => {
   const processedMessagesRef = useRef<Set<string>>(new Set()); // rastreia mensagens já processadas para evitar duplicatas
   const isProcessingRef = useRef<boolean>(false); // evita processamento simultâneo
   const pendingMessagesCountRef = useRef<number>(0); // contador de mensagens pendentes na fila
+  const processingTimeoutRef = useRef<NodeJS.Timeout | null>(null); // timeout de segurança para resetar estado
 
   // Auto-scroll para a última mensagem apenas no container do chat
   const scrollToBottom = () => {
@@ -138,6 +139,28 @@ const Demo = () => {
 
     try {
       setIsLoading(true);
+      
+      // Limpa timeout anterior se existir
+      if (processingTimeoutRef.current) {
+        clearTimeout(processingTimeoutRef.current);
+        processingTimeoutRef.current = null;
+      }
+      
+      // Timeout de segurança: se após 30 segundos ainda estiver processando, libera o input
+      processingTimeoutRef.current = setTimeout(() => {
+        console.warn("Timeout de segurança: liberando input após 30 segundos");
+        setIsProcessingMessages(false);
+        pendingMessagesCountRef.current = 0;
+        setIsLoading(false);
+        isProcessingRef.current = false;
+        if (processingTimeoutRef.current) {
+          clearTimeout(processingTimeoutRef.current);
+          processingTimeoutRef.current = null;
+        }
+      }, 30000);
+      
+      const hasReceivedAnyMessageRef = { current: false };
+      
       await sendMessageToWebhook(
         userMessage,
         agentType,
@@ -167,6 +190,9 @@ const Demo = () => {
             console.log("Mensagem duplicada ignorada:", trimmedMessage.substring(0, 50));
             return;
           }
+          
+          // Marca que recebeu pelo menos uma mensagem
+          hasReceivedAnyMessageRef.current = true;
           
           // Marca como processada ANTES de adicionar à fila
           processedMessagesRef.current.add(normalized);
@@ -218,6 +244,11 @@ const Demo = () => {
               // Aguarda um pequeno delay para garantir que a última mensagem foi renderizada
               await delay(300);
               setIsProcessingMessages(false);
+              // Limpa timeout de segurança quando todas as mensagens foram processadas
+              if (processingTimeoutRef.current) {
+                clearTimeout(processingTimeoutRef.current);
+                processingTimeoutRef.current = null;
+              }
             }
           }).catch(error => {
             console.error("Erro ao processar mensagem na fila:", error);
@@ -228,17 +259,32 @@ const Demo = () => {
             pendingMessagesCountRef.current = Math.max(0, pendingMessagesCountRef.current - 1);
             if (pendingMessagesCountRef.current === 0) {
               setIsProcessingMessages(false);
+              // Limpa timeout de segurança
+              if (processingTimeoutRef.current) {
+                clearTimeout(processingTimeoutRef.current);
+                processingTimeoutRef.current = null;
+              }
             }
           });
         }
       );
       
-      // Libera processamento após o polling terminar
-      // Aguarda um pouco para garantir que todas as mensagens da fila foram processadas
-      // O isProcessingMessages será atualizado quando a fila terminar de processar todas as mensagens
+      // Aguarda um tempo adicional após o polling terminar para garantir que todas as mensagens foram processadas
+      // Se não recebeu nenhuma mensagem, libera após um tempo razoável
       setTimeout(() => {
         isProcessingRef.current = false;
-      }, 1000);
+        
+        // Se não recebeu nenhuma mensagem após 5 segundos do polling terminar, libera o input
+        if (!hasReceivedAnyMessageRef.current && pendingMessagesCountRef.current === 0) {
+          console.log("Nenhuma mensagem recebida, liberando input");
+          setIsProcessingMessages(false);
+          setIsLoading(false);
+          if (processingTimeoutRef.current) {
+            clearTimeout(processingTimeoutRef.current);
+            processingTimeoutRef.current = null;
+          }
+        }
+      }, 5000);
 
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
@@ -249,6 +295,12 @@ const Demo = () => {
       isProcessingRef.current = false;
       pendingMessagesCountRef.current = 0;
       setIsProcessingMessages(false);
+      
+      // Limpa timeout de segurança
+      if (processingTimeoutRef.current) {
+        clearTimeout(processingTimeoutRef.current);
+        processingTimeoutRef.current = null;
+      }
       
       setMessages(prev => [...prev, { 
         role: "assistant", 
