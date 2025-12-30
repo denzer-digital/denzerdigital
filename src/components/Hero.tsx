@@ -107,7 +107,7 @@ const Hero = () => {
               <a href="https://www.kommo.com/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
                 <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               </a>
-              <Image src="/assets/meta.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
+              <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
             </div>
 
@@ -146,7 +146,7 @@ const Hero = () => {
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <Image src="/assets/meta.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
+                      <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">

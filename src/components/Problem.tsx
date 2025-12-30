@@ -1,5 +1,8 @@
+"use client";
+
 import { AlertCircle, TrendingDown, Database } from "lucide-react";
 import Image from "next/image";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 // Componente para o ícone SVG customizado do primeiro card
 const AIIcon = () => (
@@ -35,11 +38,14 @@ const problems = [
 ];
 
 const Problem = () => {
+  const headerAnimation = useScrollAnimation();
+  const cardsAnimation = useScrollAnimation();
+
   return (
     <section className="py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto text-center space-y-12">
-          <div className="space-y-4 animate-fade-in-up">
+          <div ref={headerAnimation.ref} className={`space-y-4 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}>
             <h2 className="text-4xl md:text-5xl font-bold">
               Sem ecossistema, <span style={{ color: '#FF8819' }}>não</span> <span style={{ color: '#FF8819' }}>existe</span> <span style={{ color: '#FF8819' }}>previsibilidade</span>
             </h2>
@@ -48,12 +54,12 @@ const Problem = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div ref={cardsAnimation.ref} className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${cardsAnimation.isVisible ? 'visible' : ''}`}>
             {problems.map((problem, index) => (
               <div
                 key={index}
-                className="p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 group"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 group scroll-scale-in ${cardsAnimation.isVisible ? 'visible' : ''}`}
+                style={{ transitionDelay: `${index * 0.1}s` }}
               >
                 <div className="flex flex-col items-center text-center space-y-4">
                   <div className="p-4 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors flex items-center justify-center">

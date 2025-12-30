@@ -1,6 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const steps = [
   {
@@ -32,13 +35,16 @@ const steps = [
 
 const HowItWorks = () => {
   const { openDialog } = useContactDialog();
+  const headerAnimation = useScrollAnimation();
+  const stepsAnimation = useScrollAnimation();
+  const footerAnimation = useScrollAnimation();
   
   return (
     <section id="como-funciona" className="py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="max-w-[1330px] mx-auto space-y-16">
           {/* Header */}
-          <div className="text-center space-y-4 animate-fade-in-up">
+          <div ref={headerAnimation.ref} className={`text-center space-y-4 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}>
             <h2 className="text-4xl md:text-5xl font-bold">
               Ecossistema implantado em até <span className="text-gradient-accent">21 dias</span>
             </h2>
@@ -49,12 +55,12 @@ const HowItWorks = () => {
 
           {/* Timeline */}
           <div className="relative">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 relative items-stretch">
+            <div ref={stepsAnimation.ref} className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 relative items-stretch ${stepsAnimation.isVisible ? 'visible' : ''}`}>
               {steps.map((step, index) => (
                 <div
                   key={index}
-                  className="relative"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className={`relative scroll-scale-in ${stepsAnimation.isVisible ? 'visible' : ''}`}
+                  style={{ transitionDelay: `${index * 0.1}s` }}
                 >
                   {/* Step card */}
                   <div className="bg-card rounded-2xl border border-border hover:border-primary/50 p-6 space-y-3 transition-all duration-300 hover:scale-105 group flex flex-col w-full h-full">
@@ -79,7 +85,7 @@ const HowItWorks = () => {
           </div>
 
           {/* CTA */}
-          <div className="text-center pt-4 space-y-6 animate-fade-in-up">
+          <div ref={footerAnimation.ref} className={`text-center pt-4 space-y-6 scroll-fade-in ${footerAnimation.isVisible ? 'visible' : ''}`}>
             <p className="text-base md:text-lg text-muted-foreground max-w-4xl mx-auto px-4">
               Você sabe exatamente o que será entregue, em que ordem e com quais metas sem "caixa-preta".
             </p>

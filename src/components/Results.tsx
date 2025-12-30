@@ -1,4 +1,7 @@
+"use client";
+
 import { TrendingUp, Clock, DollarSign } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const results = [
   {
@@ -40,12 +43,15 @@ const results = [
 ];
 
 const Results = () => {
+  const headerAnimation = useScrollAnimation();
+  const cardsAnimation = useScrollAnimation();
+
   return (
     <section id="resultados" className="py-24 bg-gradient-to-b from-background via-secondary/20 to-background">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto space-y-16">
           {/* Header */}
-          <div className="text-center space-y-4 animate-fade-in-up">
+          <div ref={headerAnimation.ref} className={`text-center space-y-4 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}>
             <h2 className="text-4xl md:text-5xl font-bold">
               Resultados <span className="text-gradient-accent">comprovados</span>
             </h2>
@@ -55,12 +61,12 @@ const Results = () => {
           </div>
 
           {/* Results Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div ref={cardsAnimation.ref} className={`grid grid-cols-1 md:grid-cols-3 gap-6 ${cardsAnimation.isVisible ? 'visible' : ''}`}>
             {results.map((result, index) => (
               <div
                 key={index}
-                className="p-8 rounded-2xl bg-card border border-border text-center space-y-6"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`p-8 rounded-2xl bg-card border border-border text-center space-y-6 scroll-scale-in ${cardsAnimation.isVisible ? 'visible' : ''}`}
+                style={{ transitionDelay: `${index * 0.1}s` }}
               >
                 {/* Icon */}
                 <div className="flex justify-center">

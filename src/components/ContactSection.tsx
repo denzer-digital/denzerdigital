@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { formatPhone, unformatPhone } from "@/lib/phoneFormatter";
@@ -41,6 +42,8 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 const ContactSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const contentAnimation = useScrollAnimation();
+  const formAnimation = useScrollAnimation();
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -85,7 +88,7 @@ const ContactSection = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left side - Content */}
-            <div className="space-y-6 animate-fade-in-up">
+            <div ref={contentAnimation.ref} className={`space-y-6 scroll-fade-in-left ${contentAnimation.isVisible ? 'visible' : ''}`}>
               <div className="space-y-4">
                 <h2 className="text-4xl md:text-5xl font-bold">
                   Entre em <span className="text-gradient-primary">contato</span>
@@ -118,7 +121,7 @@ const ContactSection = () => {
             </div>
 
             {/* Right side - Form */}
-            <div className="relative">
+            <div ref={formAnimation.ref} className={`relative scroll-fade-in-right ${formAnimation.isVisible ? 'visible' : ''}`}>
               <div className="rounded-2xl bg-card border border-border p-8 shadow-2xl">
                 {isSuccess ? (
                   <div className="flex flex-col items-center justify-center py-12 space-y-4">

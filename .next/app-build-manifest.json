@@ -16,15 +16,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/automacao-integracoes/page": [
+    "/tracking/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/automacao-integracoes/page.js"
+      "static/chunks/app/tracking/page.js"
     ],
-    "/automacao-integracoes/layout": [
+    "/tracking/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/automacao-integracoes/layout.js"
+      "static/chunks/app/tracking/layout.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

@@ -1,9 +1,15 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Calendar, ArrowRight } from "lucide-react";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const FinalCTA = () => {
   const { openDialog } = useContactDialog();
+  const contentAnimation = useScrollAnimation();
+  const indicatorsAnimation = useScrollAnimation();
+  
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-accent/20" />
@@ -15,7 +21,7 @@ const FinalCTA = () => {
       <div className="container relative mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center space-y-12">
           {/* Content */}
-          <div className="space-y-6 animate-fade-in-up">
+          <div ref={contentAnimation.ref} className={`space-y-6 scroll-fade-in ${contentAnimation.isVisible ? 'visible' : ''}`}>
             <h2 className="text-4xl md:text-6xl font-bold leading-tight">
               Sua operação digital pode ser{" "}
               <span className="text-gradient-primary">até 10x mais inteligente</span>
@@ -50,7 +56,7 @@ const FinalCTA = () => {
           </div>
 
           {/* Trust indicators */}
-          <div className="pt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div ref={indicatorsAnimation.ref} className={`pt-12 grid grid-cols-1 md:grid-cols-3 gap-8 scroll-fade-in ${indicatorsAnimation.isVisible ? 'visible scroll-delay-200' : ''}`}>
             <div className="space-y-2">
               <div className="text-3xl font-bold text-gradient-primary">Grátis</div>
               <div className="text-sm text-muted-foreground">Diagnóstico estratégico sem custo</div>

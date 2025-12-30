@@ -1,6 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const plans = [
   {
@@ -53,6 +56,8 @@ const plans = [
 
 const Pricing = () => {
   const { openDialog } = useContactDialog();
+  const headerAnimation = useScrollAnimation();
+  const cardsAnimation = useScrollAnimation();
   
   return (
     <section id="planos" className="py-24 relative overflow-hidden">
@@ -61,7 +66,7 @@ const Pricing = () => {
       <div className="container relative mx-auto px-4">
         <div className="max-w-6xl mx-auto space-y-16">
           {/* Header */}
-          <div className="text-center space-y-4 animate-fade-in-up">
+          <div ref={headerAnimation.ref} className={`text-center space-y-4 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}>
             <h2 className="text-4xl md:text-5xl font-bold">
               Planos por maturidade de <span className="text-gradient-primary">ecossistema</span>
             </h2>
@@ -71,16 +76,16 @@ const Pricing = () => {
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div ref={cardsAnimation.ref} className={`grid grid-cols-1 md:grid-cols-3 gap-8 ${cardsAnimation.isVisible ? 'visible' : ''}`}>
             {plans.map((plan, index) => (
               <div
                 key={index}
-                className={`relative p-8 rounded-2xl border transition-all duration-300 hover:scale-105 ${
+                className={`relative p-8 rounded-2xl border transition-all duration-300 hover:scale-105 scroll-scale-in ${cardsAnimation.isVisible ? 'visible' : ''} ${
                   plan.featured
                     ? 'bg-card border-primary shadow-2xl glow-primary'
                     : 'bg-card border-border hover:border-primary/50'
                 }`}
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ transitionDelay: `${index * 0.1}s` }}
               >
                 {/* Featured badge */}
                 {plan.featured && (

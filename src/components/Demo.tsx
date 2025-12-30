@@ -1,8 +1,11 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { sendMessageToWebhook, createSessionId, isWorkflowStartedResponse } from "@/services/webhookService";
 import {
   Select,
@@ -213,6 +216,9 @@ const Demo = () => {
     }
   };
 
+  const contentAnimation = useScrollAnimation();
+  const chatAnimation = useScrollAnimation();
+
   return (
     <section id="experimente-ia" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
@@ -221,7 +227,7 @@ const Demo = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Content */}
-            <div className="space-y-8 animate-fade-in-up">
+            <div ref={contentAnimation.ref} className={`space-y-8 scroll-fade-in-left ${contentAnimation.isVisible ? 'visible' : ''}`}>
               <div className="space-y-4">
                 <h2 className="text-4xl md:text-5xl font-bold">
                   Experimente nossa <span className="text-gradient-primary">IA agora mesmo</span>
@@ -258,7 +264,7 @@ const Demo = () => {
             </div>
 
             {/* Right side - Chat Demo */}
-            <div className="relative">
+            <div ref={chatAnimation.ref} className={`relative scroll-fade-in-right ${chatAnimation.isVisible ? 'visible' : ''}`}>
               {/* Bola azul (como estava antes) */}
               <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/20 rounded-full blur-2xl animate-pulse-glow z-0" />
               

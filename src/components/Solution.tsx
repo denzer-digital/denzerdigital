@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Bot, Compass, ShoppingBag, BarChart3, ArrowRight } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 // Componente para o ícone SVG customizado de automação
 const AutomationIcon = () => (
@@ -46,13 +49,17 @@ const solutions = [
 ];
 
 const Solution = () => {
+  const headerAnimation = useScrollAnimation();
+  const cardsAnimation = useScrollAnimation();
+  const footerAnimation = useScrollAnimation();
+
   return (
     <section id="solucoes" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
       
       <div className="container relative mx-auto px-4">
         <div className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center space-y-4 animate-fade-in-up">
+          <div ref={headerAnimation.ref} className={`text-center space-y-4 scroll-fade-in ${headerAnimation.isVisible ? 'visible' : ''}`}>
             <h2 className="text-4xl md:text-5xl font-bold">
               O ecossistema <span className="text-gradient-primary">Denzer Digital</span>
             </h2>
@@ -61,13 +68,13 @@ const Solution = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div ref={cardsAnimation.ref} className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${cardsAnimation.isVisible ? 'visible' : ''}`}>
             {solutions.map((solution, index) => (
               <Link
                 href={solution.href}
                 key={index}
-                className="group relative p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden"
-                style={{ animationDelay: `${index * 0.15}s` }}
+                className={`group relative p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden scroll-fade-in ${cardsAnimation.isVisible ? 'visible' : ''}`}
+                style={{ transitionDelay: `${index * 0.15}s` }}
               >
                 {/* Gradient overlay on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${solution.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
@@ -110,7 +117,7 @@ const Solution = () => {
             ))}
           </div>
 
-          <div className="text-center pt-8 animate-fade-in-up">
+          <div ref={footerAnimation.ref} className={`text-center pt-8 scroll-fade-in ${footerAnimation.isVisible ? 'visible' : ''}`}>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Quando IA, tracking, integrações e estratégia trabalham juntos, sua operação para de "apagar incêndio" e passa a evoluir com clareza com plano de ação e melhoria contínua.
             </p>

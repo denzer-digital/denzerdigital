@@ -196,6 +196,67 @@
   animation: fade-in-up 0.8s ease-out forwards;
 }
 
+/* Scroll animations */
+.scroll-fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-fade-in-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-fade-in-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-fade-in-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-fade-in-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-scale-in {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-scale-in.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.scroll-delay-100 {
+  transition-delay: 0.1s;
+}
+
+.scroll-delay-200 {
+  transition-delay: 0.2s;
+}
+
+.scroll-delay-300 {
+  transition-delay: 0.3s;
+}
+
+.scroll-delay-400 {
+  transition-delay: 0.4s;
+}
+
 @keyframes bounce {
   0%, 80%, 100% {
     transform: translateY(0);

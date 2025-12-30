@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import {
   Carousel,
   CarouselContent,
@@ -13,13 +14,15 @@ import { useContactDialog } from "@/contexts/ContactDialogContext";
 
 const About = () => {
   const { openDialog } = useContactDialog();
+  const contentAnimation = useScrollAnimation();
+  const statsAnimation = useScrollAnimation();
   
   return <section className="py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 items-start">
             {/* Left side - Content */}
-            <div className="space-y-6 animate-fade-in-up text-center md:text-left">
+            <div ref={contentAnimation.ref} className={`space-y-6 scroll-fade-in-left text-center md:text-left ${contentAnimation.isVisible ? 'visible' : ''}`}>
               <h2 className="text-4xl md:text-5xl font-bold">
                 Sobre a <span className="text-primary">Denzer Digital</span>
               </h2>
@@ -50,7 +53,7 @@ const About = () => {
             </div>
 
             {/* Right side - Stats */}
-            <div className="space-y-6 w-full max-w-md">
+            <div ref={statsAnimation.ref} className={`space-y-6 w-full max-w-md scroll-fade-in-right ${statsAnimation.isVisible ? 'visible' : ''}`}>
               <div className="relative p-8 rounded-2xl bg-card border border-border overflow-hidden w-full">
                 <div className="absolute inset-0 bg-gradient-to-b from-primary/30 via-primary/15 to-background" />
                 <div className="relative space-y-6">
@@ -82,7 +85,7 @@ const About = () => {
               <a href="https://www.kommo.com/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
                 <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               </a>
-              <Image src="/assets/meta.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
+              <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
             </div>
 
@@ -121,7 +124,7 @@ const About = () => {
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <Image src="/assets/meta.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
+                      <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
