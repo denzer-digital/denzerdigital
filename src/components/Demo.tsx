@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { sendMessageToWebhook, createSessionId, isWorkflowStartedResponse } from "@/services/webhookService";
 import {
   Select,

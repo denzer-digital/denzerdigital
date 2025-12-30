@@ -246,7 +246,7 @@ const ContactSection = () => {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
-                                <SelectItem value="ecommerce-shopify">E-commerce Shopify</SelectItem>
+                                <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
                                 <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>
                                 <SelectItem value="tracking">Tracking</SelectItem>
                               </SelectContent>

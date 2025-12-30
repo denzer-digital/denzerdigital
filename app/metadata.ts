@@ -36,7 +36,7 @@ export function generatePageMetadata({
       siteName: "Denzer Digital",
       images: [
         {
-          url: `${siteUrl}/assets/denzer-logo.png`,
+          url: `${siteUrl}/assets/Logo-Denzer-Digital.webp`,
           width: 1200,
           height: 630,
           alt: title,
@@ -49,7 +49,7 @@ export function generatePageMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: ["/assets/denzer-logo.png"],
+      images: ["/assets/Logo-Denzer-Digital.webp"],
     },
     other: {
       "fb:app_id": "658289000700758",

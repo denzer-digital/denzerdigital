@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     description: "Transforme sua operação digital com Inteligência Artificial, automação e tecnologia de ponta.",
     images: [
       {
-        url: `${siteUrl}/assets/denzer-logo.png`,
+        url: `${siteUrl}/assets/Logo-Denzer-Digital.webp`,
         width: 1200,
         height: 630,
         alt: "Denzer Digital",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Denzer Digital | Inteligência Artificial e Automação",
     description: "Transforme sua operação digital com Inteligência Artificial, automação e tecnologia de ponta.",
-    images: ["/assets/denzer-logo.png"],
+    images: ["/assets/Logo-Denzer-Digital.webp"],
     creator: "@denzerdigital",
   },
   robots: {
@@ -120,7 +120,7 @@ export default function RootLayout({
         {/* Facebook App ID - Meta tag customizada */}
         <meta property="fb:app_id" content="658289000700758" />
         {/* Open Graph Image - Meta tag customizada */}
-        <meta property="og:image" content={`${siteUrl}/assets/denzer-logo.png`} />
+        <meta property="og:image" content={`${siteUrl}/assets/Logo-Denzer-Digital.webp`} />
         {/* Facebook SDK - Carregado globalmente em todas as páginas */}
         <Script
           id="facebook-sdk-loader"
