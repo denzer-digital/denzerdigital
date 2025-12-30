@@ -1,7 +1,8 @@
 {
   "/page": "app/page.js",
+  "/api/chat/messages/route": "app/api/chat/messages/route.js",
   "/agentes-de-ia/page": "app/agentes-de-ia/page.js",
+  "/tracking/page": "app/tracking/page.js",
   "/automacao-integracoes/page": "app/automacao-integracoes/page.js",
-  "/gestao-digital-360/page": "app/gestao-digital-360/page.js",
-  "/tracking/page": "app/tracking/page.js"
+  "/gestao-digital-360/page": "app/gestao-digital-360/page.js"
 }

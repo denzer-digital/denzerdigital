@@ -344,7 +344,7 @@ const Demo = () => {
                       }
                     }}>
                       <SelectTrigger 
-                        className="w-full md:w-[200px] h-8 text-xs"
+                        className="w-full md:w-[200px] h-8 text-xs [&>span]:truncate"
                         aria-label="Selecione o tipo de agente de IA"
                       >
                         <SelectValue placeholder="Selecione o tipo" />

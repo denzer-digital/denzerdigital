@@ -1541,6 +1541,11 @@ video {
 .overflow-y-auto {
   overflow-y: auto;
 }
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .whitespace-normal {
   white-space: normal;
 }
@@ -3995,8 +4000,16 @@ video {
     width: auto;
   }
 
+  .md\:w-\[240px\] {
+    width: 240px;
+  }
+
   .md\:max-w-\[420px\] {
     max-width: 420px;
+  }
+
+  .md\:flex-initial {
+    flex: 0 1 auto;
   }
 
   .md\:grid-cols-2 {
@@ -4174,6 +4187,10 @@ video {
 
 @media (min-width: 1024px) {
 
+  .lg\:w-\[280px\] {
+    width: 280px;
+  }
+
   .lg\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -4254,6 +4271,16 @@ video {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+}
+
+.\[\&\>span\]\:max-w-full>span {
+  max-width: 100%;
+}
+
+.\[\&\>span\]\:truncate>span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .\[\&\>svg\+div\]\:translate-y-\[-3px\]>svg+div {
