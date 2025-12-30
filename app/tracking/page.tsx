@@ -109,43 +109,25 @@ export default function TrackingPage() {
     setAiReport(null);
     setAiError(null);
 
-    const apiKey = "AIzaSyBVu28B_7KH8e69UD9eDBPpjhDvl_tj0U0";
-    const userQuery = `Atuo como estrategista da Denzer Digital. O cliente investe R$ ${adSpend} em anúncios e tem ROAS ${roas}.
-
-    Contexto: Sem traqueamento Server-Side (apenas Pixel), ele perde cerca de 30% da atribuição das vendas devido ao iOS 14+.
-
-    Gere um relatório curto, direto e visual ("estilo dashboard") usando EXATAMENTE este formato (mantenha os emojis):
-
-    📊 *Faturamento Rastreado (Atual):* R$ [Calculado: Spend * ROAS]
-    👻 *Faturamento Invisível (Não Atribuído):* R$ [Calculado: ~30% adicional que o pixel perdeu]
-    🚀 *Potencial Real de Receita:* R$ [Soma dos dois acima]
-
-    *Diagnóstico:*
-    [Escreva apenas 2 ou 3 frases curtas e persuasivas alertando que ele está tomando decisões com dados incompletos (cegueira de dados) e como o Server-Side da Denzer traz essa receita de volta para o painel].
-    `;
-
     try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: userQuery }] }],
-          }),
-        }
-      );
+      const response = await fetch('/api/gemini/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          adSpend,
+          roas,
+        }),
+      });
 
       const data = await response.json();
       
-      if (data.error) {
-        throw new Error(data.error.message);
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao processar a análise');
       }
 
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      setAiReport(text || null);
+      setAiReport(data.report || null);
 
     } catch (error) {
       console.error("Erro na análise:", error);

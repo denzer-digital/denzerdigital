@@ -1,20 +1,22 @@
-import type { Metadata } from "next";
-import { generatePageMetadata } from "../metadata";
+import { Metadata } from "next";
 
-export const metadata: Metadata = generatePageMetadata({
-  title: "Agentes de IA | Atendimento Automatizado com Inteligência Artificial",
-  description: "Atendimento automatizado via WhatsApp, site e redes sociais com agentes de IA que aprendem continuamente. Qualificação automática de leads e transferência inteligente para humanos.",
-  path: "/agentes-de-ia",
+export const metadata: Metadata = {
+  title: "Agentes de IA | Denzer Digital",
+  description:
+    "Automatize Atendimento, Vendas e Backoffice com Agentes de IA. Transforme sua empresa em uma máquina autônoma de crescimento com funcionários digitais que trabalham 24/7.",
   keywords: [
-    "agentes de IA",
-    "chatbot",
-    "WhatsApp Business",
-    "atendimento automatizado",
+    "agentes de ia",
     "inteligência artificial",
-    "assistente virtual",
-    "automação de atendimento",
+    "automação",
+    "whatsapp business",
+    "chatbot inteligente",
+    "atendimento automatizado",
+    "vendas automatizadas",
+    "backoffice",
+    "business intelligence",
+    "ia conversacional"
   ],
-});
+};
 
 export default function AgentesDeIaLayout({
   children,
@@ -23,4 +25,3 @@ export default function AgentesDeIaLayout({
 }) {
   return <>{children}</>;
 }
-
