@@ -16,45 +16,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/agentes-de-ia/page": [
+    "/automacao-integracoes/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/agentes-de-ia/page.js"
+      "static/chunks/app/automacao-integracoes/page.js"
     ],
-    "/agentes-de-ia/layout": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/agentes-de-ia/layout.js"
+      "static/chunks/app/_not-found/page.js"
     ],
-    "/ecommerce-shopify/page": [
+    "/automacao-integracoes/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/ecommerce-shopify/page.js"
-    ],
-    "/ecommerce-shopify/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/ecommerce-shopify/layout.js"
-    ],
-    "/gestao-digital-360/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/gestao-digital-360/page.js"
-    ],
-    "/gestao-digital-360/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/gestao-digital-360/layout.js"
-    ],
-    "/tracking/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/tracking/page.js"
-    ],
-    "/tracking/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/tracking/layout.js"
+      "static/chunks/app/automacao-integracoes/layout.js"
     ]
   }
 }

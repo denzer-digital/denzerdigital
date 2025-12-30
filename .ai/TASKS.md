@@ -32,3 +32,6 @@
 
 - [x] **ID 11: Otimizar bundle e code splitting** (Priority: medium)
 > Analisar imports, implementar code splitting e remover dependências não utilizadas.
+
+- [x] **ID 12: Criar página de serviço Automação e Integrações Inteligentes** (Priority: high)
+> Criar nova página de serviço "Automação e Integrações Inteligentes" seguindo o padrão das páginas já existentes (gestao-digital-360, agentes-de-ia, etc.), atualizar o link no card da seção "O ecossistema Denzer Digital" e substituir o link do footer.

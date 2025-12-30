@@ -34,7 +34,7 @@ const solutions = [
     title: "Automação e Integrações Inteligentes",
     description: "Otimize processos e reduza erros com automação baseada em dados. A Denzer Digital integra todas as suas plataformas em um único fluxo inteligente, gerando mais inteligência para o seu ecossistema e garantindo operações mais ágeis e precisas.",
     gradient: "from-accent to-accent-glow",
-    href: "/ecommerce-shopify",
+    href: "/automacao-integracoes",
   },
   {
     icon: Compass,

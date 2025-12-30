@@ -73,8 +73,8 @@ const Footer = () => {
                     </a>
                   </li>
                   <li>
-                    <a href="/ecommerce-shopify" className="hover:text-primary transition-colors">
-                      E-commerce Shopify
+                    <a href="/automacao-integracoes" className="hover:text-primary transition-colors">
+                      Automações e Integrações
                     </a>
                   </li>
                   <li>
@@ -84,7 +84,7 @@ const Footer = () => {
                   </li>
                   <li>
                     <a href="/tracking" className="hover:text-primary transition-colors">
-                      Tracking
+                      Tracking e Análise
                     </a>
                   </li>
                 </ul>
