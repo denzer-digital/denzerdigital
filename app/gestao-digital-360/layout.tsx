@@ -1,21 +1,34 @@
 import type { Metadata } from "next";
-import { generatePageMetadata } from "../metadata";
 
-export const metadata: Metadata = generatePageMetadata({
-  title: "Gestão Digital 360° | Estratégia, Mídia e Automação Baseadas em Dados",
-  description: "Planejamento completo e execução de campanhas digitais com inteligência artificial. Gestão de mídia paga, automações de marketing e análise de dados em tempo real.",
-  path: "/gestao-digital-360",
+export const metadata: Metadata = {
+  title: "Gestão Estratégica do Ecossistema Digital | Denzer Digital",
+  description: "A Denzer Digital unifica IA, tracking e automações em um ecossistema guiado por dados. Resultado: decisões mais rápidas, planos de ação claros, processos mais eficientes e vendas otimizadas de ponta a ponta.",
   keywords: [
     "gestão digital",
-    "marketing digital",
-    "mídia paga",
-    "Meta Ads",
-    "Google Ads",
-    "RD Station",
-    "automação de marketing",
-    "performance marketing",
+    "ecossistema digital",
+    "estratégia digital",
+    "consultoria digital",
+    "transformação digital",
+    "gestão 360",
+    "growth marketing",
+    "performance digital",
+    "inteligência de dados",
+    "automação empresarial",
+    "denzer digital"
   ],
-});
+  openGraph: {
+    title: "Gestão Estratégica do Ecossistema Digital | Denzer Digital",
+    description: "Unificamos IA, tracking e automações em um ecossistema guiado por dados para decisões mais rápidas e vendas otimizadas.",
+    type: "website",
+    locale: "pt_BR",
+    siteName: "Denzer Digital",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gestão Estratégica do Ecossistema Digital | Denzer Digital",
+    description: "Unificamos IA, tracking e automações em um ecossistema guiado por dados.",
+  },
+};
 
 export default function GestaoDigital360Layout({
   children,
@@ -24,4 +37,3 @@ export default function GestaoDigital360Layout({
 }) {
   return <>{children}</>;
 }
-
