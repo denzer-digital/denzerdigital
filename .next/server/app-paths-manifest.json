@@ -1,5 +1,7 @@
 {
   "/page": "app/page.js",
+  "/automacao-integracoes/page": "app/automacao-integracoes/page.js",
+  "/gestao-digital-360/page": "app/gestao-digital-360/page.js",
   "/agentes-de-ia/page": "app/agentes-de-ia/page.js",
   "/tracking/page": "app/tracking/page.js"
 }

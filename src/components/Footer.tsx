@@ -1,19 +1,45 @@
+"use client";
+
 import Image from "next/image";
 import { Linkedin, Instagram } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 
 const Footer = () => {
-  const scrollToSection = (id: string) => {
-    if (typeof document === 'undefined') {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const scrollToSection = (id: string, e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.preventDefault();
+    
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
       return;
     }
     
-    try {
+    // Se estiver na home, apenas faz scroll
+    if (pathname === '/') {
       const element = document.getElementById(id);
-      if (element && element.scrollIntoView) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      if (element) {
+        try {
+          // Calcula a posição considerando o navbar fixo (80px)
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + (window.pageYOffset || window.scrollY || 0) - 80;
+          
+          if (window.scrollTo) {
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          } else {
+            // Fallback para navegadores antigos
+            window.scrollTo(0, offsetPosition);
+          }
+        } catch (error) {
+          console.warn('Erro ao fazer scroll:', error);
+        }
       }
-    } catch (error) {
-      console.warn('Erro ao fazer scroll:', error);
+    } else {
+      // Se estiver em outra página, redireciona para a home com a âncora
+      router.push(`/#${id}`);
     }
   };
 
@@ -96,32 +122,32 @@ const Footer = () => {
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     <button
-                      onClick={() => scrollToSection('solucoes')}
-                      className="hover:text-primary transition-colors"
+                      onClick={(e) => scrollToSection('solucoes', e)}
+                      className="hover:text-primary transition-colors text-left"
                     >
                       Soluções
                     </button>
                   </li>
                   <li>
                     <button
-                      onClick={() => scrollToSection('resultados')}
-                      className="hover:text-primary transition-colors"
+                      onClick={(e) => scrollToSection('resultados', e)}
+                      className="hover:text-primary transition-colors text-left"
                     >
                       Resultados
                     </button>
                   </li>
                   <li>
                     <button
-                      onClick={() => scrollToSection('como-funciona')}
-                      className="hover:text-primary transition-colors"
+                      onClick={(e) => scrollToSection('como-funciona', e)}
+                      className="hover:text-primary transition-colors text-left"
                     >
                       Como Funciona
                     </button>
                   </li>
                   <li>
                     <button
-                      onClick={() => scrollToSection('planos')}
-                      className="hover:text-primary transition-colors"
+                      onClick={(e) => scrollToSection('planos', e)}
+                      className="hover:text-primary transition-colors text-left"
                     >
                       Planos
                     </button>
