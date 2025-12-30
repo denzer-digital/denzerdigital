@@ -47,7 +47,6 @@ const Demo = () => {
   const queueRef = useRef<Promise<void>>(Promise.resolve()); // garante animação/entrega em sequência
   const firstResponsePendingRef = useRef<boolean>(false); // indica se a primeira resposta ainda não foi exibida
   const processedMessagesRef = useRef<Set<string>>(new Set()); // rastreia mensagens já processadas para evitar duplicatas
-  const isProcessingRef = useRef<boolean>(false); // evita processamento simultâneo
 
   // Auto-scroll para a última mensagem apenas no container do chat
   const scrollToBottom = () => {
@@ -115,10 +114,7 @@ const Demo = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!message.trim() || isProcessingRef.current) return;
-
-    // Marca como processando para evitar múltiplas chamadas simultâneas
-    isProcessingRef.current = true;
+    if (!message.trim()) return;
 
     setHasUserInteracted(true);
     const userMessage = message;
@@ -198,13 +194,13 @@ const Demo = () => {
               // Pequena folga opcional para suavizar (curta)
               await delay(200);
               addMessageSafely(trimmedMessage);
-              setIsLoading(false); // encerra animação da primeira resposta
+              setIsLoading(false); // encerra animação da primeira resposta - libera input imediatamente
             } else {
               // demais respostas: liga digitando só antes de entregar
               setIsLoading(true);
               await delay(1200);
               addMessageSafely(trimmedMessage);
-              setIsLoading(false);
+              setIsLoading(false); // libera input após cada mensagem
             }
             
           }).catch(error => {
@@ -215,11 +211,6 @@ const Demo = () => {
           });
         }
       );
-      
-      // Libera processamento após o polling terminar
-      setTimeout(() => {
-        isProcessingRef.current = false;
-      }, 1000);
 
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
@@ -227,7 +218,6 @@ const Demo = () => {
       
       // Reseta flags de controle
       firstResponsePendingRef.current = false;
-      isProcessingRef.current = false;
       
       setMessages(prev => [...prev, { 
         role: "assistant", 
