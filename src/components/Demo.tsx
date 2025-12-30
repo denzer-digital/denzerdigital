@@ -24,14 +24,24 @@ const AGENT_TYPES: { value: AgentType; label: string }[] = [
 ];
 
 const Demo = () => {
+  // Restaura o tipo de agente do sessionStorage se existir, caso contrário usa o padrão
   const [message, setMessage] = useState("");
-  const [agentType, setAgentType] = useState<AgentType>("sdr");
+  const [agentType, setAgentType] = useState<AgentType>(() => {
+    if (typeof window !== 'undefined') {
+      const savedAgentType = sessionStorage.getItem('selectedAgentType');
+      if (savedAgentType && ['sdr', 'ecommerce', 'agendamento'].includes(savedAgentType)) {
+        return savedAgentType as AgentType;
+      }
+    }
+    return "sdr";
+  });
   const [sessionId, setSessionId] = useState<string>(createSessionId());
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([
     { role: "assistant", content: "Envie uma mensagem para começar a conversar com nossa IA e descobrir como ela pode ajudar sua empresa!" }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [isProcessingMessages, setIsProcessingMessages] = useState(false); // rastreia se há mensagens sendo processadas na fila
   const { toast } = useToast();
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -39,6 +49,7 @@ const Demo = () => {
   const firstResponsePendingRef = useRef<boolean>(false); // indica se a primeira resposta ainda não foi exibida
   const processedMessagesRef = useRef<Set<string>>(new Set()); // rastreia mensagens já processadas para evitar duplicatas
   const isProcessingRef = useRef<boolean>(false); // evita processamento simultâneo
+  const pendingMessagesCountRef = useRef<number>(0); // contador de mensagens pendentes na fila
 
   // Auto-scroll para a última mensagem apenas no container do chat
   const scrollToBottom = () => {
@@ -59,6 +70,25 @@ const Demo = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
+  // Restaura posição do scroll e limpa dados do sessionStorage após reload quando o tipo de agente é alterado
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedScrollPosition = sessionStorage.getItem('chatScrollPosition');
+      if (savedScrollPosition) {
+        const position = parseInt(savedScrollPosition, 10);
+        // Aguarda um pouco para garantir que a página carregou completamente
+        setTimeout(() => {
+          window.scrollTo({
+            top: position,
+            behavior: 'instant'
+          });
+          sessionStorage.removeItem('chatScrollPosition');
+          sessionStorage.removeItem('selectedAgentType');
+        }, 100);
+      }
+    }
+  }, []);
+
   // Mantém o foco no input após o loading terminar (apenas se o usuário já interagiu)
   useEffect(() => {
     if (!isLoading && inputRef.current && hasUserInteracted) {
@@ -71,19 +101,18 @@ const Demo = () => {
     return msg.trim().replace(/\s+/g, ' ').toLowerCase();
   };
 
-  // Reseta sessão e histórico
-  const resetChat = (newAgent?: AgentType) => {
-    setSessionId(createSessionId());
-    setMessages([
-      { role: "assistant", content: "Envie uma mensagem para começar a conversar com nossa IA e descobrir como ela pode ajudar sua empresa!" },
-    ]);
-    setIsLoading(false);
-    setMessage("");
-    processedMessagesRef.current.clear(); // limpa mensagens processadas
-    firstResponsePendingRef.current = false;
-    isProcessingRef.current = false;
-    if (newAgent) {
-      setAgentType(newAgent);
+  // Recarrega a página quando o tipo de agente é alterado, mantendo a posição do scroll
+  const handleAgentTypeChange = (newAgent: AgentType) => {
+    if (typeof window !== 'undefined') {
+      // Salva a posição atual do scroll
+      const currentScrollPosition = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+      sessionStorage.setItem('chatScrollPosition', currentScrollPosition.toString());
+      
+      // Salva o tipo de agente selecionado
+      sessionStorage.setItem('selectedAgentType', newAgent);
+      
+      // Recarrega a página
+      window.location.reload();
     }
   };
 
@@ -142,6 +171,10 @@ const Demo = () => {
           // Marca como processada ANTES de adicionar à fila
           processedMessagesRef.current.add(normalized);
           
+          // Incrementa contador de mensagens pendentes
+          pendingMessagesCountRef.current++;
+          setIsProcessingMessages(true);
+          
           // Adiciona à fila de processamento sequencial
           queueRef.current = queueRef.current.then(async () => {
             const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -178,17 +211,31 @@ const Demo = () => {
               addMessageSafely(trimmedMessage);
               setIsLoading(false);
             }
+            
+            // Decrementa contador e verifica se todas as mensagens foram processadas
+            pendingMessagesCountRef.current = Math.max(0, pendingMessagesCountRef.current - 1);
+            if (pendingMessagesCountRef.current === 0) {
+              // Aguarda um pequeno delay para garantir que a última mensagem foi renderizada
+              await delay(300);
+              setIsProcessingMessages(false);
+            }
           }).catch(error => {
             console.error("Erro ao processar mensagem na fila:", error);
             // Remove da lista de processadas para permitir retry se necessário
             processedMessagesRef.current.delete(normalized);
             setIsLoading(false);
+            // Decrementa contador mesmo em caso de erro
+            pendingMessagesCountRef.current = Math.max(0, pendingMessagesCountRef.current - 1);
+            if (pendingMessagesCountRef.current === 0) {
+              setIsProcessingMessages(false);
+            }
           });
         }
       );
       
       // Libera processamento após o polling terminar
       // Aguarda um pouco para garantir que todas as mensagens da fila foram processadas
+      // O isProcessingMessages será atualizado quando a fila terminar de processar todas as mensagens
       setTimeout(() => {
         isProcessingRef.current = false;
       }, 1000);
@@ -200,6 +247,8 @@ const Demo = () => {
       // Reseta flags de controle
       firstResponsePendingRef.current = false;
       isProcessingRef.current = false;
+      pendingMessagesCountRef.current = 0;
+      setIsProcessingMessages(false);
       
       setMessages(prev => [...prev, { 
         role: "assistant", 
@@ -288,7 +337,12 @@ const Demo = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground whitespace-nowrap">Tipo:</span>
-                    <Select value={agentType} onValueChange={(value) => setAgentType(value as AgentType)}>
+                    <Select value={agentType} onValueChange={(value) => {
+                      const newAgent = value as AgentType;
+                      if (newAgent !== agentType) {
+                        handleAgentTypeChange(newAgent);
+                      }
+                    }}>
                       <SelectTrigger 
                         className="w-full md:w-[200px] h-8 text-xs"
                         aria-label="Selecione o tipo de agente de IA"
@@ -300,9 +354,6 @@ const Demo = () => {
                           <SelectItem
                             key={type.value}
                             value={type.value}
-                            onClick={() => {
-                              resetChat(type.value as AgentType);
-                            }}
                           >
                             {type.label}
                           </SelectItem>
@@ -356,14 +407,14 @@ const Demo = () => {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                    disabled={isLoading}
+                    disabled={isLoading || isProcessingMessages}
                     className="flex-1 bg-secondary rounded-full px-4 py-3 text-sm"
                   />
                   <Button 
                     size="icon" 
                     className="rounded-full w-12 h-12 bg-primary hover:bg-primary/90"
                     onClick={handleSendMessage}
-                    disabled={isLoading}
+                    disabled={isLoading || isProcessingMessages}
                   >
                     <Send className="h-5 w-5" />
                   </Button>
