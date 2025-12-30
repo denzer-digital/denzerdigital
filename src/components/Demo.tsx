@@ -41,7 +41,6 @@ const Demo = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
-  const [isProcessingMessages, setIsProcessingMessages] = useState(false); // rastreia se há mensagens sendo processadas na fila
   const { toast } = useToast();
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -49,8 +48,6 @@ const Demo = () => {
   const firstResponsePendingRef = useRef<boolean>(false); // indica se a primeira resposta ainda não foi exibida
   const processedMessagesRef = useRef<Set<string>>(new Set()); // rastreia mensagens já processadas para evitar duplicatas
   const isProcessingRef = useRef<boolean>(false); // evita processamento simultâneo
-  const pendingMessagesCountRef = useRef<number>(0); // contador de mensagens pendentes na fila
-  const processingTimeoutRef = useRef<NodeJS.Timeout | null>(null); // timeout de segurança para resetar estado
 
   // Auto-scroll para a última mensagem apenas no container do chat
   const scrollToBottom = () => {
@@ -140,27 +137,6 @@ const Demo = () => {
     try {
       setIsLoading(true);
       
-      // Limpa timeout anterior se existir
-      if (processingTimeoutRef.current) {
-        clearTimeout(processingTimeoutRef.current);
-        processingTimeoutRef.current = null;
-      }
-      
-      // Timeout de segurança: se após 30 segundos ainda estiver processando, libera o input
-      processingTimeoutRef.current = setTimeout(() => {
-        console.warn("Timeout de segurança: liberando input após 30 segundos");
-        setIsProcessingMessages(false);
-        pendingMessagesCountRef.current = 0;
-        setIsLoading(false);
-        isProcessingRef.current = false;
-        if (processingTimeoutRef.current) {
-          clearTimeout(processingTimeoutRef.current);
-          processingTimeoutRef.current = null;
-        }
-      }, 30000);
-      
-      const hasReceivedAnyMessageRef = { current: false };
-      
       await sendMessageToWebhook(
         userMessage,
         agentType,
@@ -191,15 +167,8 @@ const Demo = () => {
             return;
           }
           
-          // Marca que recebeu pelo menos uma mensagem
-          hasReceivedAnyMessageRef.current = true;
-          
           // Marca como processada ANTES de adicionar à fila
           processedMessagesRef.current.add(normalized);
-          
-          // Incrementa contador de mensagens pendentes
-          pendingMessagesCountRef.current++;
-          setIsProcessingMessages(true);
           
           // Adiciona à fila de processamento sequencial
           queueRef.current = queueRef.current.then(async () => {
@@ -238,53 +207,19 @@ const Demo = () => {
               setIsLoading(false);
             }
             
-            // Decrementa contador e verifica se todas as mensagens foram processadas
-            pendingMessagesCountRef.current = Math.max(0, pendingMessagesCountRef.current - 1);
-            if (pendingMessagesCountRef.current === 0) {
-              // Aguarda um pequeno delay para garantir que a última mensagem foi renderizada
-              await delay(300);
-              setIsProcessingMessages(false);
-              // Limpa timeout de segurança quando todas as mensagens foram processadas
-              if (processingTimeoutRef.current) {
-                clearTimeout(processingTimeoutRef.current);
-                processingTimeoutRef.current = null;
-              }
-            }
           }).catch(error => {
             console.error("Erro ao processar mensagem na fila:", error);
             // Remove da lista de processadas para permitir retry se necessário
             processedMessagesRef.current.delete(normalized);
             setIsLoading(false);
-            // Decrementa contador mesmo em caso de erro
-            pendingMessagesCountRef.current = Math.max(0, pendingMessagesCountRef.current - 1);
-            if (pendingMessagesCountRef.current === 0) {
-              setIsProcessingMessages(false);
-              // Limpa timeout de segurança
-              if (processingTimeoutRef.current) {
-                clearTimeout(processingTimeoutRef.current);
-                processingTimeoutRef.current = null;
-              }
-            }
           });
         }
       );
       
-      // Aguarda um tempo adicional após o polling terminar para garantir que todas as mensagens foram processadas
-      // Se não recebeu nenhuma mensagem, libera após um tempo razoável
+      // Libera processamento após o polling terminar
       setTimeout(() => {
         isProcessingRef.current = false;
-        
-        // Se não recebeu nenhuma mensagem após 5 segundos do polling terminar, libera o input
-        if (!hasReceivedAnyMessageRef.current && pendingMessagesCountRef.current === 0) {
-          console.log("Nenhuma mensagem recebida, liberando input");
-          setIsProcessingMessages(false);
-          setIsLoading(false);
-          if (processingTimeoutRef.current) {
-            clearTimeout(processingTimeoutRef.current);
-            processingTimeoutRef.current = null;
-          }
-        }
-      }, 5000);
+      }, 1000);
 
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
@@ -293,14 +228,6 @@ const Demo = () => {
       // Reseta flags de controle
       firstResponsePendingRef.current = false;
       isProcessingRef.current = false;
-      pendingMessagesCountRef.current = 0;
-      setIsProcessingMessages(false);
-      
-      // Limpa timeout de segurança
-      if (processingTimeoutRef.current) {
-        clearTimeout(processingTimeoutRef.current);
-        processingTimeoutRef.current = null;
-      }
       
       setMessages(prev => [...prev, { 
         role: "assistant", 
@@ -459,14 +386,14 @@ const Demo = () => {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                    disabled={isLoading || isProcessingMessages}
+                    disabled={isLoading}
                     className="flex-1 bg-secondary rounded-full px-4 py-3 text-sm"
                   />
                   <Button 
                     size="icon" 
                     className="rounded-full w-12 h-12 bg-primary hover:bg-primary/90"
                     onClick={handleSendMessage}
-                    disabled={isLoading || isProcessingMessages}
+                    disabled={isLoading}
                   >
                     <Send className="h-5 w-5" />
                   </Button>
