@@ -215,7 +215,7 @@ const ContactFormDialog = () => {
         ) : (
           <Form {...form}>
             <form 
-              id="contact-form"
+              id="0001"
               onSubmit={form.handleSubmit(onSubmit)} 
               className="space-y-3 md:space-y-6 mt-2 md:mt-4"
             >
@@ -228,6 +228,7 @@ const ContactFormDialog = () => {
                       <FormLabel>Nome completo *</FormLabel>
                       <FormControl>
                         <Input
+                          id="nome"
                           placeholder="Seu nome"
                           {...field}
                           data-rd="name"
@@ -247,6 +248,7 @@ const ContactFormDialog = () => {
                       <FormLabel>E-mail *</FormLabel>
                       <FormControl>
                         <Input
+                          id="email"
                           type="email"
                           placeholder="seu@email.com"
                           {...field}
@@ -269,6 +271,7 @@ const ContactFormDialog = () => {
                       <FormLabel>Telefone *</FormLabel>
                       <FormControl>
                         <Input
+                          id="telefone"
                           type="tel"
                           placeholder="(00) 00000-0000"
                           data-rd="phone"
@@ -293,6 +296,7 @@ const ContactFormDialog = () => {
                       <FormLabel>Empresa</FormLabel>
                       <FormControl>
                         <Input
+                          id="empresa"
                           placeholder="Nome da empresa (opcional)"
                           {...field}
                           data-rd="company"
@@ -314,6 +318,7 @@ const ContactFormDialog = () => {
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger 
+                          id="servico"
                           className="bg-background/50 border-input/50 focus:border-primary/50"
                           data-rd="service"
                           aria-label="Selecione um serviço de interesse"
@@ -323,9 +328,9 @@ const ContactFormDialog = () => {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
-                        <SelectItem value="ecommerce-shopify">E-commerce Shopify</SelectItem>
+                        <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
                         <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>
-                        <SelectItem value="tracking">Tracking</SelectItem>
+                        <SelectItem value="tracking">Tracking e Análise</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>
@@ -338,6 +343,7 @@ const ContactFormDialog = () => {
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2 md:pt-4">
                 <Button
+                  id="btn-submit"
                   type="submit"
                   disabled={isSubmitting}
                   className="flex-1 bg-primary hover:bg-primary/90 glow-primary group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm md:text-base px-4 md:px-6 py-2.5 md:py-3 h-auto"

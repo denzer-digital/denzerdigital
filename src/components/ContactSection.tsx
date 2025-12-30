@@ -137,7 +137,7 @@ const ContactSection = () => {
                 ) : (
                   <Form {...form}>
                     <form 
-                      id="contact-form-inline"
+                      id="0002"
                       onSubmit={form.handleSubmit(onSubmit)} 
                       className="space-y-6"
                     >
@@ -150,6 +150,7 @@ const ContactSection = () => {
                               <FormLabel>Nome completo *</FormLabel>
                               <FormControl>
                                 <Input
+                                  id="nome"
                                   placeholder="Seu nome"
                                   {...field}
                                   data-rd="name"
@@ -169,6 +170,7 @@ const ContactSection = () => {
                               <FormLabel>E-mail *</FormLabel>
                               <FormControl>
                                 <Input
+                                  id="email"
                                   type="email"
                                   placeholder="seu@email.com"
                                   {...field}
@@ -191,6 +193,7 @@ const ContactSection = () => {
                               <FormLabel>Telefone *</FormLabel>
                               <FormControl>
                                 <Input
+                                  id="telefone"
                                   type="tel"
                                   placeholder="(00) 00000-0000"
                                   {...field}
@@ -216,6 +219,7 @@ const ContactSection = () => {
                               <FormLabel>Empresa</FormLabel>
                               <FormControl>
                                 <Input
+                                  id="empresa"
                                   placeholder="Nome da empresa (opcional)"
                                   {...field}
                                   data-rd="company"
@@ -237,6 +241,7 @@ const ContactSection = () => {
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger 
+                                  id="servico"
                                   className="bg-background/50 border-input/50 focus:border-primary/50"
                                   data-rd="service"
                                   aria-label="Selecione um serviço de interesse"
@@ -248,7 +253,7 @@ const ContactSection = () => {
                                 <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
                                 <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
                                 <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>
-                                <SelectItem value="tracking">Tracking</SelectItem>
+                                <SelectItem value="tracking">Tracking e Análise</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormDescription>
@@ -260,6 +265,7 @@ const ContactSection = () => {
                       />
 
                       <Button
+                        id="btn-submit"
                         type="submit"
                         disabled={isSubmitting}
                         className="w-full bg-primary hover:bg-primary/90 glow-primary group"
