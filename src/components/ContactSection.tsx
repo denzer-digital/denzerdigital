@@ -1,11 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { formatPhone, unformatPhone } from "@/lib/phoneFormatter";
+
+// Declaração de tipo para o RD Station
+declare global {
+  interface Window {
+    RDCaptureForms?: {
+      init: () => void;
+    };
+    reinitRDStation?: () => boolean;
+  }
+}
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -55,6 +65,55 @@ const ContactSection = () => {
       service: "",
     },
   });
+
+  // Inicializa o RD Station quando o formulário estiver visível
+  useEffect(() => {
+    if (typeof window === "undefined" || !formAnimation.isVisible) return;
+
+    const initRDStation = () => {
+      // Verifica se o formulário está no DOM
+      const formElement = document.getElementById('0002');
+      if (!formElement) {
+        return false;
+      }
+
+      if (window.RDCaptureForms) {
+        try {
+          window.RDCaptureForms.init();
+          console.log("RD Station Forms inicializado no formulário fixo - Form ID: 0002");
+          return true;
+        } catch (error) {
+          console.warn("Erro ao inicializar RD Station Forms:", error);
+          return false;
+        }
+      }
+      return false;
+    };
+
+    // Usa a função global se disponível
+    if (typeof window.reinitRDStation === 'function') {
+      setTimeout(() => {
+        window.reinitRDStation?.();
+      }, 500);
+    } else {
+      // Aguarda o script carregar
+      const checkInterval = setInterval(() => {
+        if (window.RDCaptureForms) {
+          initRDStation();
+          clearInterval(checkInterval);
+        }
+      }, 100);
+
+      const timeout = setTimeout(() => {
+        clearInterval(checkInterval);
+      }, 5000);
+
+      return () => {
+        clearInterval(checkInterval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [formAnimation.isVisible]);
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
@@ -143,6 +202,7 @@ const ContactSection = () => {
                       id="0002"
                       onSubmit={form.handleSubmit(onSubmit)} 
                       className="space-y-6"
+                      data-rd-form="0002"
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField

@@ -183,6 +183,70 @@ export default function RootLayout({
           src="https://d335luupugsy2.cloudfront.net/js/rdstation-forms/stable/rdstation-forms.min.js"
           strategy="afterInteractive"
         />
+        {/* Script para inicializar e reinicializar RD Station quando necessário */}
+        <Script
+          id="rdstation-helper"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof window === 'undefined') return;
+                
+                // Função global para reinicializar RD Station
+                window.reinitRDStation = function() {
+                  if (window.RDCaptureForms) {
+                    try {
+                      window.RDCaptureForms.init();
+                      console.log('RD Station Forms reinicializado');
+                      return true;
+                    } catch (error) {
+                      console.warn('Erro ao reinicializar RD Station Forms:', error);
+                      return false;
+                    }
+                  }
+                  return false;
+                };
+                
+                // Função para inicializar quando o script do RD Station carregar
+                function initRDStationWhenReady() {
+                  if (window.RDCaptureForms) {
+                    try {
+                      window.RDCaptureForms.init();
+                      console.log('RD Station Forms inicializado globalmente');
+                    } catch (error) {
+                      console.warn('Erro ao inicializar RD Station Forms:', error);
+                    }
+                  } else {
+                    // Se ainda não carregou, tenta novamente após um tempo
+                    setTimeout(initRDStationWhenReady, 200);
+                  }
+                }
+                
+                // Aguarda o script do RD Station carregar
+                const checkRDStation = setInterval(function() {
+                  if (window.RDCaptureForms) {
+                    clearInterval(checkRDStation);
+                    initRDStationWhenReady();
+                  }
+                }, 100);
+                
+                // Limpa o intervalo após 10 segundos
+                setTimeout(function() {
+                  clearInterval(checkRDStation);
+                }, 10000);
+                
+                // Inicializa quando o DOM estiver pronto
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(initRDStationWhenReady, 500);
+                  });
+                } else {
+                  setTimeout(initRDStationWhenReady, 500);
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
         {/* fb-root necessário para o SDK do Facebook */}

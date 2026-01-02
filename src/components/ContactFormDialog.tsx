@@ -32,6 +32,7 @@ declare global {
     RDCaptureForms?: {
       init: () => void;
     };
+    reinitRDStation?: () => boolean;
   }
 }
 
@@ -112,41 +113,68 @@ const ContactFormDialog = () => {
   // Inicializa o RD Station quando o popup é aberto
   useEffect(() => {
     if (isOpen && typeof window !== "undefined") {
-      // Aguarda o script do RD Station estar disponível
+      // Aguarda o formulário estar no DOM antes de inicializar
       const initRDStation = () => {
+        // Verifica se o formulário está no DOM
+        const formElement = document.getElementById('0001');
+        if (!formElement) {
+          console.warn('Formulário 0001 não encontrado no DOM');
+          return false;
+        }
+
         if (window.RDCaptureForms) {
           try {
             window.RDCaptureForms.init();
-            console.log("RD Station Forms inicializado no popup");
+            console.log("RD Station Forms inicializado no popup - Form ID: 0001");
+            return true;
           } catch (error) {
             console.warn("Erro ao inicializar RD Station Forms:", error);
+            return false;
+          }
+        }
+        return false;
+      };
+
+      // Usa a função global se disponível, senão tenta diretamente
+      const tryInit = () => {
+        if (typeof window.reinitRDStation === 'function') {
+          // Aguarda um pouco para garantir que o DOM foi atualizado
+          setTimeout(() => {
+            window.reinitRDStation?.();
+          }, 150);
+        } else {
+          // Tenta inicializar diretamente
+          if (window.RDCaptureForms) {
+            setTimeout(() => {
+              initRDStation();
+            }, 150);
+          } else {
+            // Se o script ainda não carregou, aguarda um pouco e tenta novamente
+            const checkInterval = setInterval(() => {
+              if (window.RDCaptureForms) {
+                initRDStation();
+                clearInterval(checkInterval);
+              }
+            }, 100);
+
+            // Limpa o intervalo após 5 segundos para evitar loops infinitos
+            const timeout = setTimeout(() => {
+              clearInterval(checkInterval);
+              console.warn("RD Station Forms script não carregou a tempo");
+            }, 5000);
+
+            return () => {
+              clearInterval(checkInterval);
+              clearTimeout(timeout);
+            };
           }
         }
       };
 
-      // Tenta inicializar imediatamente
-      if (window.RDCaptureForms) {
-        initRDStation();
-      } else {
-        // Se o script ainda não carregou, aguarda um pouco e tenta novamente
-        const checkInterval = setInterval(() => {
-          if (window.RDCaptureForms) {
-            initRDStation();
-            clearInterval(checkInterval);
-          }
-        }, 100);
-
-        // Limpa o intervalo após 5 segundos para evitar loops infinitos
-        const timeout = setTimeout(() => {
-          clearInterval(checkInterval);
-          console.warn("RD Station Forms script não carregou a tempo");
-        }, 5000);
-
-        return () => {
-          clearInterval(checkInterval);
-          clearTimeout(timeout);
-        };
-      }
+      // Aguarda um frame para garantir que o DOM foi atualizado
+      requestAnimationFrame(() => {
+        setTimeout(tryInit, 200);
+      });
     }
   }, [isOpen]);
 
@@ -252,6 +280,7 @@ const ContactFormDialog = () => {
               id="0001"
               onSubmit={form.handleSubmit(onSubmit)} 
               className="space-y-3 md:space-y-6 mt-2 md:mt-4"
+              data-rd-form="0001"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <FormField
