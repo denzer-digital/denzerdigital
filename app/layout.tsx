@@ -177,6 +177,12 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* RD Station Forms - Script necessário para capturar formulários */}
+        <Script
+          id="rdstation-forms"
+          src="https://d335luupugsy2.cloudfront.net/js/rdstation-forms/stable/rdstation-forms.min.js"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
         {/* fb-root necessário para o SDK do Facebook */}

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -110,8 +112,40 @@ const ContactFormDialog = () => {
   // Inicializa o RD Station quando o popup é aberto
   useEffect(() => {
     if (isOpen && typeof window !== "undefined") {
+      // Aguarda o script do RD Station estar disponível
+      const initRDStation = () => {
+        if (window.RDCaptureForms) {
+          try {
+            window.RDCaptureForms.init();
+            console.log("RD Station Forms inicializado no popup");
+          } catch (error) {
+            console.warn("Erro ao inicializar RD Station Forms:", error);
+          }
+        }
+      };
+
+      // Tenta inicializar imediatamente
       if (window.RDCaptureForms) {
-        window.RDCaptureForms.init();
+        initRDStation();
+      } else {
+        // Se o script ainda não carregou, aguarda um pouco e tenta novamente
+        const checkInterval = setInterval(() => {
+          if (window.RDCaptureForms) {
+            initRDStation();
+            clearInterval(checkInterval);
+          }
+        }, 100);
+
+        // Limpa o intervalo após 5 segundos para evitar loops infinitos
+        const timeout = setTimeout(() => {
+          clearInterval(checkInterval);
+          console.warn("RD Station Forms script não carregou a tempo");
+        }, 5000);
+
+        return () => {
+          clearInterval(checkInterval);
+          clearTimeout(timeout);
+        };
       }
     }
   }, [isOpen]);
