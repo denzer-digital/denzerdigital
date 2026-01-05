@@ -208,17 +208,19 @@ const ContactSection = () => {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     
-    // Garante que o RD Station seja inicializado antes de enviar
+    // IMPORTANTE: O RD Station captura o evento submit ANTES do preventDefault
+    // Então ele já capturou os dados quando chegamos aqui
+    // Apenas garantimos que está inicializado
     if (typeof window !== "undefined") {
       const hostname = window.location.hostname;
       const allowedDomain = 'denzerdigital.com.br';
       if ((hostname === allowedDomain || hostname.endsWith('.' + allowedDomain)) && window.RDCaptureForms) {
         try {
-          // Reinicializa o RD Station antes de enviar para garantir captura
+          // Reinicializa o RD Station para garantir que capturou
           window.RDCaptureForms.init();
-          console.log("RD Station Forms reinicializado antes do envio - Form ID: 0002");
+          console.log("RD Station Forms reinicializado - Form ID: 0002");
         } catch (error) {
-          console.warn("Erro ao reinicializar RD Station antes do envio:", error);
+          console.warn("Erro ao reinicializar RD Station:", error);
         }
       }
     }
@@ -306,7 +308,20 @@ const ContactSection = () => {
                   <Form {...form}>
                     <form 
                       id="0002"
-                      onSubmit={form.handleSubmit(onSubmit)} 
+                      onSubmit={async (e) => {
+                        // Valida os campos primeiro
+                        const isValid = await form.trigger();
+                        
+                        if (!isValid) {
+                          e.preventDefault();
+                          return;
+                        }
+                        
+                        // O RD Station escuta o evento submit antes do preventDefault
+                        // Então ele já capturou os dados neste ponto
+                        // Agora processamos o formulário normalmente
+                        form.handleSubmit(onSubmit)(e);
+                      }} 
                       className="space-y-6"
                       data-rd-form="0002"
                     >

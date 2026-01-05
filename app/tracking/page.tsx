@@ -4,6 +4,10 @@ import { useLayoutEffect, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { formatPhone, unformatPhone } from "@/lib/phoneFormatter";
 import { 
   ArrowRight, 
   CheckCircle2, 
@@ -25,23 +29,67 @@ import {
   ChevronUp,
   Sparkles,
   Calculator,
-  Loader2
+  Loader2,
+  Send
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ContactFormDialog = dynamic(() => import("@/components/ContactFormDialog"), {
   ssr: false,
 });
+
+// Declaração de tipo para o RD Station
+declare global {
+  interface Window {
+    RDCaptureForms?: {
+      init: () => void;
+    };
+    reinitRDStation?: () => boolean;
+  }
+}
+
+const contactFormSchema = z.object({
+  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  email: z.string().email("E-mail inválido"),
+  phone: z.string().refine((val) => {
+    const numbers = unformatPhone(val);
+    return numbers.length >= 10 && numbers.length <= 11;
+  }, "Telefone inválido (deve ter 10 ou 11 dígitos)"),
+  company: z.string().optional(),
+  service: z.string().min(1, "Selecione um serviço"),
+});
+
+type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export default function TrackingPage() {
   const { openDialog } = useContactDialog();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const formSectionAnimation = useScrollAnimation();
 
   // Scroll animations
   const problemSection = useScrollAnimation();
@@ -60,6 +108,173 @@ export default function TrackingPage() {
   const [aiReport, setAiReport] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
+
+  // Form setup
+  const form = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      company: "",
+      service: "",
+    },
+  });
+
+  // Inicializa o RD Station para o formulário da página de tracking
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Verifica se está no domínio permitido
+    const hostname = window.location.hostname;
+    const allowedDomain = 'denzerdigital.com.br';
+    if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
+      return;
+    }
+
+    const initRDStation = () => {
+      const formElement = document.getElementById('pag-tracking');
+      if (!formElement) {
+        return false;
+      }
+
+      if (window.RDCaptureForms) {
+        try {
+          window.RDCaptureForms.init();
+          console.log("RD Station Forms inicializado no formulário de tracking - Form ID: pag-tracking");
+          return true;
+        } catch (error) {
+          console.warn("Erro ao inicializar RD Station Forms:", error);
+          return false;
+        }
+      }
+      return false;
+    };
+
+    const tryInit = () => {
+      if (typeof window.reinitRDStation === 'function') {
+        window.reinitRDStation();
+      } else {
+        initRDStation();
+      }
+    };
+
+    const ensureFormAndInit = (maxRetries = 50) => {
+      const formElement = document.getElementById('pag-tracking');
+      if (!formElement) {
+        if (maxRetries > 0) {
+          setTimeout(() => ensureFormAndInit(maxRetries - 1), 200);
+        }
+        return;
+      }
+
+      if (window.RDCaptureForms) {
+        tryInit();
+      } else if (maxRetries > 0) {
+        setTimeout(() => ensureFormAndInit(maxRetries - 1), 200);
+      }
+    };
+
+    const startInit = () => {
+      if (window.RDCaptureForms) {
+        setTimeout(() => ensureFormAndInit(), 300);
+      } else {
+        const checkInterval = setInterval(() => {
+          if (window.RDCaptureForms) {
+            clearInterval(checkInterval);
+            ensureFormAndInit();
+          }
+        }, 100);
+
+        const timeout = setTimeout(() => {
+          clearInterval(checkInterval);
+          if (window.RDCaptureForms) {
+            ensureFormAndInit();
+          }
+        }, 10000);
+
+        return () => {
+          clearInterval(checkInterval);
+          clearTimeout(timeout);
+        };
+      }
+    };
+
+    let cleanup: (() => void) | undefined;
+    
+    if (document.readyState === 'loading') {
+      const handler = () => {
+        cleanup = startInit();
+      };
+      document.addEventListener('DOMContentLoaded', handler);
+      return () => {
+        document.removeEventListener('DOMContentLoaded', handler);
+        if (cleanup) cleanup();
+      };
+    } else {
+      cleanup = startInit();
+      return cleanup;
+    }
+  }, []);
+
+  // Reinicializa quando o formulário fica visível
+  useEffect(() => {
+    if (typeof window === "undefined" || !formSectionAnimation.isVisible) return;
+
+    const hostname = window.location.hostname;
+    const allowedDomain = 'denzerdigital.com.br';
+    if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
+      return;
+    }
+
+    if (typeof window.reinitRDStation === 'function') {
+      setTimeout(() => {
+        window.reinitRDStation?.();
+      }, 500);
+    } else if (window.RDCaptureForms) {
+      setTimeout(() => {
+        try {
+          window.RDCaptureForms.init();
+          console.log("RD Station Forms reinicializado quando formulário ficou visível - Form ID: pag-tracking");
+        } catch (error) {
+          console.warn("Erro ao reinicializar RD Station Forms:", error);
+        }
+      }, 500);
+    }
+  }, [formSectionAnimation.isVisible]);
+
+  const onSubmit = async (data: ContactFormData) => {
+    setIsSubmitting(true);
+    
+    // Garante que o RD Station seja inicializado antes de enviar
+    if (typeof window !== "undefined") {
+      const hostname = window.location.hostname;
+      const allowedDomain = 'denzerdigital.com.br';
+      if ((hostname === allowedDomain || hostname.endsWith('.' + allowedDomain)) && window.RDCaptureForms) {
+        try {
+          window.RDCaptureForms.init();
+          console.log("RD Station Forms reinicializado antes do envio - Form ID: pag-tracking");
+        } catch (error) {
+          console.warn("Erro ao reinicializar RD Station antes do envio:", error);
+        }
+      }
+    }
+    
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("Formulário enviado:", data);
+      setIsSuccess(true);
+      
+      setTimeout(() => {
+        form.reset();
+        setIsSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Erro ao enviar formulário:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Scroll detection for sticky header
   useEffect(() => {
@@ -798,6 +1013,206 @@ export default function TrackingPage() {
             </div>
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4" /> Implementação Rápida
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- CONTACT FORM SECTION --- */}
+      <section ref={formSectionAnimation.ref} className={`py-24 bg-background border-t border-border ${formSectionAnimation.isVisible ? 'visible' : ''}`}>
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Solicite seu <span className="text-primary">diagnóstico gratuito</span>
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Preencha o formulário abaixo e nossa equipe entrará em contato para analisar seu traqueamento atual.
+              </p>
+            </div>
+
+            <div className="bg-card border border-border rounded-2xl p-8 shadow-2xl">
+              {isSuccess ? (
+                <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                    <CheckCircle2 className="h-10 w-10 text-primary" />
+                  </div>
+                  <div className="text-center space-y-2">
+                    <h3 className="text-xl font-semibold text-foreground">
+                      Mensagem enviada com sucesso!
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Entraremos em contato em breve.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <Form {...form}>
+                  <form 
+                    id="pag-tracking"
+                    onSubmit={async (e) => {
+                      // Valida os campos primeiro
+                      const isValid = await form.trigger();
+                      
+                      if (!isValid) {
+                        e.preventDefault();
+                        return;
+                      }
+                      
+                      // O RD Station escuta o evento submit antes do preventDefault
+                      // Então ele já capturou os dados neste ponto
+                      // Agora processamos o formulário normalmente
+                      form.handleSubmit(onSubmit)(e);
+                    }} 
+                    className="space-y-6"
+                    data-rd-form="pag-tracking"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nome completo *</FormLabel>
+                            <FormControl>
+                              <Input
+                                id="nome"
+                                placeholder="Seu nome"
+                                {...field}
+                                data-rd="name"
+                                className="bg-background/50 border-input/50 focus:border-primary/50"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>E-mail *</FormLabel>
+                            <FormControl>
+                              <Input
+                                id="email"
+                                type="email"
+                                placeholder="seu@email.com"
+                                {...field}
+                                data-rd="email"
+                                className="bg-background/50 border-input/50 focus:border-primary/50"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telefone *</FormLabel>
+                            <FormControl>
+                              <Input
+                                id="telefone"
+                                type="tel"
+                                placeholder="(00) 00000-0000"
+                                {...field}
+                                data-rd="phone"
+                                className="bg-background/50 border-input/50 focus:border-primary/50"
+                                value={field.value ? formatPhone(field.value) : ''}
+                                onChange={(e) => {
+                                  const formatted = formatPhone(e.target.value);
+                                  field.onChange(formatted);
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="company"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Empresa</FormLabel>
+                            <FormControl>
+                              <Input
+                                id="empresa"
+                                placeholder="Nome da empresa (opcional)"
+                                {...field}
+                                data-rd="company"
+                                className="bg-background/50 border-input/50 focus:border-primary/50"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="service"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Serviço de interesse *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger 
+                                id="servico"
+                                className="bg-background/50 border-input/50 focus:border-primary/50"
+                                data-rd="service"
+                                aria-label="Selecione um serviço de interesse"
+                              >
+                                <SelectValue placeholder="Selecione um serviço" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
+                              <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
+                              <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>
+                              <SelectItem value="tracking">Tracking e Análise</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormDescription>
+                            Selecione o serviço que mais se adequa à sua necessidade.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      id="btn-submit"
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-primary hover:bg-primary/90 glow-primary group"
+                      size="lg"
+                      data-rd="submit"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                          Enviar mensagem
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              )}
             </div>
           </div>
         </div>

@@ -285,7 +285,20 @@ const ContactFormDialog = () => {
           <Form {...form}>
             <form 
               id="0001"
-              onSubmit={form.handleSubmit(onSubmit)} 
+              onSubmit={async (e) => {
+                // Valida os campos primeiro
+                const isValid = await form.trigger();
+                
+                if (!isValid) {
+                  e.preventDefault();
+                  return;
+                }
+                
+                // O RD Station escuta o evento submit antes do preventDefault
+                // Então ele já capturou os dados neste ponto
+                // Agora processamos o formulário normalmente
+                form.handleSubmit(onSubmit)(e);
+              }} 
               className="space-y-3 md:space-y-6 mt-2 md:mt-4"
               data-rd-form="0001"
             >
