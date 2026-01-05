@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -58,6 +58,8 @@ const ContactFormDialog = () => {
   const { isOpen, closeDialog, formId } = useContactDialog();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const rdInitializedRef = useRef(false); // Evita múltiplas inicializações
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null); // Para cleanup do setTimeout
 
   // Previne scroll do body quando o modal está aberto
   useEffect(() => {
@@ -115,61 +117,101 @@ const ContactFormDialog = () => {
     };
   }, [isOpen, closeDialog]);
 
-  // Inicializa o RD Station quando o popup é aberto
+  // Inicializa o RD Station quando o popup é aberto (otimizado)
   useEffect(() => {
-    if (isOpen && typeof window !== "undefined") {
-      // Verifica se está no domínio permitido
-      const hostname = window.location.hostname;
-      const allowedDomain = 'denzerdigital.com.br';
-      if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
-        return; // Não inicializa RD Station em domínios não permitidos
-      }
+    // Limpa timeout anterior se existir
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
 
-      // Função para forçar integração do RD Station quando o popup abre
-      const forceRDIntegration = () => {
-        const token = '02b269cd38a50b7180df773a81bf966c';
-        const formElement = document.getElementById(formId);
-        
-        if (!formElement) {
-          console.warn(`Formulário ${formId} não encontrado no DOM`);
+    // Reset do flag quando o popup fecha
+    if (!isOpen) {
+      rdInitializedRef.current = false;
+      return;
+    }
+
+    if (typeof window === "undefined") return;
+
+    // Verifica se está no domínio permitido
+    const hostname = window.location.hostname;
+    const allowedDomain = 'denzerdigital.com.br';
+    if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
+      return;
+    }
+
+    // Evita múltiplas inicializações
+    if (rdInitializedRef.current) {
+      return;
+    }
+
+    // Função para forçar integração do RD Station quando o popup abre
+    const forceRDIntegration = (retries = 5) => {
+      const formElement = document.getElementById(formId);
+      
+      if (!formElement) {
+        // Se o formulário ainda não está no DOM, tenta novamente
+        if (retries > 0) {
+          timeoutRef.current = setTimeout(() => {
+            forceRDIntegration(retries - 1);
+          }, 50);
           return false;
         }
-
-        // Usa o método recomendado: RdstationFormsIntegration.Integration.integrateAll
-        if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
-          try {
-            window.RdstationFormsIntegration.Integration.integrateAll(token);
-            console.log(`RD Station integração forçada após abrir pop-up - Form ID: ${formId}`);
-            return true;
-          } catch (error) {
-            console.warn("Erro ao integrar RD Station via integrateAll:", error);
-          }
-        }
-
-        // Fallback para o método antigo
-        if (window.RDCaptureForms) {
-          try {
-            window.RDCaptureForms.init();
-            console.log(`RD Station Forms inicializado no popup (fallback) - Form ID: ${formId}`);
-            return true;
-          } catch (error) {
-            console.warn("Erro ao inicializar RD Station Forms:", error);
-            return false;
-          }
-        }
-        
+        console.warn(`Formulário ${formId} não encontrado no DOM após múltiplas tentativas`);
         return false;
-      };
+      }
 
-      // Aguarda o DOM estar pronto e força a integração
-      setTimeout(() => {
+      const token = '02b269cd38a50b7180df773a81bf966c';
+
+      // Usa o método recomendado: RdstationFormsIntegration.Integration.integrateAll
+      if (window.RdstationFormsIntegration?.Integration) {
+        try {
+          window.RdstationFormsIntegration.Integration.integrateAll(token);
+          console.log(`RD Station integração forçada após abrir pop-up - Form ID: ${formId}`);
+          rdInitializedRef.current = true;
+          return true;
+        } catch (error) {
+          console.warn("Erro ao integrar RD Station via integrateAll:", error);
+        }
+      }
+
+      // Fallback para o método antigo
+      if (window.RDCaptureForms) {
+        try {
+          window.RDCaptureForms.init();
+          console.log(`RD Station Forms inicializado no popup (fallback) - Form ID: ${formId}`);
+          rdInitializedRef.current = true;
+          return true;
+        } catch (error) {
+          console.warn("Erro ao inicializar RD Station Forms:", error);
+          return false;
+        }
+      }
+      
+      return false;
+    };
+
+    // Aguarda o DOM estar pronto e força a integração
+    // Usa requestAnimationFrame para garantir que o React terminou de renderizar
+    requestAnimationFrame(() => {
+      timeoutRef.current = setTimeout(() => {
         if (typeof window.reinitRDStation === 'function') {
           window.reinitRDStation();
+          rdInitializedRef.current = true;
         } else {
           forceRDIntegration();
         }
-      }, 100); // Delay curto é geralmente suficiente
-    }
+        timeoutRef.current = null;
+      }, 100); // Aumentado para 100ms para garantir que o DOM está pronto
+    });
+
+    // Cleanup
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
   }, [isOpen, formId]);
 
   const form = useForm<ContactFormData>({
@@ -181,56 +223,66 @@ const ContactFormDialog = () => {
       company: "",
       service: "",
     },
+    mode: "onBlur", // Valida apenas ao sair do campo, não a cada keystroke
   });
 
-  const onSubmit = async (data: ContactFormData) => {
+  // Memoiza o handler de telefone para evitar re-renders
+  const handlePhoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, field: any) => {
+    const formatted = formatPhone(e.target.value);
+    field.onChange(formatted);
+  }, []);
+
+  const onSubmit = useCallback(async (data: ContactFormData) => {
     setIsSubmitting(true);
     try {
       // Aqui você pode integrar com o webhook ou API
       // Por enquanto, apenas simula o envio
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      console.log("Formulário enviado:", data);
+      await new Promise((resolve) => setTimeout(resolve, 800)); // Reduzido ainda mais
       
       // Simula sucesso
       setIsSuccess(true);
       
-      // Reseta o formulário após 2 segundos e fecha o dialog
+      // Reseta o formulário após 1 segundo e fecha o dialog
       setTimeout(() => {
         form.reset();
         setIsSuccess(false);
+        rdInitializedRef.current = false; // Reset do flag para permitir reinicialização
         closeDialog();
-      }, 2000);
+      }, 1000);
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
-    } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [form, closeDialog]);
+
+  // Memoiza o handler de click no overlay
+  const handleOverlayClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      closeDialog();
+    }
+  }, [closeDialog]);
+
+  // Não renderiza o componente se não estiver aberto (otimização)
+  if (!isOpen) return null;
 
   return (
     <div 
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${isOpen ? 'block' : 'hidden'}`}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
-      aria-modal={isOpen ? "true" : "false"}
+      aria-modal="true"
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
-      onClick={(e) => {
-        // Fecha ao clicar no overlay
-        if (e.target === e.currentTarget) {
-          closeDialog();
-        }
-      }}
+      onClick={handleOverlayClick}
     >
-      {/* Overlay */}
+      {/* Overlay - removido backdrop-blur para melhor performance */}
       <div 
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in-0"
+        className="fixed inset-0 bg-black/80"
         onClick={closeDialog}
         aria-hidden="true"
       />
       
-      {/* Modal Content */}
-      <div className="relative z-50 w-full max-w-[600px] bg-gradient-to-br from-card via-card to-card/95 border border-primary/20 rounded-lg shadow-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4">
+      {/* Modal Content - removidas animações pesadas */}
+      <div className="relative z-50 w-full max-w-[600px] bg-card border border-primary/20 rounded-lg shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-4 md:p-6 border-b border-border">
           <div className="space-y-0.5 md:space-y-1">
@@ -272,22 +324,48 @@ const ContactFormDialog = () => {
           <Form {...form}>
             <form 
               id={formId}
+              name={`form-${formId}`}
+              method="POST"
+              action="#"
               onSubmit={async (e) => {
-                // Valida os campos primeiro
+                // IMPORTANTE: O RD Station precisa capturar o evento submit ANTES do preventDefault
+                // Por isso, validamos primeiro e só depois prevenimos
                 const isValid = await form.trigger();
                 
                 if (!isValid) {
                   e.preventDefault();
+                  e.stopPropagation();
                   return;
                 }
                 
-                // O RD Station escuta o evento submit antes do preventDefault
-                // Então ele já capturou os dados neste ponto
-                // Agora processamos o formulário normalmente
-                form.handleSubmit(onSubmit)(e);
+                // Garante que o RD Station processou antes de prevenir
+                const token = '02b269cd38a50b7180df773a81bf966c';
+                if (typeof window !== "undefined") {
+                  try {
+                    // Usa o método recomendado primeiro
+                    if (window.RdstationFormsIntegration?.Integration) {
+                      window.RdstationFormsIntegration.Integration.integrateAll(token);
+                    } else if (window.RDCaptureForms) {
+                      window.RDCaptureForms.init();
+                    }
+                    // Aguarda um pouco para o RD processar
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                  } catch (error) {
+                    console.warn("Erro ao processar RD Station no submit:", error);
+                  }
+                }
+                
+                // Agora previne e processa
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Processa o formulário
+                const formData = form.getValues();
+                onSubmit(formData);
               }} 
               className="space-y-3 md:space-y-6 mt-2 md:mt-4"
               data-rd-form={formId}
+              noValidate
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <FormField
@@ -342,15 +420,13 @@ const ContactFormDialog = () => {
                       <FormControl>
                         <Input
                           id="telefone"
+                          name="phone"
                           type="tel"
                           placeholder="(00) 00000-0000"
                           data-rd="phone"
                           className="bg-background/50 border-input/50 focus:border-primary/50"
                           value={field.value ? formatPhone(field.value) : ''}
-                          onChange={(e) => {
-                            const formatted = formatPhone(e.target.value);
-                            field.onChange(formatted);
-                          }}
+                          onChange={(e) => handlePhoneChange(e, field)}
                         />
                       </FormControl>
                       <FormMessage />
@@ -385,7 +461,11 @@ const ContactFormDialog = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Serviço de interesse *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      // Desabilita animações pesadas do Select
+                    >
                       <FormControl>
                         <SelectTrigger 
                           id="servico"
@@ -396,7 +476,7 @@ const ContactFormDialog = () => {
                           <SelectValue placeholder="Selecione um serviço" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="max-h-[200px]">
                         <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
                         <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
                         <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>

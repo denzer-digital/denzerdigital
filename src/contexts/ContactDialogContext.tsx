@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useCallback, useMemo } from "react";
 
 interface ContactDialogContextType {
   isOpen: boolean;
@@ -13,19 +13,29 @@ export function ContactDialogProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [formId, setFormId] = useState<string>("0001"); // ID padrão
 
-  const openDialog = (customFormId?: string) => {
+  const openDialog = useCallback((customFormId?: string) => {
     if (customFormId) {
       setFormId(customFormId);
     } else {
       setFormId("0001"); // Reset para o padrão se não especificado
     }
     setIsOpen(true);
-  };
+  }, []);
 
-  const closeDialog = () => setIsOpen(false);
+  const closeDialog = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  // Memoiza o valor do contexto para evitar re-renders desnecessários
+  const value = useMemo(() => ({
+    isOpen,
+    formId,
+    openDialog,
+    closeDialog,
+  }), [isOpen, formId, openDialog, closeDialog]);
 
   return (
-    <ContactDialogContext.Provider value={{ isOpen, formId, openDialog, closeDialog }}>
+    <ContactDialogContext.Provider value={value}>
       {children}
     </ContactDialogContext.Provider>
   );
