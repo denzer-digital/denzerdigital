@@ -177,13 +177,35 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* RD Station Forms - Script necessário para capturar formulários */}
+        {/* RD Station Forms - Script necessário para capturar formulários - Apenas no domínio principal */}
         <Script
           id="rdstation-forms"
-          src="https://d335luupugsy2.cloudfront.net/js/rdstation-forms/stable/rdstation-forms.min.js"
           strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof window === 'undefined') return;
+                
+                // Verifica se está no domínio principal
+                const hostname = window.location.hostname;
+                const allowedDomain = 'denzerdigital.com.br';
+                
+                // Verifica se é o domínio principal ou subdomínio permitido
+                if (hostname === allowedDomain || hostname.endsWith('.' + allowedDomain)) {
+                  // Carrega o script do RD Station apenas no domínio permitido
+                  var script = document.createElement('script');
+                  script.id = 'rdstation-forms-script';
+                  script.src = 'https://d335luupugsy2.cloudfront.net/js/rdstation-forms/stable/rdstation-forms.min.js';
+                  script.async = true;
+                  document.head.appendChild(script);
+                } else {
+                  console.log('RD Station não carregado: domínio não permitido (' + hostname + ')');
+                }
+              })();
+            `,
+          }}
         />
-        {/* Script para inicializar e reinicializar RD Station quando necessário */}
+        {/* Script para inicializar e reinicializar RD Station quando necessário - Apenas no domínio principal */}
         <Script
           id="rdstation-helper"
           strategy="afterInteractive"
@@ -191,6 +213,16 @@ export default function RootLayout({
             __html: `
               (function() {
                 if (typeof window === 'undefined') return;
+                
+                // Verifica se está no domínio principal
+                const hostname = window.location.hostname;
+                const allowedDomain = 'denzerdigital.com.br';
+                
+                // Verifica se é o domínio principal ou subdomínio permitido
+                if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
+                  console.log('RD Station helper não executado: domínio não permitido (' + hostname + ')');
+                  return;
+                }
                 
                 // Função global para reinicializar RD Station
                 window.reinitRDStation = function() {

@@ -24,6 +24,13 @@ export function useRDStation(formId: string, enabled: boolean = true, delay: num
   useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
 
+    // Verifica se está no domínio permitido
+    const hostname = window.location.hostname;
+    const allowedDomain = 'denzerdigital.com.br';
+    if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
+      return; // Não inicializa RD Station em domínios não permitidos
+    }
+
     const initRDStation = () => {
       // Verifica se o formulário está no DOM
       const formElement = document.getElementById(formId);

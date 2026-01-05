@@ -113,6 +113,13 @@ const ContactFormDialog = () => {
   // Inicializa o RD Station quando o popup é aberto
   useEffect(() => {
     if (isOpen && typeof window !== "undefined") {
+      // Verifica se está no domínio permitido
+      const hostname = window.location.hostname;
+      const allowedDomain = 'denzerdigital.com.br';
+      if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
+        return; // Não inicializa RD Station em domínios não permitidos
+      }
+
       // Aguarda o formulário estar no DOM antes de inicializar
       const initRDStation = () => {
         // Verifica se o formulário está no DOM

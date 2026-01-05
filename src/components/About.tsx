@@ -82,7 +82,7 @@ const About = () => {
             <div className="hidden md:flex flex-wrap justify-center items-center gap-[10px]" role="list" aria-label="Logos de parceiros">
               <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               <Image src="/assets/rd.webp" alt="RD Station Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
-              <a href="https://www.kommo.com/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
+              <a href="https://www.kommo.com/br/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
                 <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               </a>
               <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
@@ -117,7 +117,7 @@ const About = () => {
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
-                      <a href="https://www.kommo.com/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
+                      <a href="https://www.kommo.com/br/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
                         <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                       </a>
                     </div>
