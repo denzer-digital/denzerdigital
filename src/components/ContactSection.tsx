@@ -66,9 +66,9 @@ const ContactSection = () => {
     },
   });
 
-  // Inicializa o RD Station quando o formulário estiver visível
+  // Inicializa o RD Station quando o formulário estiver visível ou quando o componente montar
   useEffect(() => {
-    if (typeof window === "undefined" || !formAnimation.isVisible) return;
+    if (typeof window === "undefined") return;
 
     // Verifica se está no domínio permitido
     const hostname = window.location.hostname;
@@ -97,33 +97,132 @@ const ContactSection = () => {
       return false;
     };
 
-    // Usa a função global se disponível
+    // Função para tentar inicializar
+    const tryInit = () => {
+      // Usa a função global se disponível
+      if (typeof window.reinitRDStation === 'function') {
+        window.reinitRDStation();
+      } else {
+        // Tenta inicializar diretamente
+        initRDStation();
+      }
+    };
+
+    // Função para garantir que o formulário está no DOM e o script carregou antes de inicializar
+    const ensureFormAndInit = (maxRetries = 50) => {
+      const formElement = document.getElementById('0002');
+      if (!formElement) {
+        // Se o formulário ainda não estiver no DOM e ainda houver tentativas, tenta novamente
+        if (maxRetries > 0) {
+          setTimeout(() => ensureFormAndInit(maxRetries - 1), 200);
+        }
+        return;
+      }
+
+      // Formulário está no DOM, agora verifica se o script do RD Station carregou
+      if (window.RDCaptureForms) {
+        tryInit();
+      } else if (maxRetries > 0) {
+        // Script ainda não carregou, tenta novamente
+        setTimeout(() => ensureFormAndInit(maxRetries - 1), 200);
+      }
+    };
+
+    // Aguarda o DOM estar pronto antes de tentar inicializar
+    const startInit = () => {
+      // Se o script já estiver carregado, tenta inicializar imediatamente
+      if (window.RDCaptureForms) {
+        setTimeout(() => ensureFormAndInit(), 300);
+      } else {
+        // Aguarda o script carregar
+        const checkInterval = setInterval(() => {
+          if (window.RDCaptureForms) {
+            clearInterval(checkInterval);
+            ensureFormAndInit();
+          }
+        }, 100);
+
+        // Limpa o intervalo após 10 segundos
+        const timeout = setTimeout(() => {
+          clearInterval(checkInterval);
+          // Tenta uma última vez mesmo se o script não tiver carregado
+          if (window.RDCaptureForms) {
+            ensureFormAndInit();
+          }
+        }, 10000);
+
+        return () => {
+          clearInterval(checkInterval);
+          clearTimeout(timeout);
+        };
+      }
+    };
+
+    // Inicia a inicialização quando o DOM estiver pronto
+    let cleanup: (() => void) | undefined;
+    
+    if (document.readyState === 'loading') {
+      const handler = () => {
+        cleanup = startInit();
+      };
+      document.addEventListener('DOMContentLoaded', handler);
+      return () => {
+        document.removeEventListener('DOMContentLoaded', handler);
+        if (cleanup) cleanup();
+      };
+    } else {
+      // DOM já está pronto
+      cleanup = startInit();
+      return cleanup;
+    }
+  }, []); // Executa apenas uma vez quando o componente monta
+
+  // Reinicializa quando o formulário fica visível (para garantir que captura após scroll)
+  useEffect(() => {
+    if (typeof window === "undefined" || !formAnimation.isVisible) return;
+
+    // Verifica se está no domínio permitido
+    const hostname = window.location.hostname;
+    const allowedDomain = 'denzerdigital.com.br';
+    if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
+      return;
+    }
+
+    // Reinicializa quando fica visível para garantir captura
     if (typeof window.reinitRDStation === 'function') {
       setTimeout(() => {
         window.reinitRDStation?.();
       }, 500);
-    } else {
-      // Aguarda o script carregar
-      const checkInterval = setInterval(() => {
-        if (window.RDCaptureForms) {
-          initRDStation();
-          clearInterval(checkInterval);
+    } else if (window.RDCaptureForms) {
+      setTimeout(() => {
+        try {
+          window.RDCaptureForms.init();
+          console.log("RD Station Forms reinicializado quando formulário ficou visível - Form ID: 0002");
+        } catch (error) {
+          console.warn("Erro ao reinicializar RD Station Forms:", error);
         }
-      }, 100);
-
-      const timeout = setTimeout(() => {
-        clearInterval(checkInterval);
-      }, 5000);
-
-      return () => {
-        clearInterval(checkInterval);
-        clearTimeout(timeout);
-      };
+      }, 500);
     }
   }, [formAnimation.isVisible]);
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
+    
+    // Garante que o RD Station seja inicializado antes de enviar
+    if (typeof window !== "undefined") {
+      const hostname = window.location.hostname;
+      const allowedDomain = 'denzerdigital.com.br';
+      if ((hostname === allowedDomain || hostname.endsWith('.' + allowedDomain)) && window.RDCaptureForms) {
+        try {
+          // Reinicializa o RD Station antes de enviar para garantir captura
+          window.RDCaptureForms.init();
+          console.log("RD Station Forms reinicializado antes do envio - Form ID: 0002");
+        } catch (error) {
+          console.warn("Erro ao reinicializar RD Station antes do envio:", error);
+        }
+      }
+    }
+    
     try {
       // Aqui você pode integrar com o webhook ou API
       // Por enquanto, apenas simula o envio
