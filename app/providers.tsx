@@ -6,7 +6,8 @@ import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ContactDialogProvider } from "@/contexts/ContactDialogContext";
 import { GTMPageView } from "@/components/GTMPageView";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
+import { saveUTMs } from "@/lib/utmHelper";
 
 type Props = {
   children: ReactNode;
@@ -14,6 +15,11 @@ type Props = {
 
 export function Providers({ children }: Props) {
   const [queryClient] = useState(() => new QueryClient());
+
+  // Captura UTMs quando o componente monta (executa uma única vez)
+  useEffect(() => {
+    saveUTMs();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

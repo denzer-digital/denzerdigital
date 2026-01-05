@@ -30,3 +30,36 @@ export function unformatPhone(value: string): string {
   return value.replace(/\D/g, '');
 }
 
+/**
+ * Formata um valor monetário em Real brasileiro
+ * Formato: R$ 1.234,56 ou R$ 1.234 (sem centavos se não houver)
+ * Recebe apenas números (string de dígitos) e formata
+ */
+export function formatCurrency(value: string): string {
+  // Remove tudo que não é número
+  const numbers = value.replace(/\D/g, '');
+  
+  if (!numbers) return '';
+  
+  // Converte para número
+  const numValue = parseInt(numbers, 10);
+  
+  if (isNaN(numValue) || numValue === 0) return '';
+  
+  // Formata com separadores de milhar (sem centavos por padrão)
+  // Se quiser incluir centavos, divida por 100: numValue / 100
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(numValue);
+}
+
+/**
+ * Remove a formatação de moeda, retornando apenas números (sem centavos)
+ * Ex: "R$ 1.234,56" -> "123456" (centavos incluídos)
+ * Para obter o valor em reais, divida por 100
+ */
+export function unformatCurrency(value: string): string {
+  return value.replace(/\D/g, '');
+}
+

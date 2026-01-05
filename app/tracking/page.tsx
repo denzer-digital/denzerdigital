@@ -7,7 +7,8 @@ import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { formatPhone, unformatPhone } from "@/lib/phoneFormatter";
+import { formatPhone, unformatPhone, formatCurrency, unformatCurrency } from "@/lib/phoneFormatter";
+import { injectUTMsIntoForm } from "@/lib/utmHelper";
 import { 
   ArrowRight, 
   CheckCircle2, 
@@ -355,7 +356,16 @@ export default function TrackingPage() {
 
   // --- GEMINI API FUNCTION ---
   const analyzeImpact = async () => {
-    if (!adSpend || !roas) return;
+    // Remove formatação e converte para números
+    const spendNumbers = unformatCurrency(adSpend);
+    const spendValue = spendNumbers ? parseFloat(spendNumbers) : 0;
+    
+    const roasValue = parseFloat(roas.replace(/[^\d,.-]/g, '').replace(',', '.'));
+
+    if (!adSpend || !roas || isNaN(spendValue) || isNaN(roasValue) || spendValue <= 0 || roasValue <= 0) {
+      setAiError("Por favor, preencha valores válidos para Investimento e ROAS.");
+      return;
+    }
 
     setIsAnalyzing(true);
     setAiReport(null);
@@ -368,22 +378,38 @@ export default function TrackingPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          adSpend,
-          roas,
+          adSpend: spendValue.toString(),
+          roas: roasValue.toString(),
         }),
       });
 
-      const data = await response.json();
+      // Verifica se a resposta é JSON válido
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        throw new Error(`Resposta inválida do servidor: ${text.substring(0, 100)}`);
+      }
       
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao processar a análise');
+        throw new Error(data.error || `Erro ao processar a análise (${response.status})`);
       }
 
-      setAiReport(data.report || null);
+      if (!data.report) {
+        throw new Error('Resposta da API não contém o relatório esperado');
+      }
+
+      setAiReport(data.report);
 
     } catch (error) {
       console.error("Erro na análise:", error);
-      setAiError("Não foi possível gerar a análise no momento. Tente novamente em instantes.");
+      // Mensagem de erro mais específica
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Não foi possível gerar a análise no momento. Tente novamente em instantes.";
+      setAiError(errorMessage);
     } finally {
       setIsAnalyzing(false);
     }
@@ -698,10 +724,15 @@ export default function TrackingPage() {
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">R$</span>
                     <input 
-                      type="number" 
-                      value={adSpend}
-                      onChange={(e) => setAdSpend(e.target.value)}
-                      placeholder="Ex: 50000" 
+                      type="text" 
+                      inputMode="numeric"
+                      value={adSpend ? formatCurrency(adSpend) : ''}
+                      onChange={(e) => {
+                        // Remove formatação, aplica nova formatação e atualiza o estado
+                        const unformatted = unformatCurrency(e.target.value);
+                        setAdSpend(unformatted);
+                      }}
+                      placeholder="Ex: 50.000" 
                       className="w-full bg-secondary border border-border text-foreground rounded-lg py-4 pl-12 pr-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground"
                     />
                   </div>
@@ -1088,6 +1119,10 @@ export default function TrackingPage() {
                   <form 
                     id="pag-tracking"
                     onSubmit={async (e) => {
+                      // IMPORTANTE: Injeta UTMs ANTES de qualquer outra coisa
+                      const formElement = e.currentTarget;
+                      injectUTMsIntoForm(formElement);
+
                       // Valida os campos primeiro
                       const isValid = await form.trigger();
                       

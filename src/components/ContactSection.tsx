@@ -40,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2, Send, CheckCircle2, Mail, Phone } from "lucide-react";
+import { injectUTMsIntoForm } from "@/lib/utmHelper";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -272,6 +273,12 @@ const ContactSection = () => {
 
       // Listener que garante que o RD Station processe antes de qualquer preventDefault
       const handleSubmitForRD = (e: Event) => {
+        // Injeta UTMs no formulário ANTES de processar
+        const formElement = e.target as HTMLFormElement;
+        if (formElement) {
+          injectUTMsIntoForm(formElement);
+        }
+
         // Este listener é executado ANTES do nosso handler no onSubmit
         // Então o RD Station já tem chance de capturar aqui
         const token = '02b269cd38a50b7180df773a81bf966c';
@@ -414,6 +421,10 @@ const ContactSection = () => {
                       method="POST"
                       action="#"
                       onSubmit={async (e) => {
+                        // IMPORTANTE: Injeta UTMs ANTES de qualquer outra coisa
+                        const formElement = e.currentTarget;
+                        injectUTMsIntoForm(formElement);
+
                         // Valida os campos primeiro
                         const isValid = await form.trigger();
                         

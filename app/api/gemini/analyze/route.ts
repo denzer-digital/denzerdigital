@@ -35,18 +35,65 @@ export async function POST(req: NextRequest) {
     [Escreva apenas 2 ou 3 frases curtas e persuasivas alertando que ele está tomando decisões com dados incompletos (cegueira de dados) e como o Server-Side da Denzer traz essa receita de volta para o painel].
     `;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: userQuery }] }],
-        }),
+    // Lista de modelos para tentar (em ordem de preferência)
+    // Tenta modelos mais estáveis primeiro
+    const modelsToTry = [
+      { name: 'gemini-pro', version: 'v1beta' },
+      { name: 'gemini-1.5-pro', version: 'v1beta' },
+      { name: 'gemini-1.5-flash', version: 'v1beta' },
+      { name: 'gemini-pro', version: 'v1' },
+    ];
+
+    let lastError: any = null;
+    let response: Response | null = null;
+
+    // Tenta cada modelo até encontrar um que funcione
+    for (const model of modelsToTry) {
+      try {
+        const apiUrl = `https://generativelanguage.googleapis.com/${model.version}/models/${model.name}:generateContent?key=${apiKey}`;
+        
+        response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: userQuery }] }],
+            generationConfig: {
+              temperature: 0.7,
+              topK: 40,
+              topP: 0.95,
+              maxOutputTokens: 1024,
+            },
+          }),
+        });
+
+        // Se a resposta foi bem-sucedida, sai do loop
+        if (response.ok) {
+          console.log(`Modelo ${model.name} (${model.version}) funcionou!`);
+          break;
+        }
+
+        // Se não foi bem-sucedida, tenta o próximo modelo
+        const errorData = await response.json().catch(() => ({ error: { message: response.statusText } }));
+        lastError = errorData;
+        console.warn(`Modelo ${model.name} (${model.version}) falhou:`, errorData);
+        response = null;
+      } catch (error) {
+        console.warn(`Erro ao tentar modelo ${model.name} (${model.version}):`, error);
+        lastError = error;
+        response = null;
       }
-    );
+    }
+
+    // Se nenhum modelo funcionou, retorna erro
+    if (!response || !response.ok) {
+      console.error('Todos os modelos falharam. Último erro:', lastError);
+      return NextResponse.json(
+        { error: lastError?.error?.message || 'Nenhum modelo disponível funcionou. Verifique sua API key e os modelos disponíveis.' },
+        { status: 500 }
+      );
+    }
 
     const data = await response.json();
 
@@ -61,8 +108,9 @@ export async function POST(req: NextRequest) {
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!text) {
+      console.error('Resposta inválida da API Gemini:', data);
       return NextResponse.json(
-        { error: 'Resposta inválida da API' },
+        { error: 'Resposta inválida da API. Verifique os logs do servidor.' },
         { status: 500 }
       );
     }

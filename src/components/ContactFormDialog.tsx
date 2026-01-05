@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { formatPhone, unformatPhone } from "@/lib/phoneFormatter";
+import { injectUTMsIntoForm } from "@/lib/utmHelper";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -195,6 +196,12 @@ const ContactFormDialog = () => {
     // Usa requestAnimationFrame para garantir que o React terminou de renderizar
     requestAnimationFrame(() => {
       timeoutRef.current = setTimeout(() => {
+        // Injeta UTMs no formulário antes de inicializar o RD Station
+        const formElement = document.getElementById(formId) as HTMLFormElement;
+        if (formElement) {
+          injectUTMsIntoForm(formElement);
+        }
+
         if (typeof window.reinitRDStation === 'function') {
           window.reinitRDStation();
           rdInitializedRef.current = true;
@@ -328,6 +335,10 @@ const ContactFormDialog = () => {
               method="POST"
               action="#"
               onSubmit={async (e) => {
+                // IMPORTANTE: Injeta UTMs ANTES de qualquer outra coisa
+                const formElement = e.currentTarget;
+                injectUTMsIntoForm(formElement);
+
                 // IMPORTANTE: O RD Station precisa capturar o evento submit ANTES do preventDefault
                 // Por isso, validamos primeiro e só depois prevenimos
                 const isValid = await form.trigger();
