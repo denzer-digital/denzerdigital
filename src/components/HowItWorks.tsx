@@ -92,7 +92,7 @@ const HowItWorks = () => {
             <Button 
               size="lg"
               className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 glow-accent group"
-              onClick={openDialog}
+              onClick={() => openDialog()}
             >
               Quero implementar agora
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

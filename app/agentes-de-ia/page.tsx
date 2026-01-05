@@ -167,7 +167,7 @@ export default function AgentesDeIaPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg"
-              onClick={openDialog}
+              onClick={() => openDialog()}
               className="text-lg px-8 py-6 group"
             >
               <Sparkles className="w-5 h-5 mr-2" />
@@ -431,7 +431,7 @@ export default function AgentesDeIaPage() {
           
           <Button 
             size="lg"
-            onClick={openDialog}
+            onClick={() => openDialog()}
             className="text-lg px-10 py-6 mb-8 group"
           >
             Agendar Diagnóstico de IA

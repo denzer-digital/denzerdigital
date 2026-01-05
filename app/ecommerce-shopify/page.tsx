@@ -87,7 +87,7 @@ export default function EcommerceShopifyPage() {
               style={{
                 backgroundImage: 'linear-gradient(90deg, rgba(255, 123, 0, 1) 0%, rgba(0, 123, 255, 1) 100%)'
               }}
-              onClick={openDialog}
+              onClick={() => openDialog()}
             >
               Quero saber mais
             </Button>
@@ -152,7 +152,7 @@ export default function EcommerceShopifyPage() {
               style={{
                 backgroundImage: 'linear-gradient(90deg, rgba(255, 123, 0, 1) 0%, rgba(0, 123, 255, 1) 100%)'
               }}
-              onClick={openDialog}
+              onClick={() => openDialog()}
             >
               Falar com Especialista
             </Button>

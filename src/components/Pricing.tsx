@@ -133,7 +133,7 @@ const Pricing = () => {
                         : 'bg-secondary hover:bg-secondary/80'
                     }`}
                     size="lg"
-                    onClick={openDialog}
+                    onClick={() => openDialog()}
                   >
                     {plan.buttonText || "Solicitar proposta"}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />

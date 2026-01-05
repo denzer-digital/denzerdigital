@@ -72,7 +72,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 glow-primary group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-              onClick={openDialog}
+              onClick={() => openDialog()}
               aria-label="Abrir formulário para falar com um especialista"
             >
               Falar com um especialista

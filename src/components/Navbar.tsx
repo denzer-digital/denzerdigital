@@ -116,7 +116,7 @@ const Navbar = () => {
               <Button 
                 size="sm"
                 className="bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                onClick={openDialog}
+                onClick={() => openDialog()}
                 aria-label="Abrir formulário para falar com especialista"
               >
                 Falar com especialista
@@ -188,7 +188,7 @@ const Navbar = () => {
                 <Button 
                   size="sm"
                   className="bg-primary hover:bg-primary/90 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  onClick={openDialog}
+                  onClick={() => openDialog()}
                   aria-label="Abrir formulário para falar com especialista"
                 >
                   Falar com especialista
