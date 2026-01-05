@@ -73,9 +73,9 @@ const About = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
+                  </div>
+                </div>
+                
           {/* Partner Logos - Below content */}
           <div className="pt-12" aria-label="Parceiros e certificações">
             {/* Desktop: Grid layout */}
@@ -87,24 +87,24 @@ const About = () => {
               </a>
               <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
-            </div>
+                </div>
 
-            {/* Mobile: Carousel */}
+                {/* Mobile: Carousel */}
             <div className="md:hidden w-full max-w-sm mx-auto" role="region" aria-label="Carrossel de parceiros">
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                plugins={[
-                  Autoplay({
-                    delay: 3000,
-                  }),
-                ]}
-                className="w-full"
+                  <Carousel
+                    opts={{
+                      align: "start",
+                      loop: true,
+                    }}
+                    plugins={[
+                      Autoplay({
+                        delay: 3000,
+                      }),
+                    ]}
+                    className="w-full"
                 aria-label="Carrossel de parceiros"
-              >
-                <CarouselContent>
+                  >
+                    <CarouselContent>
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
                       <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
@@ -116,7 +116,7 @@ const About = () => {
                     </div>
                   </CarouselItem>
                   <CarouselItem className="basis-1/3">
-                    <div className="flex justify-center">
+                          <div className="flex justify-center">
                       <a href="https://www.kommo.com/br/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
                         <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                       </a>
@@ -130,10 +130,10 @@ const About = () => {
                   <CarouselItem className="basis-1/3">
                     <div className="flex justify-center">
                       <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
-                    </div>
-                  </CarouselItem>
-                </CarouselContent>
-              </Carousel>
+                          </div>
+                        </CarouselItem>
+                    </CarouselContent>
+                  </Carousel>
             </div>
           </div>
         </div>

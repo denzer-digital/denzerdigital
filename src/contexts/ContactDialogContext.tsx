@@ -2,7 +2,8 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 interface ContactDialogContextType {
   isOpen: boolean;
-  openDialog: () => void;
+  formId: string;
+  openDialog: (formId?: string) => void;
   closeDialog: () => void;
 }
 
@@ -10,12 +11,21 @@ const ContactDialogContext = createContext<ContactDialogContextType | undefined>
 
 export function ContactDialogProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [formId, setFormId] = useState<string>("0001"); // ID padrão
 
-  const openDialog = () => setIsOpen(true);
+  const openDialog = (customFormId?: string) => {
+    if (customFormId) {
+      setFormId(customFormId);
+    } else {
+      setFormId("0001"); // Reset para o padrão se não especificado
+    }
+    setIsOpen(true);
+  };
+
   const closeDialog = () => setIsOpen(false);
 
   return (
-    <ContactDialogContext.Provider value={{ isOpen, openDialog, closeDialog }}>
+    <ContactDialogContext.Provider value={{ isOpen, formId, openDialog, closeDialog }}>
       {children}
     </ContactDialogContext.Provider>
   );

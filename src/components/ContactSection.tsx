@@ -81,6 +81,17 @@ const ContactSection = () => {
       // Verifica se o formulário está no DOM
       const formElement = document.getElementById('0002');
       if (!formElement) {
+        console.warn("Formulário 0002 não encontrado no DOM para inicialização do RD Station");
+        return false;
+      }
+
+      // Verifica se todos os campos necessários estão presentes
+      const nomeField = document.getElementById('nome');
+      const emailField = document.getElementById('email');
+      const telefoneField = document.getElementById('telefone');
+      
+      if (!nomeField || !emailField || !telefoneField) {
+        console.warn("Alguns campos do formulário 0002 não foram encontrados no DOM");
         return false;
       }
 
@@ -88,13 +99,17 @@ const ContactSection = () => {
         try {
           window.RDCaptureForms.init();
           console.log("RD Station Forms inicializado no formulário fixo - Form ID: 0002");
+          console.log("Formulário encontrado:", formElement);
+          console.log("Campos encontrados:", { nome: nomeField, email: emailField, telefone: telefoneField });
           return true;
         } catch (error) {
           console.warn("Erro ao inicializar RD Station Forms:", error);
           return false;
         }
+      } else {
+        console.warn("window.RDCaptureForms não está disponível");
+        return false;
       }
-      return false;
     };
 
     // Função para tentar inicializar
@@ -205,6 +220,53 @@ const ContactSection = () => {
     }
   }, [formAnimation.isVisible]);
 
+  // Adiciona um listener de submit diretamente no formulário para garantir captura do RD
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const hostname = window.location.hostname;
+    const allowedDomain = 'denzerdigital.com.br';
+    if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
+      return;
+    }
+
+    // Aguarda o formulário estar no DOM
+    const ensureFormAndAddListener = (maxRetries = 20) => {
+      const formElement = document.getElementById('0002');
+      if (!formElement) {
+        if (maxRetries > 0) {
+          setTimeout(() => ensureFormAndAddListener(maxRetries - 1), 200);
+        }
+        return;
+      }
+
+      // Listener que garante que o RD Station processe antes de qualquer preventDefault
+      const handleSubmitForRD = (e: Event) => {
+        // Este listener é executado ANTES do nosso handler no onSubmit
+        // Então o RD Station já tem chance de capturar aqui
+        if (window.RDCaptureForms) {
+          try {
+            window.RDCaptureForms.init();
+            console.log("RD Station Forms processado via listener de submit (capture) - Form ID: 0002");
+          } catch (error) {
+            console.warn("Erro ao processar RD Station no listener:", error);
+          }
+        }
+      };
+
+      // Adiciona o listener com capture: true para executar ANTES de outros listeners
+      formElement.addEventListener('submit', handleSubmitForRD, { capture: true });
+
+      return () => {
+        formElement.removeEventListener('submit', handleSubmitForRD, { capture: true });
+      };
+    };
+
+    // Inicia a verificação
+    const cleanup = ensureFormAndAddListener();
+    return cleanup;
+  }, []); // Executa quando o componente monta
+
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     
@@ -308,22 +370,51 @@ const ContactSection = () => {
                   <Form {...form}>
                     <form 
                       id="0002"
+                      name="form-0002"
+                      method="POST"
+                      action="#"
                       onSubmit={async (e) => {
                         // Valida os campos primeiro
                         const isValid = await form.trigger();
                         
                         if (!isValid) {
                           e.preventDefault();
+                          e.stopPropagation();
                           return;
                         }
                         
-                        // O RD Station escuta o evento submit antes do preventDefault
-                        // Então ele já capturou os dados neste ponto
-                        // Agora processamos o formulário normalmente
-                        form.handleSubmit(onSubmit)(e);
+                        // CRÍTICO: O RD Station escuta o evento submit através de event listeners
+                        // que são adicionados quando init() é chamado. Esses listeners são executados
+                        // ANTES do nosso handler fazer preventDefault, então o RD já capturou.
+                        // Mas para garantir, vamos chamar init() antes de processar.
+                        
+                        const formData = form.getValues();
+                        
+                        // Garante que o RD Station está inicializado e processa o formulário
+                        if (typeof window !== "undefined" && window.RDCaptureForms) {
+                          try {
+                            // Força o RD a processar o formulário
+                            // O RD já escutou o evento submit neste ponto (antes do preventDefault)
+                            window.RDCaptureForms.init();
+                            console.log("RD Station Forms processado no submit - Form ID: 0002");
+                            
+                            // Aguarda um pouco para garantir que o RD processou
+                            await new Promise(resolve => setTimeout(resolve, 150));
+                          } catch (error) {
+                            console.warn("Erro ao processar RD Station:", error);
+                          }
+                        }
+                        
+                        // Previne o submit nativo (o RD já capturou neste ponto)
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Processa o formulário
+                        onSubmit(formData);
                       }} 
                       className="space-y-6"
                       data-rd-form="0002"
+                      noValidate
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
@@ -335,6 +426,7 @@ const ContactSection = () => {
                               <FormControl>
                                 <Input
                                   id="nome"
+                                  name="name"
                                   placeholder="Seu nome"
                                   {...field}
                                   data-rd="name"
@@ -355,6 +447,7 @@ const ContactSection = () => {
                               <FormControl>
                                 <Input
                                   id="email"
+                                  name="email"
                                   type="email"
                                   placeholder="seu@email.com"
                                   {...field}
@@ -378,6 +471,7 @@ const ContactSection = () => {
                               <FormControl>
                                 <Input
                                   id="telefone"
+                                  name="phone"
                                   type="tel"
                                   placeholder="(00) 00000-0000"
                                   {...field}
@@ -404,6 +498,7 @@ const ContactSection = () => {
                               <FormControl>
                                 <Input
                                   id="empresa"
+                                  name="company"
                                   placeholder="Nome da empresa (opcional)"
                                   {...field}
                                   data-rd="company"
@@ -422,24 +517,32 @@ const ContactSection = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Serviço de interesse *</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger 
+                            <FormControl>
+                              <>
+                                {/* Input hidden para o RD Station capturar o valor do serviço */}
+                                <input
+                                  type="hidden"
                                   id="servico"
-                                  className="bg-background/50 border-input/50 focus:border-primary/50"
+                                  name="service"
+                                  value={field.value || ''}
                                   data-rd="service"
-                                  aria-label="Selecione um serviço de interesse"
-                                >
-                                  <SelectValue placeholder="Selecione um serviço" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
-                                <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
-                                <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>
-                                <SelectItem value="tracking">Tracking e Análise</SelectItem>
-                              </SelectContent>
-                            </Select>
+                                />
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <SelectTrigger 
+                                    className="bg-background/50 border-input/50 focus:border-primary/50"
+                                    aria-label="Selecione um serviço de interesse"
+                                  >
+                                    <SelectValue placeholder="Selecione um serviço" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
+                                    <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
+                                    <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>
+                                    <SelectItem value="tracking">Tracking e Análise</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </>
+                            </FormControl>
                             <FormDescription>
                               Selecione o serviço que mais se adequa à sua necessidade.
                             </FormDescription>

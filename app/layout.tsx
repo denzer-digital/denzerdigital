@@ -299,17 +299,17 @@ export default function RootLayout({
                 try {
                   if (window.location && window.location.hash) {
                     if (window.history && window.history.replaceState) {
-                      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-                    }
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+              }
                   }
                   if (window.scrollTo) {
-                    window.scrollTo(0, 0);
+              window.scrollTo(0, 0);
                   }
                   if (document.documentElement) {
-                    document.documentElement.scrollTop = 0;
+              document.documentElement.scrollTop = 0;
                   }
                   if (document.body) {
-                    document.body.scrollTop = 0;
+              document.body.scrollTop = 0;
                   }
                 } catch (e) {
                   console.warn('Erro ao inicializar scroll:', e);

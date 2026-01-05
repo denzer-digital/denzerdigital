@@ -50,7 +50,7 @@ const contactFormSchema = z.object({
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
 const ContactFormDialog = () => {
-  const { isOpen, closeDialog } = useContactDialog();
+  const { isOpen, closeDialog, formId } = useContactDialog();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -122,17 +122,17 @@ const ContactFormDialog = () => {
 
       // Aguarda o formulário estar no DOM antes de inicializar
       const initRDStation = () => {
-        // Verifica se o formulário está no DOM
-        const formElement = document.getElementById('0001');
+        // Verifica se o formulário está no DOM usando o formId do contexto
+        const formElement = document.getElementById(formId);
         if (!formElement) {
-          console.warn('Formulário 0001 não encontrado no DOM');
+          console.warn(`Formulário ${formId} não encontrado no DOM`);
           return false;
         }
 
         if (window.RDCaptureForms) {
           try {
             window.RDCaptureForms.init();
-            console.log("RD Station Forms inicializado no popup - Form ID: 0001");
+            console.log(`RD Station Forms inicializado no popup - Form ID: ${formId}`);
             return true;
           } catch (error) {
             console.warn("Erro ao inicializar RD Station Forms:", error);
@@ -183,7 +183,7 @@ const ContactFormDialog = () => {
         setTimeout(tryInit, 200);
       });
     }
-  }, [isOpen]);
+  }, [isOpen, formId]);
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -284,7 +284,7 @@ const ContactFormDialog = () => {
         ) : (
           <Form {...form}>
             <form 
-              id="0001"
+              id={formId}
               onSubmit={async (e) => {
                 // Valida os campos primeiro
                 const isValid = await form.trigger();
@@ -300,7 +300,7 @@ const ContactFormDialog = () => {
                 form.handleSubmit(onSubmit)(e);
               }} 
               className="space-y-3 md:space-y-6 mt-2 md:mt-4"
-              data-rd-form="0001"
+              data-rd-form={formId}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <FormField

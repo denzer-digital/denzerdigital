@@ -383,7 +383,7 @@ export default function TrackingPage() {
             <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-glow">
               <BarChart3 className="w-12 h-12 text-white" />
             </div>
-          </div>
+            </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 max-w-5xl mx-auto">
             Pare de pilotar suas campanhas <span className="text-primary">no escuro.</span>
@@ -396,7 +396,7 @@ export default function TrackingPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg"
-              onClick={openDialog}
+              onClick={() => openDialog("pag-tracking")}
               className="text-lg px-8 py-6"
             >
               Blindar Meu Traqueamento
@@ -501,7 +501,7 @@ export default function TrackingPage() {
           <div className="text-center mb-6">
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
               A Evolução: <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary to-purple-500">Traqueamento via API (Server-Side)</span>
-            </h2>
+          </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Nós tiramos a inteligência do navegador do usuário e passamos para um servidor seguro.
             </p>
@@ -704,7 +704,7 @@ export default function TrackingPage() {
                   )}
                 </Button>
                 <p className="text-xs text-muted-foreground text-center">A IA considerará uma perda média de 20-30% de atribuição.</p>
-              </div>
+        </div>
 
               {/* Output Side */}
               <div className="bg-secondary rounded-xl p-6 border border-border flex flex-col min-h-[300px]">
@@ -751,7 +751,7 @@ export default function TrackingPage() {
                     <div className="mt-4 pt-4 border-t border-border">
                       <Button 
                         variant="ghost" 
-                        onClick={openDialog} 
+                        onClick={() => openDialog("pag-tracking")} 
                         className="text-primary text-sm font-bold hover:text-primary/80 flex items-center gap-1 p-0 h-auto"
                       >
                         Agendar implementação <ArrowRight className="w-4 h-4" />
@@ -939,9 +939,9 @@ export default function TrackingPage() {
                   </div>
                   <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </div>
-              ))}
             </div>
+          ))}
+        </div>
           </div>
         </div>
       </section>
@@ -983,8 +983,8 @@ export default function TrackingPage() {
                     {faq.a}
                   </div>
                 )}
-              </div>
-            ))}
+            </div>
+          ))}
           </div>
         </div>
       </section>
@@ -1001,7 +1001,7 @@ export default function TrackingPage() {
           
           <Button 
             size="lg" 
-            onClick={openDialog}
+            onClick={() => openDialog("pag-tracking")}
             className="text-sm sm:text-base md:text-lg lg:text-xl px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 md:py-5 mb-8 w-full sm:w-auto whitespace-normal sm:whitespace-nowrap"
           >
             QUERO O TRAQUEAMENTO AVANÇADO
@@ -1040,7 +1040,7 @@ export default function TrackingPage() {
                   <div className="text-center space-y-2">
                     <h3 className="text-xl font-semibold text-foreground">
                       Mensagem enviada com sucesso!
-                    </h3>
+            </h3>
                     <p className="text-sm text-muted-foreground">
                       Entraremos em contato em breve.
                     </p>
