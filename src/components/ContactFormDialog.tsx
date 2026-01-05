@@ -32,6 +32,11 @@ declare global {
     RDCaptureForms?: {
       init: () => void;
     };
+    RdstationFormsIntegration?: {
+      Integration: {
+        integrateAll: (token: string) => void;
+      };
+    };
     reinitRDStation?: () => boolean;
   }
 }
@@ -120,68 +125,50 @@ const ContactFormDialog = () => {
         return; // Não inicializa RD Station em domínios não permitidos
       }
 
-      // Aguarda o formulário estar no DOM antes de inicializar
-      const initRDStation = () => {
-        // Verifica se o formulário está no DOM usando o formId do contexto
+      // Função para forçar integração do RD Station quando o popup abre
+      const forceRDIntegration = () => {
+        const token = '02b269cd38a50b7180df773a81bf966c';
         const formElement = document.getElementById(formId);
+        
         if (!formElement) {
           console.warn(`Formulário ${formId} não encontrado no DOM`);
           return false;
         }
 
+        // Usa o método recomendado: RdstationFormsIntegration.Integration.integrateAll
+        if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+          try {
+            window.RdstationFormsIntegration.Integration.integrateAll(token);
+            console.log(`RD Station integração forçada após abrir pop-up - Form ID: ${formId}`);
+            return true;
+          } catch (error) {
+            console.warn("Erro ao integrar RD Station via integrateAll:", error);
+          }
+        }
+
+        // Fallback para o método antigo
         if (window.RDCaptureForms) {
           try {
             window.RDCaptureForms.init();
-            console.log(`RD Station Forms inicializado no popup - Form ID: ${formId}`);
+            console.log(`RD Station Forms inicializado no popup (fallback) - Form ID: ${formId}`);
             return true;
           } catch (error) {
             console.warn("Erro ao inicializar RD Station Forms:", error);
             return false;
           }
         }
+        
         return false;
       };
 
-      // Usa a função global se disponível, senão tenta diretamente
-      const tryInit = () => {
+      // Aguarda o DOM estar pronto e força a integração
+      setTimeout(() => {
         if (typeof window.reinitRDStation === 'function') {
-          // Aguarda um pouco para garantir que o DOM foi atualizado
-          setTimeout(() => {
-            window.reinitRDStation?.();
-          }, 150);
+          window.reinitRDStation();
         } else {
-          // Tenta inicializar diretamente
-          if (window.RDCaptureForms) {
-            setTimeout(() => {
-              initRDStation();
-            }, 150);
-          } else {
-            // Se o script ainda não carregou, aguarda um pouco e tenta novamente
-            const checkInterval = setInterval(() => {
-              if (window.RDCaptureForms) {
-                initRDStation();
-                clearInterval(checkInterval);
-              }
-            }, 100);
-
-            // Limpa o intervalo após 5 segundos para evitar loops infinitos
-            const timeout = setTimeout(() => {
-              clearInterval(checkInterval);
-              console.warn("RD Station Forms script não carregou a tempo");
-            }, 5000);
-
-            return () => {
-              clearInterval(checkInterval);
-              clearTimeout(timeout);
-            };
-          }
+          forceRDIntegration();
         }
-      };
-
-      // Aguarda um frame para garantir que o DOM foi atualizado
-      requestAnimationFrame(() => {
-        setTimeout(tryInit, 200);
-      });
+      }, 100); // Delay curto é geralmente suficiente
     }
   }, [isOpen, formId]);
 

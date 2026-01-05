@@ -177,9 +177,9 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* RD Station Forms - Script necessário para capturar formulários - Apenas no domínio principal */}
+        {/* RD Station Loader Script - Carrega o script principal com o token */}
         <Script
-          id="rdstation-forms"
+          id="rdstation-loader"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
@@ -192,12 +192,19 @@ export default function RootLayout({
                 
                 // Verifica se é o domínio principal ou subdomínio permitido
                 if (hostname === allowedDomain || hostname.endsWith('.' + allowedDomain)) {
-                  // Carrega o script do RD Station apenas no domínio permitido
-                  var script = document.createElement('script');
-                  script.id = 'rdstation-forms-script';
-                  script.src = 'https://d335luupugsy2.cloudfront.net/js/rdstation-forms/stable/rdstation-forms.min.js';
-                  script.async = true;
-                  document.head.appendChild(script);
+                  // Carrega o script loader do RD Station com o token
+                  var loaderScript = document.createElement('script');
+                  loaderScript.id = 'rdstation-loader-script';
+                  loaderScript.src = 'https://d335luupugsy2.cloudfront.net/js/loader-scripts/02b269cd38a50b7180df773a81bf966c-loader.js';
+                  loaderScript.async = true;
+                  document.head.appendChild(loaderScript);
+                  
+                  // Também carrega o script de forms para compatibilidade
+                  var formsScript = document.createElement('script');
+                  formsScript.id = 'rdstation-forms-script';
+                  formsScript.src = 'https://d335luupugsy2.cloudfront.net/js/rdstation-forms/stable/rdstation-forms.min.js';
+                  formsScript.async = true;
+                  document.head.appendChild(formsScript);
                 } else {
                   console.log('RD Station não carregado: domínio não permitido (' + hostname + ')');
                 }
@@ -224,12 +231,26 @@ export default function RootLayout({
                   return;
                 }
                 
-                // Função global para reinicializar RD Station
+                // Função global para reinicializar RD Station usando o método de integração
                 window.reinitRDStation = function() {
+                  const token = '02b269cd38a50b7180df773a81bf966c';
+                  
+                  // Tenta usar o método de integração do RD Station (método recomendado)
+                  if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+                    try {
+                      window.RdstationFormsIntegration.Integration.integrateAll(token);
+                      console.log('RD Station integração forçada via integrateAll');
+                      return true;
+                    } catch (error) {
+                      console.warn('Erro ao integrar RD Station via integrateAll:', error);
+                    }
+                  }
+                  
+                  // Fallback para o método antigo
                   if (window.RDCaptureForms) {
                     try {
                       window.RDCaptureForms.init();
-                      console.log('RD Station Forms reinicializado');
+                      console.log('RD Station Forms reinicializado (fallback)');
                       return true;
                     } catch (error) {
                       console.warn('Erro ao reinicializar RD Station Forms:', error);

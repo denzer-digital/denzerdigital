@@ -65,6 +65,11 @@ declare global {
     RDCaptureForms?: {
       init: () => void;
     };
+    RdstationFormsIntegration?: {
+      Integration: {
+        integrateAll: (token: string) => void;
+      };
+    };
     reinitRDStation?: () => boolean;
   }
 }
@@ -138,16 +143,30 @@ export default function TrackingPage() {
         return false;
       }
 
-      if (window.RDCaptureForms) {
-        try {
-          window.RDCaptureForms.init();
-          console.log("RD Station Forms inicializado no formulário de tracking - Form ID: pag-tracking");
-          return true;
-        } catch (error) {
-          console.warn("Erro ao inicializar RD Station Forms:", error);
-          return false;
-        }
-      }
+          const token = '02b269cd38a50b7180df773a81bf966c';
+          
+          // Usa o método recomendado primeiro
+          if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+            try {
+              window.RdstationFormsIntegration.Integration.integrateAll(token);
+              console.log("RD Station integração forçada no formulário de tracking - Form ID: pag-tracking");
+              return true;
+            } catch (error) {
+              console.warn("Erro ao integrar RD Station via integrateAll:", error);
+            }
+          }
+          
+          // Fallback para o método antigo
+          if (window.RDCaptureForms) {
+            try {
+              window.RDCaptureForms.init();
+              console.log("RD Station Forms inicializado no formulário de tracking (fallback) - Form ID: pag-tracking");
+              return true;
+            } catch (error) {
+              console.warn("Erro ao inicializar RD Station Forms:", error);
+              return false;
+            }
+          }
       return false;
     };
 
@@ -231,11 +250,21 @@ export default function TrackingPage() {
       setTimeout(() => {
         window.reinitRDStation?.();
       }, 500);
+    } else if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+      const token = '02b269cd38a50b7180df773a81bf966c';
+      setTimeout(() => {
+        try {
+          window.RdstationFormsIntegration.Integration.integrateAll(token);
+          console.log("RD Station integração forçada quando formulário ficou visível - Form ID: pag-tracking");
+        } catch (error) {
+          console.warn("Erro ao integrar RD Station:", error);
+        }
+      }, 500);
     } else if (window.RDCaptureForms) {
       setTimeout(() => {
         try {
           window.RDCaptureForms.init();
-          console.log("RD Station Forms reinicializado quando formulário ficou visível - Form ID: pag-tracking");
+          console.log("RD Station Forms reinicializado quando formulário ficou visível (fallback) - Form ID: pag-tracking");
         } catch (error) {
           console.warn("Erro ao reinicializar RD Station Forms:", error);
         }
@@ -250,14 +279,22 @@ export default function TrackingPage() {
     if (typeof window !== "undefined") {
       const hostname = window.location.hostname;
       const allowedDomain = 'denzerdigital.com.br';
-      if ((hostname === allowedDomain || hostname.endsWith('.' + allowedDomain)) && window.RDCaptureForms) {
-        try {
-          window.RDCaptureForms.init();
-          console.log("RD Station Forms reinicializado antes do envio - Form ID: pag-tracking");
-        } catch (error) {
-          console.warn("Erro ao reinicializar RD Station antes do envio:", error);
-        }
-      }
+            if (hostname === allowedDomain || hostname.endsWith('.' + allowedDomain)) {
+              const token = '02b269cd38a50b7180df773a81bf966c';
+              try {
+                // Usa o método recomendado primeiro
+                if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+                  window.RdstationFormsIntegration.Integration.integrateAll(token);
+                  console.log("RD Station integração forçada antes do envio - Form ID: pag-tracking");
+                } else if (window.RDCaptureForms) {
+                  // Fallback para o método antigo
+                  window.RDCaptureForms.init();
+                  console.log("RD Station Forms reinicializado antes do envio (fallback) - Form ID: pag-tracking");
+                }
+              } catch (error) {
+                console.warn("Erro ao reinicializar RD Station antes do envio:", error);
+              }
+            }
     }
     
     try {

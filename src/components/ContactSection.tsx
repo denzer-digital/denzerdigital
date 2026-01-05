@@ -13,6 +13,11 @@ declare global {
     RDCaptureForms?: {
       init: () => void;
     };
+    RdstationFormsIntegration?: {
+      Integration: {
+        integrateAll: (token: string) => void;
+      };
+    };
     reinitRDStation?: () => boolean;
   }
 }
@@ -95,12 +100,26 @@ const ContactSection = () => {
         return false;
       }
 
+      const token = '02b269cd38a50b7180df773a81bf966c';
+      
+      // Usa o método recomendado: RdstationFormsIntegration.Integration.integrateAll
+      if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+        try {
+          window.RdstationFormsIntegration.Integration.integrateAll(token);
+          console.log("RD Station integração forçada no formulário fixo - Form ID: 0002");
+          console.log("Formulário encontrado:", formElement);
+          console.log("Campos encontrados:", { nome: nomeField, email: emailField, telefone: telefoneField });
+          return true;
+        } catch (error) {
+          console.warn("Erro ao integrar RD Station via integrateAll:", error);
+        }
+      }
+      
+      // Fallback para o método antigo
       if (window.RDCaptureForms) {
         try {
           window.RDCaptureForms.init();
-          console.log("RD Station Forms inicializado no formulário fixo - Form ID: 0002");
-          console.log("Formulário encontrado:", formElement);
-          console.log("Campos encontrados:", { nome: nomeField, email: emailField, telefone: telefoneField });
+          console.log("RD Station Forms inicializado no formulário fixo (fallback) - Form ID: 0002");
           return true;
         } catch (error) {
           console.warn("Erro ao inicializar RD Station Forms:", error);
@@ -204,15 +223,26 @@ const ContactSection = () => {
     }
 
     // Reinicializa quando fica visível para garantir captura
+    const token = '02b269cd38a50b7180df773a81bf966c';
+    
     if (typeof window.reinitRDStation === 'function') {
       setTimeout(() => {
         window.reinitRDStation?.();
+      }, 500);
+    } else if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+      setTimeout(() => {
+        try {
+          window.RdstationFormsIntegration.Integration.integrateAll(token);
+          console.log("RD Station integração forçada quando formulário ficou visível - Form ID: 0002");
+        } catch (error) {
+          console.warn("Erro ao integrar RD Station:", error);
+        }
       }, 500);
     } else if (window.RDCaptureForms) {
       setTimeout(() => {
         try {
           window.RDCaptureForms.init();
-          console.log("RD Station Forms reinicializado quando formulário ficou visível - Form ID: 0002");
+          console.log("RD Station Forms reinicializado quando formulário ficou visível (fallback) - Form ID: 0002");
         } catch (error) {
           console.warn("Erro ao reinicializar RD Station Forms:", error);
         }
@@ -244,10 +274,20 @@ const ContactSection = () => {
       const handleSubmitForRD = (e: Event) => {
         // Este listener é executado ANTES do nosso handler no onSubmit
         // Então o RD Station já tem chance de capturar aqui
-        if (window.RDCaptureForms) {
+        const token = '02b269cd38a50b7180df773a81bf966c';
+        
+        // Usa o método recomendado primeiro
+        if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+          try {
+            window.RdstationFormsIntegration.Integration.integrateAll(token);
+            console.log("RD Station integração forçada via listener de submit (capture) - Form ID: 0002");
+          } catch (error) {
+            console.warn("Erro ao integrar RD Station no listener:", error);
+          }
+        } else if (window.RDCaptureForms) {
           try {
             window.RDCaptureForms.init();
-            console.log("RD Station Forms processado via listener de submit (capture) - Form ID: 0002");
+            console.log("RD Station Forms processado via listener de submit (capture, fallback) - Form ID: 0002");
           } catch (error) {
             console.warn("Erro ao processar RD Station no listener:", error);
           }
@@ -391,12 +431,19 @@ const ContactSection = () => {
                         const formData = form.getValues();
                         
                         // Garante que o RD Station está inicializado e processa o formulário
-                        if (typeof window !== "undefined" && window.RDCaptureForms) {
+                        const token = '02b269cd38a50b7180df773a81bf966c';
+                        
+                        if (typeof window !== "undefined") {
                           try {
-                            // Força o RD a processar o formulário
-                            // O RD já escutou o evento submit neste ponto (antes do preventDefault)
-                            window.RDCaptureForms.init();
-                            console.log("RD Station Forms processado no submit - Form ID: 0002");
+                            // Usa o método recomendado primeiro
+                            if (window.RdstationFormsIntegration && window.RdstationFormsIntegration.Integration) {
+                              window.RdstationFormsIntegration.Integration.integrateAll(token);
+                              console.log("RD Station integração forçada no submit - Form ID: 0002");
+                            } else if (window.RDCaptureForms) {
+                              // Fallback para o método antigo
+                              window.RDCaptureForms.init();
+                              console.log("RD Station Forms processado no submit (fallback) - Form ID: 0002");
+                            }
                             
                             // Aguarda um pouco para garantir que o RD processou
                             await new Promise(resolve => setTimeout(resolve, 150));
