@@ -11,13 +11,13 @@ const ContactDialogContext = createContext<ContactDialogContextType | undefined>
 
 export function ContactDialogProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [formId, setFormId] = useState<string>("0001"); // ID padrão
+  const [formId, setFormId] = useState<string>("form-home"); // ID padrão
 
   const openDialog = useCallback((customFormId?: string) => {
     if (customFormId) {
       setFormId(customFormId);
     } else {
-      setFormId("0001"); // Reset para o padrão se não especificado
+      setFormId("form-home"); // Reset para o padrão se não especificado
     }
     setIsOpen(true);
   }, []);
