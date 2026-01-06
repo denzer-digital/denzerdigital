@@ -331,7 +331,7 @@ const ContactFormDialog = () => {
           <Form {...form}>
             <form 
               id={formId}
-              name={`form-${formId}`}
+              name={formId.startsWith('form-') ? formId : `form-${formId}`}
               method="POST"
               action="#"
               onSubmit={async (e) => {
