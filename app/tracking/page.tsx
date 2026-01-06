@@ -57,14 +57,14 @@ export default function TrackingPage() {
   const faqSection = useScrollAnimation();
   const ctaSection = useScrollAnimation();
 
-  // --- GEMINI AI STATE ---
+  // --- ChatGPT AI STATE ---
   const [adSpend, setAdSpend] = useState("");
   const [roas, setRoas] = useState("");
   const [aiReport, setAiReport] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
 
-  // --- GEMINI AI FUNCTIONS ---
+  // --- ChatGPT AI FUNCTIONS ---
 
   // Scroll detection for sticky header
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function TrackingPage() {
     setMobileMenuOpen(false);
   };
 
-  // --- GEMINI API FUNCTION ---
+  // --- ChatGPT API FUNCTION ---
   const analyzeImpact = async () => {
     // Remove formatação e converte para números
     const spendNumbers = unformatCurrency(adSpend);
@@ -124,7 +124,7 @@ export default function TrackingPage() {
     setAiError(null);
 
     try {
-      const response = await fetch('/api/gemini/analyze', {
+      const response = await fetch('/api/chatgpt/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -447,7 +447,7 @@ export default function TrackingPage() {
         </div>
       </section>
 
-      {/* --- AI IMPACT CALCULATOR SECTION (Gemini API) --- */}
+      {/* --- AI IMPACT CALCULATOR SECTION (ChatGPT API) --- */}
       <section id="calculadora" className="py-20 bg-gradient-to-b from-background to-secondary/20 border-t border-border relative overflow-hidden">
         {/* Decorative background for AI section */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -455,7 +455,7 @@ export default function TrackingPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div ref={calculatorSection.ref} className={`text-center mb-10 scroll-fade-in ${calculatorSection.isVisible ? 'visible' : ''}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-semibold mb-4 uppercase tracking-wider">
-              <Sparkles className="w-3 h-3" /> Powered by Gemini AI
+              <Sparkles className="w-3 h-3" /> Powered by ChatGPT
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Calculadora de Receita Invisível</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -570,11 +570,11 @@ export default function TrackingPage() {
                     </div>
                     <div className="mt-4 pt-4 border-t border-border">
                       <Button 
-                        variant="ghost" 
-                        onClick={() => openDialog("form-tracking")} 
-                        className="text-primary text-sm font-bold hover:text-primary/80 flex items-center gap-1 p-0 h-auto"
+                        onClick={() => openDialog("form-tracking")}
+                        size="lg"
+                        className="w-full bg-primary hover:bg-primary/90 text-white"
                       >
-                        Agendar implementação <ArrowRight className="w-4 h-4" />
+                        Agendar implementação <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                     </div>
                   </div>

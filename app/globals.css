@@ -88,10 +88,20 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Previne scroll horizontal em todos os elementos */
+  body > * {
+    max-width: 100vw;
+    overflow-x: hidden;
   }
   
   /* Previne scroll automático para hash na URL */

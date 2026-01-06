@@ -52,18 +52,18 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border" role="navigation" aria-label="Navegação principal">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border overflow-x-hidden" role="navigation" aria-label="Navegação principal">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-20 min-w-0">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" aria-label="Denzer Digital - Página inicial">
+          <div className="flex-shrink-0 min-w-0">
+            <Link href="/" aria-label="Denzer Digital - Página inicial" className="block max-w-[150px] sm:max-w-[200px]">
               <Image
                 src="/assets/Logo-Denzer-Digital.webp"
                 alt="Denzer Digital AI Systems"
                 width={200}
                 height={48}
-                className="h-12 w-auto"
+                className="h-10 sm:h-12 w-auto max-w-full"
                 priority
                 quality={100}
               />

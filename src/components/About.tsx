@@ -4,12 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 import { useContactDialog } from "@/contexts/ContactDialogContext";
 
 const About = () => {
@@ -77,7 +71,7 @@ const About = () => {
                 </div>
                 
           {/* Partner Logos - Below content */}
-          <div className="pt-12" aria-label="Parceiros e certificações">
+          <div className="pt-6 pb-8" aria-label="Parceiros e certificações">
             {/* Desktop: Grid layout */}
             <div className="hidden md:flex flex-wrap justify-center items-center gap-[10px]" role="list" aria-label="Logos de parceiros">
               <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
@@ -89,51 +83,33 @@ const About = () => {
               <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
                 </div>
 
-                {/* Mobile: Carousel */}
-            <div className="md:hidden w-full max-w-sm mx-auto" role="region" aria-label="Carrossel de parceiros">
-                  <Carousel
-                    opts={{
-                      align: "start",
-                      loop: true,
-                    }}
-                    plugins={[
-                      Autoplay({
-                        delay: 3000,
-                      }),
-                    ]}
-                    className="w-full"
-                aria-label="Carrossel de parceiros"
-                  >
-                    <CarouselContent>
-                  <CarouselItem className="basis-1/3">
-                    <div className="flex justify-center">
-                      <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
+                {/* Mobile: Grid layout - 3 em cima, 2 embaixo */}
+            <div className="md:hidden w-full max-w-sm mx-auto" role="region" aria-label="Logos de parceiros">
+              <div className="grid grid-cols-3 gap-2 justify-items-center items-center">
+                {/* Primeira linha - 3 logos com mesma altura visual e sem margens */}
+                <div className="flex justify-center items-center w-full p-0">
+                  <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
+                </div>
+                <div className="flex justify-center items-center w-full p-0">
+                  <Image src="/assets/rd.webp" alt="RD Station Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
+                </div>
+                <div className="flex justify-center items-center w-full p-0">
+                  <a href="https://www.kommo.com/br/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo" className="flex items-center justify-center w-full p-0">
+                    <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
+                  </a>
+                </div>
+                {/* Segunda linha - 2 logos centralizadas com mesma altura visual e mais próximas */}
+                <div className="flex justify-center col-span-3 mt-2">
+                  <div className="grid grid-cols-2 gap-3 w-full max-w-[240px]">
+                    <div className="flex justify-center items-center w-full p-0">
+                      <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                     </div>
-                  </CarouselItem>
-                  <CarouselItem className="basis-1/3">
-                    <div className="flex justify-center">
-                      <Image src="/assets/rd.webp" alt="RD Station Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
+                    <div className="flex justify-center items-center w-full p-0">
+                      <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                     </div>
-                  </CarouselItem>
-                  <CarouselItem className="basis-1/3">
-                          <div className="flex justify-center">
-                      <a href="https://www.kommo.com/br/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site do Kommo">
-                        <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
-                      </a>
-                    </div>
-                  </CarouselItem>
-                  <CarouselItem className="basis-1/3">
-                    <div className="flex justify-center">
-                      <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
-                    </div>
-                  </CarouselItem>
-                  <CarouselItem className="basis-1/3">
-                    <div className="flex justify-center">
-                      <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 w-auto object-contain" loading="lazy" quality={100} unoptimized />
-                          </div>
-                        </CarouselItem>
-                    </CarouselContent>
-                  </Carousel>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
