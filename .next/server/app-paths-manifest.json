@@ -1,4 +1,6 @@
 {
   "/page": "app/page.js",
-  "/tracking/page": "app/tracking/page.js"
+  "/agentes-de-ia/page": "app/agentes-de-ia/page.js",
+  "/tracking/page": "app/tracking/page.js",
+  "/automacao-integracoes/page": "app/automacao-integracoes/page.js"
 }

@@ -44,7 +44,7 @@ const solutions = [
     title: "Gestão Estratégica do Ecossistema",
     description: "A Denzer Digital unifica IA, tracking e automações em um ecossistema guiado por dados. Resultado: decisões mais rápidas, planos de ação claros, processos mais eficientes e vendas otimizadas de ponta a ponta.",
     gradient: "from-accent to-accent-glow",
-    href: "/gestao-digital-360",
+    href: "/gestao-estrategica",
   }
 ];
 

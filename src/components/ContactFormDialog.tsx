@@ -490,7 +490,7 @@ const ContactFormDialog = () => {
                       <SelectContent className="max-h-[200px]">
                         <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
                         <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
-                        <SelectItem value="gestao-digital-360">Gestão Digital 360°</SelectItem>
+                        <SelectItem value="gestao-estrategica">Gestão Estratégica</SelectItem>
                         <SelectItem value="tracking">Tracking e Análise</SelectItem>
                       </SelectContent>
                     </Select>

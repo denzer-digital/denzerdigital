@@ -30,10 +30,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GestaoDigital360Layout({
+export default function GestaoEstrategicaLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return <>{children}</>;
 }
+

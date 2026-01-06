@@ -104,8 +104,8 @@ const Footer = () => {
                     </a>
                   </li>
                   <li>
-                    <a href="/gestao-digital-360" className="hover:text-primary transition-colors">
-                      Gestão Digital 360°
+                    <a href="/gestao-estrategica" className="hover:text-primary transition-colors">
+                      Gestão Estratégica
                     </a>
                   </li>
                   <li>

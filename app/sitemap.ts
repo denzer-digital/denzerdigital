@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${siteUrl}/gestao-digital-360`,
+      url: `${siteUrl}/gestao-estrategica`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.9,

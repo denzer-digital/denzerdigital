@@ -196,7 +196,7 @@ export default function AutomacaoIntegracoesPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg"
-              onClick={() => openDialog()}
+              onClick={() => openDialog("form-automacoes")}
               className="text-lg px-8 py-6"
             >
               <Workflow className="w-5 h-5 mr-2" />

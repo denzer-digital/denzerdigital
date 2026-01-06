@@ -1,4 +1,16 @@
 {
+  "app\\agentes-de-ia\\page.tsx -> @/components/ContactFormDialog": {
+    "id": "app\\agentes-de-ia\\page.tsx -> @/components/ContactFormDialog",
+    "files": [
+      "static/chunks/_app-pages-browser_src_components_ContactFormDialog_tsx-_cc5f0.js"
+    ]
+  },
+  "app\\automacao-integracoes\\page.tsx -> @/components/ContactFormDialog": {
+    "id": "app\\automacao-integracoes\\page.tsx -> @/components/ContactFormDialog",
+    "files": [
+      "static/chunks/_app-pages-browser_src_components_ContactFormDialog_tsx-_cc5f1.js"
+    ]
+  },
   "app\\page.tsx -> @/components/About": {
     "id": "app\\page.tsx -> @/components/About",
     "files": [
@@ -62,7 +74,7 @@
   "app\\tracking\\page.tsx -> @/components/ContactFormDialog": {
     "id": "app\\tracking\\page.tsx -> @/components/ContactFormDialog",
     "files": [
-      "static/chunks/_app-pages-browser_src_components_ContactFormDialog_tsx-_cc5f1.js"
+      "static/chunks/_app-pages-browser_src_components_ContactFormDialog_tsx-_cc5f2.js"
     ]
   }
 }

@@ -1969,6 +1969,9 @@ video {
 .to-transparent {
   --tw-gradient-to: transparent var(--tw-gradient-to-position);
 }
+.to-secondary\/30 {
+  --tw-gradient-to: hsl(var(--secondary) / 0.3) var(--tw-gradient-to-position);
+}
 .bg-\[size\:50px_50px\] {
   background-size: 50px 50px;
 }
@@ -4069,6 +4072,11 @@ video {
   .md\:py-5 {
     padding-top: 1.25rem;
     padding-bottom: 1.25rem;
+  }
+
+  .md\:py-32 {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
   }
 
   .md\:pt-4 {
