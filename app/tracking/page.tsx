@@ -794,7 +794,7 @@ export default function TrackingPage() {
                 <button 
                   onClick={() => toggleFaq(idx)}
                   className="w-full flex justify-between items-center p-5 text-left hover:bg-secondary transition-colors"
-                >
+            >
                   <span className="font-semibold text-foreground">{faq.q}</span>
                   {openFaqIndex === idx ? <ChevronUp className="text-primary" /> : <ChevronDown className="text-muted-foreground" />}
                 </button>

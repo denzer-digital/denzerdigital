@@ -585,20 +585,20 @@ const ContactSection = () => {
                                   value={field.value || ''}
                                   data-rd="service"
                                 />
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <SelectTrigger 
-                                    className="bg-background/50 border-input/50 focus:border-primary/50"
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <SelectTrigger 
+                                  className="bg-background/50 border-input/50 focus:border-primary/50"
                                     aria-label="Selecione um serviço de interesse"
-                                  >
-                                    <SelectValue placeholder="Selecione um serviço" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
+                                >
+                                  <SelectValue placeholder="Selecione um serviço" />
+                                </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="agentes-de-ia">Agentes de IA</SelectItem>
                                     <SelectItem value="automacao-integracoes">Automações e Integrações</SelectItem>
-                                    <SelectItem value="gestao-estrategica">Gestão Estratégica</SelectItem>
+                                <SelectItem value="gestao-digital-360">Gestão Estratégica</SelectItem>
                                     <SelectItem value="tracking">Tracking e Análise</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                              </SelectContent>
+                            </Select>
                               </>
                             </FormControl>
                             <FormDescription>

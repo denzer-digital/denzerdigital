@@ -16,40 +16,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/tracking/page": [
+    "/gestao-digital-360/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/tracking/page.js"
-    ],
-    "/tracking/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/tracking/layout.js"
-    ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
-    ],
-    "/agentes-de-ia/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/agentes-de-ia/page.js"
-    ],
-    "/agentes-de-ia/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/agentes-de-ia/layout.js"
-    ],
-    "/automacao-integracoes/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/automacao-integracoes/page.js"
-    ],
-    "/automacao-integracoes/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/automacao-integracoes/layout.js"
+      "static/chunks/app/gestao-digital-360/page.js"
     ]
   }
 }
