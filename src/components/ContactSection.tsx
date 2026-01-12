@@ -419,25 +419,21 @@ const ContactSection = () => {
                       id="form-home-fixo"
                       name="form-home-fixo"
                       method="POST"
-                      action="#"
                       onSubmit={async (e) => {
+                        // CRÍTICO: Previne o comportamento padrão IMEDIATAMENTE (antes de qualquer async)
+                        e.preventDefault();
+                        e.stopPropagation();
+
                         // IMPORTANTE: Injeta UTMs ANTES de qualquer outra coisa
                         const formElement = e.currentTarget;
                         injectUTMsIntoForm(formElement);
 
-                        // Valida os campos primeiro
+                        // Valida os campos
                         const isValid = await form.trigger();
                         
                         if (!isValid) {
-                          e.preventDefault();
-                          e.stopPropagation();
                           return;
                         }
-                        
-                        // CRÍTICO: O RD Station escuta o evento submit através de event listeners
-                        // que são adicionados quando init() é chamado. Esses listeners são executados
-                        // ANTES do nosso handler fazer preventDefault, então o RD já capturou.
-                        // Mas para garantir, vamos chamar init() antes de processar.
                         
                         const formData = form.getValues();
                         
@@ -462,10 +458,6 @@ const ContactSection = () => {
                             console.warn("Erro ao processar RD Station:", error);
                           }
                         }
-                        
-                        // Previne o submit nativo (o RD já capturou neste ponto)
-                        e.preventDefault();
-                        e.stopPropagation();
                         
                         // Processa o formulário
                         onSubmit(formData);

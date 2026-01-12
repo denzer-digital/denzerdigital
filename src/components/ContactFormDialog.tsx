@@ -333,23 +333,23 @@ const ContactFormDialog = () => {
               id={formId}
               name={formId.startsWith('form-') ? formId : `form-${formId}`}
               method="POST"
-              action="#"
               onSubmit={async (e) => {
+                // CRÍTICO: Previne o comportamento padrão IMEDIATAMENTE (antes de qualquer async)
+                e.preventDefault();
+                e.stopPropagation();
+
                 // IMPORTANTE: Injeta UTMs ANTES de qualquer outra coisa
                 const formElement = e.currentTarget;
                 injectUTMsIntoForm(formElement);
 
-                // IMPORTANTE: O RD Station precisa capturar o evento submit ANTES do preventDefault
-                // Por isso, validamos primeiro e só depois prevenimos
+                // Valida os campos
                 const isValid = await form.trigger();
                 
                 if (!isValid) {
-                  e.preventDefault();
-                  e.stopPropagation();
                   return;
                 }
                 
-                // Garante que o RD Station processou antes de prevenir
+                // Garante que o RD Station processou
                 const token = '02b269cd38a50b7180df773a81bf966c';
                 if (typeof window !== "undefined") {
                   try {
@@ -365,10 +365,6 @@ const ContactFormDialog = () => {
                     console.warn("Erro ao processar RD Station no submit:", error);
                   }
                 }
-                
-                // Agora previne e processa
-                e.preventDefault();
-                e.stopPropagation();
                 
                 // Processa o formulário
                 const formData = form.getValues();
