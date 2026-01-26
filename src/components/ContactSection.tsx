@@ -348,6 +348,7 @@ const ContactSection = () => {
       setTimeout(() => {
         form.reset();
         setIsSuccess(false);
+        setIsSubmitting(false); // Garante que isSubmitting é resetado
       }, 3000);
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);

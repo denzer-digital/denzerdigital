@@ -61,8 +61,9 @@ const ContactFormDialog = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const rdInitializedRef = useRef(false); // Evita múltiplas inicializações
   const timeoutRef = useRef<NodeJS.Timeout | null>(null); // Para cleanup do setTimeout
+  const successTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Para cleanup do timeout de sucesso
 
-  // Previne scroll do body quando o modal está aberto
+  // Previne scroll do body quando o modal está aberto e reseta estados
   useEffect(() => {
     if (typeof document === 'undefined') {
       return;
@@ -71,8 +72,15 @@ const ContactFormDialog = () => {
     try {
       if (isOpen) {
         document.body.style.overflow = 'hidden';
+        // Reseta estados quando o modal abre para evitar estados presos
+        setIsSubmitting(false);
+        setIsSuccess(false);
       } else {
         document.body.style.overflow = '';
+        // Reseta estados quando o modal fecha
+        setIsSubmitting(false);
+        setIsSuccess(false);
+        rdInitializedRef.current = false;
       }
     } catch (error) {
       console.warn('Erro ao controlar overflow do body:', error);
@@ -129,6 +137,15 @@ const ContactFormDialog = () => {
     // Reset do flag quando o popup fecha
     if (!isOpen) {
       rdInitializedRef.current = false;
+      // Limpa timeouts se existirem
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+        successTimeoutRef.current = null;
+      }
       return;
     }
 
@@ -218,6 +235,10 @@ const ContactFormDialog = () => {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+        successTimeoutRef.current = null;
+      }
     };
   }, [isOpen, formId]);
 
@@ -249,16 +270,24 @@ const ContactFormDialog = () => {
       // Simula sucesso
       setIsSuccess(true);
       
+      // Limpa timeout anterior se existir
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+      
       // Reseta o formulário após 1 segundo e fecha o dialog
-      setTimeout(() => {
+      successTimeoutRef.current = setTimeout(() => {
         form.reset();
         setIsSuccess(false);
+        setIsSubmitting(false); // Garante que isSubmitting é resetado
         rdInitializedRef.current = false; // Reset do flag para permitir reinicialização
+        successTimeoutRef.current = null;
         closeDialog();
       }, 1000);
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
       setIsSubmitting(false);
+      setIsSuccess(false);
     }
   }, [form, closeDialog]);
 
