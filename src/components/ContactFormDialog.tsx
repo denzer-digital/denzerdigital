@@ -71,13 +71,13 @@ const ContactFormDialog = () => {
     }
     
     try {
-      if (isOpen) {
-        document.body.style.overflow = 'hidden';
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
         // Reseta estados quando o modal abre para evitar estados presos
         setIsSubmitting(false);
         setIsSuccess(false);
-      } else {
-        document.body.style.overflow = '';
+    } else {
+      document.body.style.overflow = '';
         // Reseta estados quando o modal fecha
         setIsSubmitting(false);
         setIsSuccess(false);
@@ -90,7 +90,7 @@ const ContactFormDialog = () => {
     return () => {
       if (typeof document !== 'undefined' && document.body) {
         try {
-          document.body.style.overflow = '';
+      document.body.style.overflow = '';
         } catch (error) {
           console.warn('Erro ao restaurar overflow do body:', error);
         }
@@ -111,7 +111,7 @@ const ContactFormDialog = () => {
     };
     
     try {
-      document.addEventListener('keydown', handleEscape);
+    document.addEventListener('keydown', handleEscape);
     } catch (error) {
       console.warn('Erro ao adicionar listener de teclado:', error);
     }

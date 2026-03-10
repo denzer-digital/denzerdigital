@@ -113,10 +113,11 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://dk9suync0k2va.cloudfront.net" />
         <link rel="dns-prefetch" href="https://www.facebook.com" />
         
-        {/* GTM - Movido para afterInteractive para não bloquear renderização inicial */}
+        {/* Google Tag Manager */}
         <Script id="gtm-stape" strategy="afterInteractive">
-          {`(function(w,d,s,l,i){try{if(typeof w!=='undefined'&&typeof d!=='undefined'){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0];if(f){var j=d.createElement(s);j.async=true;j.src="https://stape.denzerdigital.com.br/3ugm6ismcveky.js?"+i;f.parentNode.insertBefore(j,f);}}}catch(e){console.warn('Erro ao carregar GTM:',e);}})(window,document,'script','dataLayer','dvduuqd=EA9YMTcgXj0hU1InWiolTw9WV1hSSxcHRA8AGBkIAQ0QDAwCAgFdChYGSxQR');`}
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src="https://stape.denzerdigital.com.br/1optdfhffq.js?"+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','c4x6c=GAJbLzIpWSQpXlE5XyMiVgdbVEZXQhAeTAIDBhwBBhQYAQ8cBwhaEx4LSAoU');`}
         </Script>
+        {/* End Google Tag Manager */}
         {/* Facebook App ID - Meta tag customizada */}
         <meta property="fb:app_id" content="658289000700758" />
         {/* Open Graph Image - Meta tag customizada */}
@@ -302,6 +303,16 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased" suppressHydrationWarning>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe 
+            src="https://stape.denzerdigital.com.br/ns.html?id=GTM-TX87Q9GV" 
+            height="0" 
+            width="0" 
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
         {/* fb-root necessário para o SDK do Facebook */}
         <div id="fb-root"></div>
         {/* Skip to main content link for keyboard navigation */}
