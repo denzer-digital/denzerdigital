@@ -17,8 +17,8 @@ const Footer = () => {
     
     // Se estiver na home, apenas faz scroll
     if (pathname === '/') {
-      const element = document.getElementById(id);
-      if (element) {
+    const element = document.getElementById(id);
+    if (element) {
         try {
           // Calcula a posição considerando o navbar fixo (80px)
           const elementPosition = element.getBoundingClientRect().top;
@@ -51,14 +51,14 @@ const Footer = () => {
             {/* Logo and Description */}
             <div className="md:col-span-2 space-y-4 text-center md:text-left">
               <div className="flex justify-center md:justify-start">
-                <Image
+              <Image
                   src="/assets/Logo-Denzer-Digital.webp"
-                  alt="Denzer Digital AI Systems"
-                  width={200}
-                  height={40}
-                  className="h-10 w-auto"
-                  quality={100}
-                />
+                alt="Denzer Digital AI Systems"
+                width={200}
+                height={40}
+                className="h-10 w-auto"
+                quality={100}
+              />
               </div>
               <p className="text-sm text-muted-foreground max-w-md mx-auto md:mx-0">
                 Transformamos operações digitais em ecossistemas inteligentes, unindo dados, IA, automação e estratégia para gerar previsibilidade e crescimento sustentável.
@@ -89,70 +89,70 @@ const Footer = () => {
 
             {/* Links Columns - Side by side on mobile and desktop */}
             <div className="grid grid-cols-2 gap-8 md:col-span-2">
-              {/* Links Column 1 */}
+            {/* Links Column 1 */}
               <div className="space-y-4 text-center md:text-left">
-                <h3 className="font-semibold text-lg">Soluções</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>
-                    <a href="/agentes-de-ia" className="hover:text-primary transition-colors">
-                      Agentes de IA
-                    </a>
-                  </li>
-                  <li>
+              <h3 className="font-semibold text-lg">Soluções</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <a href="/agentes-de-ia" className="hover:text-primary transition-colors">
+                    Agentes de IA
+                  </a>
+                </li>
+                <li>
                     <a href="/automacao-integracoes" className="hover:text-primary transition-colors">
                       Automações e Integrações
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/gestao-digital-360" className="hover:text-primary transition-colors">
+                  </a>
+                </li>
+                <li>
+                  <a href="/gestao-digital-360" className="hover:text-primary transition-colors">
                       Gestão Estratégica
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/tracking" className="hover:text-primary transition-colors">
+                  </a>
+                </li>
+                <li>
+                  <a href="/tracking" className="hover:text-primary transition-colors">
                       Tracking e Análise
-                    </a>
-                  </li>
-                </ul>
-              </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
 
-              {/* Links Column 2 */}
+            {/* Links Column 2 */}
               <div className="space-y-4 text-center md:text-left">
-                <h3 className="font-semibold text-lg">Navegação</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>
-                    <button
+              <h3 className="font-semibold text-lg">Navegação</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <button
                       onClick={(e) => scrollToSection('solucoes', e)}
-                      className="hover:text-primary transition-colors text-left"
-                    >
-                      Soluções
-                    </button>
-                  </li>
-                  <li>
-                    <button
+                    className="hover:text-primary transition-colors text-left"
+                  >
+                    Soluções
+                  </button>
+                </li>
+                <li>
+                  <button
                       onClick={(e) => scrollToSection('resultados', e)}
-                      className="hover:text-primary transition-colors text-left"
-                    >
-                      Resultados
-                    </button>
-                  </li>
-                  <li>
-                    <button
+                    className="hover:text-primary transition-colors text-left"
+                  >
+                    Resultados
+                  </button>
+                </li>
+                <li>
+                  <button
                       onClick={(e) => scrollToSection('como-funciona', e)}
-                      className="hover:text-primary transition-colors text-left"
-                    >
-                      Como Funciona
-                    </button>
-                  </li>
-                  <li>
-                    <button
+                    className="hover:text-primary transition-colors text-left"
+                  >
+                    Como Funciona
+                  </button>
+                </li>
+                <li>
+                  <button
                       onClick={(e) => scrollToSection('planos', e)}
-                      className="hover:text-primary transition-colors text-left"
-                    >
-                      Planos
-                    </button>
-                  </li>
-                </ul>
+                    className="hover:text-primary transition-colors text-left"
+                  >
+                    Planos
+                  </button>
+                </li>
+              </ul>
               </div>
             </div>
           </div>

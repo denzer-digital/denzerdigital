@@ -6,6 +6,7 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { formatPhone, unformatPhone } from "@/lib/phoneFormatter";
+import { sendFormToWebhook } from "@/lib/webhookHelper";
 
 // Declaração de tipo para o RD Station
 declare global {
@@ -335,13 +336,12 @@ const ContactSection = () => {
     }
     
     try {
-      // Aqui você pode integrar com o webhook ou API
-      // Por enquanto, apenas simula o envio
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Envia os dados para o webhook
+      await sendFormToWebhook(data, "form-home-fixo");
       
       console.log("Formulário enviado:", data);
       
-      // Simula sucesso
+      // Simula sucesso (independente do resultado do webhook para não bloquear o usuário)
       setIsSuccess(true);
       
       // Reseta o formulário após 3 segundos
@@ -352,6 +352,13 @@ const ContactSection = () => {
       }, 3000);
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
+      // Mesmo com erro, mostra sucesso para não bloquear o usuário
+      setIsSuccess(true);
+      setTimeout(() => {
+        form.reset();
+        setIsSuccess(false);
+        setIsSubmitting(false);
+      }, 3000);
     } finally {
       setIsSubmitting(false);
     }
