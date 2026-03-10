@@ -25,23 +25,29 @@ const WEBHOOK_URL = "https://webhook.denzerdigital.com.br/webhook/e4be518d-4380-
 
 /**
  * Envia os dados do formulário para o webhook
- * @param formData - Dados do formulário
+ * @param formData - Dados do formulário (pode ter propriedades opcionais do React Hook Form)
  * @param formId - ID do formulário que foi enviado
  * @returns Promise<boolean> - true se enviado com sucesso, false caso contrário
  */
 export async function sendFormToWebhook(
   formData: {
-    name: string;
-    email: string;
-    phone: string;
+    name?: string;
+    email?: string;
+    phone?: string;
     company?: string;
-    service: string;
+    service?: string;
   },
   formId: string
 ): Promise<boolean> {
   try {
     if (typeof window === "undefined") {
       console.warn("Webhook não pode ser enviado no servidor");
+      return false;
+    }
+
+    // Valida que os campos obrigatórios estão presentes
+    if (!formData.name || !formData.email || !formData.phone || !formData.service) {
+      console.warn("Campos obrigatórios não preenchidos, webhook não será enviado:", formData);
       return false;
     }
 
@@ -64,7 +70,7 @@ export async function sendFormToWebhook(
       }
     });
 
-    // Prepara os dados para o webhook
+    // Prepara os dados para o webhook (agora garantimos que os campos obrigatórios existem)
     const webhookData: FormWebhookData = {
       name: formData.name,
       email: formData.email,
