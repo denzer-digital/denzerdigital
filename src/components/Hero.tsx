@@ -103,12 +103,22 @@ const Hero = () => {
               </a>
               <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
+              <a href="https://stape.io" target="_blank" rel="noopener noreferrer" aria-label="Visitar site da Stape">
+                <img
+                  src="https://cdn.stape.io/i/644286f038012250033022.svg"
+                  alt="Stape partner"
+                  width={130}
+                  height={62}
+                  className="h-12 md:h-16 w-auto"
+                  style={{ objectFit: "contain" }}
+                  loading="lazy"
+                />
+              </a>
             </div>
 
-            {/* Mobile: Grid layout - 3 em cima, 2 embaixo */}
-            <div className="md:hidden w-full max-w-sm mx-auto" role="region" aria-label="Logos de parceiros">
+            {/* Mobile: Grid 3x2 */}
+            <div className="md:hidden w-full max-w-md mx-auto" role="region" aria-label="Logos de parceiros">
               <div className="grid grid-cols-3 gap-2 justify-items-center items-center">
-                {/* Primeira linha - 3 logos com mesma altura visual e sem margens */}
                 <div className="flex justify-center items-center w-full p-0">
                   <Image src="/assets/shopify.webp" alt="Shopify Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                 </div>
@@ -120,16 +130,24 @@ const Hero = () => {
                     <Image src="/assets/kommo_nova.svg" alt="Kommo Partner" width={318} height={120} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                   </a>
                 </div>
-                {/* Segunda linha - 2 logos centralizadas com mesma altura visual e mais próximas */}
-                <div className="flex justify-center col-span-3 mt-2">
-                  <div className="grid grid-cols-2 gap-3 w-full max-w-[240px]">
-                    <div className="flex justify-center items-center w-full p-0">
-                      <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
-                    </div>
-                    <div className="flex justify-center items-center w-full p-0">
-                      <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
-                    </div>
-                  </div>
+                <div className="flex justify-center items-center w-full p-0">
+                  <a href="https://stape.io" target="_blank" rel="noopener noreferrer" aria-label="Visitar site da Stape" className="flex items-center justify-center w-full p-0">
+                    <img
+                      src="https://cdn.stape.io/i/644286f038012250033022.svg"
+                      alt="Stape partner"
+                      width={130}
+                      height={62}
+                      className="h-14 w-auto"
+                      style={{ objectFit: "contain" }}
+                      loading="lazy"
+                    />
+                  </a>
+                </div>
+                <div className="flex justify-center items-center w-full p-0">
+                  <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
+                </div>
+                <div className="flex justify-center items-center w-full p-0">
+                  <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-14 w-auto object-contain" loading="lazy" quality={100} unoptimized />
                 </div>
               </div>
             </div>
