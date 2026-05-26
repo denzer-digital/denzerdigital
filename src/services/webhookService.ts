@@ -2,7 +2,7 @@
  * Serviço para comunicação com o webhook N8N
  */
 
-const WEBHOOK_URL = "https://webhook.agentemwd.com/webhook/9de471bd-4296-4cc8-bc40-f2ea1d19f6dd";
+const WEBHOOK_URL = "https://webhook.denzerdigital.com.br/webhook/9de471bd-4296-4cc8-bc40-f2ea1d19f6dd";
 const CHAT_API_URL = "/api/chat/messages";
 
 export type AgentType = "sdr" | "ecommerce" | "agendamento";
