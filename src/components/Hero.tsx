@@ -103,7 +103,7 @@ const Hero = () => {
               </a>
               <Image src="/assets/meta-partner.webp" alt="Meta Business Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
               <Image src="/assets/google.webp" alt="Google Partner" width={256} height={256} className="h-12 md:h-16 w-auto object-contain" quality={100} unoptimized />
-              <a href="https://stape.io" target="_blank" rel="noopener noreferrer" aria-label="Visitar site da Stape">
+              <a href="https://stape.io?pt=klstzfwy&rs=site&rr=global" target="_blank" rel="noopener noreferrer" aria-label="Visitar site da Stape">
                 <img
                   src="https://cdn.stape.io/i/644286f038012250033022.svg"
                   alt="Stape partner"
@@ -131,7 +131,7 @@ const Hero = () => {
                   </a>
                 </div>
                 <div className="flex justify-center items-center w-full p-0">
-                  <a href="https://stape.io" target="_blank" rel="noopener noreferrer" aria-label="Visitar site da Stape" className="flex items-center justify-center w-full p-0">
+                  <a href="https://stape.io?pt=klstzfwy&rs=site&rr=global" target="_blank" rel="noopener noreferrer" aria-label="Visitar site da Stape" className="flex items-center justify-center w-full p-0">
                     <img
                       src="https://cdn.stape.io/i/644286f038012250033022.svg"
                       alt="Stape partner"
